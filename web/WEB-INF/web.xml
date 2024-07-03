@@ -176,6 +176,10 @@
         <servlet-name>FeedbackServlet</servlet-name>
         <servlet-class>Controller.Public.FeedbackServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>SettingServlet</servlet-name>
+        <servlet-class>Controller.Admin.SettingServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>HomePage</servlet-name>
         <url-pattern>/HomePage</url-pattern>
@@ -351,6 +355,10 @@
     <servlet-mapping>
         <servlet-name>FeedbackServlet</servlet-name>
         <url-pattern>/FeedbackServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SettingServlet</servlet-name>
+        <url-pattern>/SettingServlet</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>

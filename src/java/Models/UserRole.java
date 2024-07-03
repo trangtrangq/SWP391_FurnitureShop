@@ -18,7 +18,7 @@ public class UserRole {
 
     public UserRole(String rolename) {
         this.rolename = rolename;
-        this.status = "Active";
+        this.status = "Inactive";
     }
 
     public int getId() {

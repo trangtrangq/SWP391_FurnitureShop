@@ -37,8 +37,10 @@ public class RoomDAO extends DBContext {
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String roomname = rs.getString("roomname");
+                String status = rs.getString("status");
                 Room room = new Room(roomname);
                 room.setId(id);
+                room.setStatus(status);
                 roomList.add(room);
             }
 
@@ -77,10 +79,11 @@ public class RoomDAO extends DBContext {
     }
 
     // Phương thức deleteRoom (xóa mềm)
-    public boolean deleteRoom(int roomId) {
-        String sql = "UPDATE room SET status = 'Inactive' WHERE id = ?";
+    public boolean changeStatus(int roomId, String newStatus) {
+        String sql = "UPDATE room SET status = ? WHERE id = ?";
         try (PreparedStatement pstmt = connect.prepareStatement(sql)) {
-            pstmt.setInt(1, roomId);
+            pstmt.setString(1, newStatus);
+            pstmt.setInt(2, roomId);
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
         } catch (Exception ex) {

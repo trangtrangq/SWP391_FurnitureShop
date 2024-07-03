@@ -13,6 +13,7 @@ public class SaleOff {
     private int id;
     private int product_id;
     private int value;
+    private String status;
 
     public SaleOff() {
     }
@@ -20,6 +21,7 @@ public class SaleOff {
     public SaleOff(int product_id, int value) {
         this.product_id = product_id;
         this.value = value;
+        this.status = "Inactive";
     }
 
     public int getId() {
@@ -45,4 +47,27 @@ public class SaleOff {
     public void setSaleoffvalue(int value) {
         this.value = value;
     }
+
+    public int getValue() {
+        return value;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "SaleOff{" + "id=" + id + ", product_id=" + product_id + ", value=" + value + ", status=" + status + '}';
+    }
+    
+    
 }

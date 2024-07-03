@@ -35,8 +35,10 @@ public class ColorDAO extends DBContext {
                 int id = rs.getInt("id");
                 String colorname = rs.getString("colorname");
                 String colorcode = rs.getString("colorcode");
+                String status = rs.getString("status");
                 Color color = new Color(colorname, colorcode);
                 color.setId(id);
+                color.setStatus(status);
                 colorList.add(color);
             }
 
@@ -74,10 +76,11 @@ public class ColorDAO extends DBContext {
         }
     }
 
-    public boolean deleteColor(int colorId) {
-        String sql = "UPDATE color SET status = 'Inactive' WHERE id = ?";
+    public boolean changeStatus(int colorId, String newStatus) {
+        String sql = "UPDATE color SET status = ? WHERE id = ?";
         try (PreparedStatement pstmt = connect.prepareStatement(sql)) {
-            pstmt.setInt(1, colorId);
+            pstmt.setString(1, newStatus);
+            pstmt.setInt(2, colorId);
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
         } catch (Exception ex) {

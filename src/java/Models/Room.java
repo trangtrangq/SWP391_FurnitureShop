@@ -11,12 +11,14 @@ package Models;
 public class Room {
     private int id;
     private String roomname;
+    private String status;
 
     public Room() {
     }
 
     public Room(String roomname) {
         this.roomname = roomname;
+        this.status = "Inactive";
     }
 
     public int getId() {
@@ -33,6 +35,19 @@ public class Room {
 
     public void setRoomname(String roomname) {
         this.roomname = roomname;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "Room{" + "id=" + id + ", roomname=" + roomname + ", status=" + status + '}';
     }
     
 }

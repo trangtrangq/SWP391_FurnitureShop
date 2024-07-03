@@ -44,7 +44,7 @@ public class UserRoleDAO extends DBContext {
                 userRole.setId(rs.getInt("id"));
                 userRole.setRolename(rs.getString("rolename"));
                 userRole.setStatus(rs.getString("status"));
-                
+
                 userRoleList.add(userRole);
             }
             return userRoleList;
@@ -54,11 +54,22 @@ public class UserRoleDAO extends DBContext {
         }
     }
 
+    public boolean changeStatus(int id, String newStatus) {
+        String query = "UPDATE userrole SET status = ? WHERE id = ?";
+        try (PreparedStatement ps = connect.prepareStatement(query)) {
+            ps.setString(1, newStatus);
+            ps.setInt(2, id);
+
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public static void main(String[] args) {
         UserRoleDAO userRoleDAO = new UserRoleDAO();
-        ArrayList<UserRole> userRoleList = userRoleDAO.getUserRoleList();
-        for (UserRole userRole : userRoleList) {
-            System.out.println(userRole.getRolename());
-        }
+        userRoleDAO.changeStatus(1, "Active");
     }
 }

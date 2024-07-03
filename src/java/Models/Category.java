@@ -11,12 +11,14 @@ package Models;
 public class Category {
     private int id;
     private String category;
+    private String status;
 
     public Category() {
     }
 
     public Category(String category) {
         this.category = category;
+        this.status = "Inactive";
     }
 
     public int getId() {
@@ -34,6 +36,20 @@ public class Category {
     public void setCategory(String category) {
         this.category = category;
     }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "Category{" + "id=" + id + ", category=" + category + ", status=" + status + '}';
+    }
+    
     
     
 }

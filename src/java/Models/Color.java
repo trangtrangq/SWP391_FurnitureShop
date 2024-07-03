@@ -12,6 +12,7 @@ public class Color {
     private int id;
     private String colorname;
     private String colorcode;
+    private String status;
 
     public Color() {
     }
@@ -19,6 +20,7 @@ public class Color {
     public Color(String colorname, String colorcode) {
         this.colorname = colorname;
         this.colorcode = colorcode;
+        this.status = "Inactive";
     }
 
     public int getId() {
@@ -43,6 +45,19 @@ public class Color {
 
     public void setColorcode(String colorcode) {
         this.colorcode = colorcode;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "Color{" + "id=" + id + ", colorname=" + colorname + ", colorcode=" + colorcode + ", status=" + status + '}';
     }
     
     

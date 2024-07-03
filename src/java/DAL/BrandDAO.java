@@ -34,8 +34,10 @@ public class BrandDAO extends DBContext {
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String brandname = rs.getString("brandname");
+                String status = rs.getString("status");
                 Brand brand = new Brand(brandname);
                 brand.setId(id);
+                brand.setStatus(status);
                 brandList.add(brand);
             }
 
@@ -70,10 +72,11 @@ public class BrandDAO extends DBContext {
         }
     }
 
-    public boolean deleteBrand(int brandId) {
-        String sql = "UPDATE brand SET status = 'Inactive' WHERE id = ?";
+    public boolean changeStatus(int brandId, String newStatus) {
+        String sql = "UPDATE brand SET status = ? WHERE id = ?";
         try (PreparedStatement pstmt = connect.prepareStatement(sql)) {
-            pstmt.setInt(1, brandId);
+            pstmt.setString(1, newStatus);
+            pstmt.setInt(2, brandId);
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
         } catch (Exception ex) {

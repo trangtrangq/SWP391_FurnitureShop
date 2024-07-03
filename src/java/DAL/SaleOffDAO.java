@@ -38,8 +38,10 @@ public class SaleOffDAO extends DBContext {
                 int id = rs.getInt("id");
                 int productId = rs.getInt("product_id");
                 int value = rs.getInt("value");
+                String status = rs.getString("status");
                 SaleOff saleOff = new SaleOff(productId, value);
                 saleOff.setId(id);
+                saleOff.setStatus(status);
                 saleOffList.add(saleOff);
             }
         } catch (Exception ex) {
@@ -51,13 +53,14 @@ public class SaleOffDAO extends DBContext {
 
     // Phương thức insertSaleOff
     public boolean insertSaleOff(SaleOff saleOff) {
-        String sql = "INSERT INTO SaleOff (product_id, value) VALUES (?, ?)";
+        String sql = "INSERT INTO SaleOff (product_id, value, status) VALUES (?, ?, ?)";
 
         try (
             PreparedStatement pstmt = connect.prepareStatement(sql)
         ) {
             pstmt.setInt(1, saleOff.getProduct_id());
             pstmt.setInt(2, saleOff.getSaleoffvalue());
+            pstmt.setString(3, saleOff.getStatus());
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
         } catch (Exception ex) {
@@ -85,17 +88,18 @@ public class SaleOffDAO extends DBContext {
     }
 
     // Phương thức deleteSaleOff
-    public boolean deleteSaleOff(int saleOffId) {
-        String sql = "DELETE FROM SaleOff WHERE id = ?";
+    public boolean changeStatus(int saleOffId, String newStatus) {
+        String sql = "UPDATE SaleOff SET status = ? WHERE id = ?";
 
         try (
             PreparedStatement pstmt = connect.prepareStatement(sql)
         ) {
-            pstmt.setInt(1, saleOffId);
+            pstmt.setString(1, newStatus);
+            pstmt.setInt(2, saleOffId);
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
         } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, "Error deleting sale off", ex);
+            LOGGER.log(Level.SEVERE, "Error change status sale off", ex);
             return false;
         }
     }
