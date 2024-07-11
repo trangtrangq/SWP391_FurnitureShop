@@ -28,11 +28,14 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="password">Mật khẩu</label>
-                                    <input type="password" class="form-control" id="password" name="password" required>
+                                    <input type="password" class="form-control" id="password1" name="password" required>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="togglePasswords" onclick="togglePasswordVisibility1()"> Hiển thị mật khẩu
                                 </div>
                                 <button type="submit" class="btn btn-primary">Đăng nhập</button>
                                 <a href="#" onclick="toggleDiv('box3', 'box1')">Quên mật khẩu </a>
-                                <p>Bạn chưa có tài khoản? <a href="#" onclick="toggleDiv('box2', 'box1')">Đăng kí</a></p>
+                                <p>Bạn chưa có tài khoản?<a href="#" onclick="toggleDiv('box2', 'box1')">Đăng kí</a></p>
                             </form>
                             <c:if test="${not empty requestScope.errorlogin}">
                                 <div style="color: red;">
@@ -49,6 +52,20 @@
                 </div>
             </div>
         </div>
+        <script>
+            function togglePasswordVisibility1() {
+                const passwordField = document.getElementById('password1');
+                console.log(passwordField);
+                console.log(passwordField.type);
+                if (passwordField.type === "password") {
+                    passwordField.type = 'text';
+                    console.log(passwordField.type);
+                } else {
+                    passwordField.type = 'password';
+                    console.log(passwordField.type);
+                }
+            }
+        </script>
 
     </body>
 </html>
