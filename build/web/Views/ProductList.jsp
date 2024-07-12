@@ -17,12 +17,12 @@
         <link rel="preload stylesheet" as="style" fetchpriority="low" href="css/style-theme.scss.css">
         <link rel="stylesheet" href="css/style.css">
         <!--+++++++++++++++++++++++++  JS ++++++++++++++++++++++++-->
-            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 
-            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-            <script defer fetchpriority="low" src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script defer fetchpriority="low" src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"></script>
 
-            <script defer fetchpriority="low" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+        <script defer fetchpriority="low" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 
 
         <style>
@@ -129,6 +129,18 @@
             .color-checkbox input[type="checkbox"]:checked + .color-circle {
                 border: 2px solid #000;
             }
+
+            .check-box-list li input[type="radio"]:checked + label {
+                background-color: #007bff;
+                color: #fff;
+                border: 1px solid #0056b3;
+                box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+                font-weight: bold;
+            }
+
+            .check-box-list li label:hover {
+                background-color: #e0e0e0;
+            }
         </style>
     </head>
 
@@ -211,20 +223,36 @@
                                                                     <div class="layer_filter-group col-md-2">
                                                                         <div class="clearfix">
                                                                             <div class="group-filter">
-                                                                                <div
-                                                                                    class="filter_group_title dropdown-filter">
-                                                                                    <span>Sắp xếp</span><span
-                                                                                        class="icon-controls"><i
-                                                                                            class="fa fa-chevron-down"></i></span>
+                                                                                <div class="filter_group_title dropdown-filter">
+                                                                                    <span>Sắp xếp</span>
+                                                                                    <span class="icon-controls">
+                                                                                        <i class="fa fa-chevron-down"></i>
+                                                                                    </span>
                                                                                 </div>
-                                                                                <div class="filter_group_content filter-size s-filter">
-                                                                                    <ul class="check-box-list clearfix">
-                                                                                        <li style="margin-right: 50px ;margin-bottom: 5px "><a href="${pageContext.request.contextPath}/ProductServlet?sortby=priceAsc">Giá tăng dần</a></li>
-                                                                                        <li style="margin-bottom: 5px "><a href="${pageContext.request.contextPath}/ProductServlet?sortby=priceDesc">Giá giảm dần</a></li>
-                                                                                        <li style="margin-bottom: 5px "><a href="${pageContext.request.contextPath}/ProductServlet?sortby=starAsc">Số sao tăng dần</a></li>
-                                                                                        <li style="margin-bottom: 5px "><a href="${pageContext.request.contextPath}/ProductServlet?sortby=starDesc">Số sao giảm dần</a></li>
-                                                                                    </ul>
+                                                                                <div class="filter_group_content filter-size s-filter">   
+                                                                                    <form id="sortForm" action="ProductServlet" method="post">
+                                                                                        <input type="hidden" name="action" value="sort" />
+                                                                                        <ul class="check-box-list clearfix">
+                                                                                            <li style="margin-bottom: 5px;">
+                                                                                                <input type="radio" name="sortby" value="priceAsc" id="priceAsc" style="display: none;">
+                                                                                                <label for="priceAsc" style="width: 170px; border: none; font-size: 14px; text-align: start">Giá tăng dần</label>
+                                                                                            </li>
+                                                                                            <li style="margin-bottom: 5px;">
+                                                                                                <input type="radio" name="sortby" value="priceDesc" id="priceDesc" style="display: none;">
+                                                                                                <label for="priceDesc" style="width: 170px; border: none; font-size: 14px; text-align: start">Giá giảm dần</label>
+                                                                                            </li>
+                                                                                            <li style="margin-bottom: 5px;">
+                                                                                                <input type="radio" name="sortby" value="starAsc" id="starAsc" style="display: none;">
+                                                                                                <label for="starAsc" style="width: 170px; border: none; font-size: 14px; text-align: start">Số sao tăng dần</label>
+                                                                                            </li>
+                                                                                            <li style="margin-bottom: 5px;">
+                                                                                                <input type="radio" name="sortby" value="starDesc" id="starDesc" style="display: none;">
+                                                                                                <label for="starDesc" style="width: 170px; border: none; font-size: 14px; text-align: start">Số sao giảm dần</label>
+                                                                                            </li>
+                                                                                        </ul>
+                                                                                    </form>
                                                                                 </div>
+
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -239,7 +267,8 @@
                                                 <div class="wrap-filter">
                                                     <div class="box_sidebar">
                                                         <div class="layered">
-                                                            <form method="post" >
+                                                            <form id="filterForm" action="ProductServlet" method="post">
+                                                                <input type="hidden" name="action" value="filter" />
                                                                 <div class="layer_filter-container">
                                                                     <div class="layer_filter-title hidden-xs hidden-sm">
                                                                         <div class="title_filter">
@@ -248,9 +277,9 @@
                                                                                       stroke-linejoin="round"
                                                                                       stroke-miterlimit="10"
                                                                                       d="M12 9v8l-4-4V9L2 3h16z"></path>
-                                                                                </svg></span>
-                                                                            <button type="submit">Lọc</button>
-                                                                            <button><a href="${pageContext.request.contextPath}/ProductServlet?clearfilter=yes">Bỏ lọc</a></button>
+                                                                                </svg>
+                                                                            </span>
+                                                                            <span>Bộ Lọc</span>
                                                                         </div>
                                                                     </div>
                                                                     <div class="layer_filter-group">
@@ -270,7 +299,7 @@
                                                                                             <c:forEach items="${requestScope.brandList}" var="brand">
                                                                                                 <li style="margin-right: 40px">
                                                                                                     <div>
-                                                                                                        <input type="checkbox" value="${brand.id}" name="brand-filter" 
+                                                                                                        <input type="checkbox" value="${brand.id}" data-brand="${brand.brandname}" name="brand-filter" 
                                                                                                                <c:if test="${not empty selectedBrandList and selectedBrandList.contains(brand.id)}">checked</c:if>
                                                                                                                style="display: inline-block"/> ${brand.brandname}
                                                                                                     </div>
@@ -294,7 +323,7 @@
                                                                                         <ul class="check-box-list clearfix">
                                                                                             <c:forEach items="${requestScope.roomList}" var="room">
                                                                                                 <li>
-                                                                                                    <input type="checkbox" value="${room.id}" name="room-filter"
+                                                                                                    <input type="checkbox" value="${room.id}" data-room="${room.roomname}" name="room-filter"
                                                                                                            <c:if test="${not empty selectedRoomList and selectedRoomList.contains(room.id)}">checked</c:if>
                                                                                                            style="display: inline-block" /> ${room.roomname}
                                                                                                 </li>
@@ -316,7 +345,7 @@
                                                                                         <ul class="check-box-list clearfix">
                                                                                             <c:forEach items="${requestScope.categoryList}" var="category">
                                                                                                 <li style="margin-right: 30px">
-                                                                                                    <input type="checkbox" value="${category.id}" name="category-filter"
+                                                                                                    <input type="checkbox" value="${category.id}" data-category="${category.category}" name="category-filter"
                                                                                                            <c:if test="${not empty selectedCategoryList and selectedCategoryList.contains(category.id)}">checked</c:if>
                                                                                                            style="display: inline-block" /> ${category.category}
                                                                                                 </li>
@@ -339,22 +368,22 @@
                                                                                     <div class="filter_group_content filter-size s-filter">
                                                                                         <ul class="check-box-list clearfix">
                                                                                             <li style="margin-right: 15px">
-                                                                                                <input type="checkbox" name="price-filter" value="<500"
+                                                                                                <input type="checkbox" name="price-filter" data-price="< 500.000₫" value="<500"
                                                                                                        <c:if test="${not empty selectedPriceList and selectedPriceList.contains('<500')}">checked</c:if>
                                                                                                            style="display: inline-block" /> < 500.000₫
                                                                                                 </li>
                                                                                                 <li style="margin-right: 15px">
-                                                                                                    <input type="checkbox" name="price-filter" value="500<x<1500"
+                                                                                                    <input type="checkbox" name="price-filter" data-price="500,000₫ - 1,500,000₫" value="500<x<1500"
                                                                                                     <c:if test="${not empty selectedPriceList and selectedPriceList.contains('500<x<1500')}">checked</c:if>
                                                                                                         style="display: inline-block" /> 500,000₫ - 1,500,000₫
                                                                                                 </li>
                                                                                                 <li style="margin-right: 15px">
-                                                                                                    <input type="checkbox" name="price-filter" value="1500<x<5000"
+                                                                                                    <input type="checkbox" name="price-filter" data-price="1,500,000₫ - 5,000,000₫" value="1500<x<5000"
                                                                                                     <c:if test="${not empty selectedPriceList and selectedPriceList.contains('1500<x<5000')}">checked</c:if>
                                                                                                         style="display: inline-block" /> 1,500,000₫ - 5,000,000₫
                                                                                                 </li>
                                                                                                 <li style="margin-right: 15px">
-                                                                                                    <input type="checkbox" name="price-filter" value=">5000"
+                                                                                                    <input type="checkbox" name="price-filter" data-price="> 5,000,000₫" value=">5000"
                                                                                                     <c:if test="${not empty selectedPriceList and selectedPriceList.contains('>5000')}">checked</c:if>
                                                                                                         style="display: inline-block" /> > 5,000,000₫
                                                                                                 </li>
@@ -380,170 +409,91 @@
                                                                                             <c:forEach items="${requestScope.colorList}" var="color">
                                                                                                 <li style="margin-right: 5px">
                                                                                                     <label class="color-checkbox">
-                                                                                                        <input type="checkbox" value="${color.id}" name="color-filter"
+                                                                                                        <input type="checkbox" value="${color.id}" data-color="${color.colorname}" name="color-filter"
                                                                                                                <c:if test="${not empty selectedColorList and selectedColorList.contains(color.id)}">checked</c:if>
                                                                                                                    style="display: none;" />
                                                                                                                <span class="color-circle" style="background-color:${color.colorcode};"></span>
                                                                                                     </label>${color.colorname}
                                                                                                 </li>
                                                                                             </c:forEach>
-
                                                                                         </ul>
                                                                                     </div>
-
-
                                                                                 </div>
                                                                             </div>
-
                                                                         </div>
                                                                     </div>
 
                                                                 </div>
                                                             </form>
-
+                                                            <div class="group_filter_tags">
+                                                                <div class="filter_tags">			
+                                                                    Thương hiệu: <b id="brand-tag"></b>		
+                                                                    <span class="filter_tags_remove d-flex" data-filter="brand"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 50 50" xml:space="preserve">
+                                                                        <path fill="#333" d="M9.016 40.837a1.001 1.001 0 0 0 1.415-.001l14.292-14.309 14.292 14.309a1 1 0 1 0 1.416-1.413L26.153 25.129 40.43 10.836a1 1 0 1 0-1.415-1.413L24.722 23.732 10.43 9.423a1 1 0 1 0-1.415 1.413l14.276 14.293L9.015 39.423a1 1 0 0 0 .001 1.414z"></path>
+                                                                        </svg></span>
+                                                                </div>
+                                                                <div class="filter_tags">
+                                                                    Phòng: <b id="room-tag"></b>
+                                                                    <span class="filter_tags_remove d-flex" data-filter="room">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 50 50" xml:space="preserve">
+                                                                        <path fill="#333" d="M9.016 40.837a1.001 1.001 0 0 0 1.415-.001l14.292-14.309 14.292 14.309a1 1 0 1 0 1.416-1.413L26.153 25.129 40.43 10.836a1 1 0 1 0-1.415-1.413L24.722 23.732 10.43 9.423a1 1 0 1 0-1.415 1.413l14.276 14.293L9.015 39.423a1 1 0 0 0 .001 1.414z"></path>
+                                                                        </svg>
+                                                                    </span>
+                                                                </div>
+                                                                <div class="filter_tags">			
+                                                                    Danh mục: <b id="category-tag"></b>		
+                                                                    <span class="filter_tags_remove d-flex" data-filter="category">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 50 50" xml:space="preserve">
+                                                                        <path fill="#333" d="M9.016 40.837a1.001 1.001 0 0 0 1.415-.001l14.292-14.309 14.292 14.309a1 1 0 1 0 1.416-1.413L26.153 25.129 40.43 10.836a1 1 0 1 0-1.415-1.413L24.722 23.732 10.43 9.423a1 1 0 1 0-1.415 1.413l14.276 14.293L9.015 39.423a1 1 0 0 0 .001 1.414z"></path>
+                                                                        </svg>
+                                                                    </span>
+                                                                </div>
+                                                                <div class="filter_tags">
+                                                                    Giá sản phẩm: <b id="price-tag"></b>
+                                                                    <span class="filter_tags_remove d-flex" data-filter="price">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 50 50" xml:space="preserve">
+                                                                        <path fill="#333" d="M9.016 40.837a1.001 1.001 0 0 0 1.415-.001l14.292-14.309 14.292 14.309a1 1 0 1 0 1.416-1.413L26.153 25.129 40.43 10.836a1 1 0 1 0-1.415-1.413L24.722 23.732 10.43 9.423a1 1 0 1 0-1.415 1.413l14.276 14.293L9.015 39.423a1 1 0 0 0 .001 1.414z"></path>
+                                                                        </svg>
+                                                                    </span>
+                                                                </div>
+                                                                <div class="filter_tags">
+                                                                    Màu sắc: <b id="color-tag"></b>
+                                                                    <span class="filter_tags_remove d-flex" data-filter="color">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 50 50" xml:space="preserve">
+                                                                        <path fill="#333" d="M9.016 40.837a1.001 1.001 0 0 0 1.415-.001l14.292-14.309 14.292 14.309a1 1 0 1 0 1.416-1.413L26.153 25.129 40.43 10.836a1 1 0 1 0-1.415-1.413L24.722 23.732 10.43 9.423a1 1 0 1 0-1.415 1.413l14.276 14.293L9.015 39.423a1 1 0 0 0 .001 1.414z"></path>
+                                                                        </svg>
+                                                                    </span>
+                                                                </div>
+                                                                <div class="filter_tags filter_tags_remove_all opened"><span><a href="ProductServlet">Xóa hết</a></span></div>
+                                                            </div>                                          
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-
-
-
-                                    <!-- list product -->
                                     <div class="container">
-                                        <div class="row filter-here">
-
-                                            <c:forEach items="${requestScope.productList}" var="product">
-                                                <div class="col-md-3 col-sm-6 col-xs-6 pro-loop col-4">
-                                                    <div class="product-block product-resize site-animation single-product">
-                                                        <div class="product-img fade-box">
-                                                            <c:forEach items="${requestScope.saleOffList}" var="saleoff">
-                                                                <c:if test="${saleoff.product_id == product.id}">
-
-                                                                    <c:choose>
-                                                                        <c:when test="${saleoff.getSaleoffvalue() != 0}">
-                                                                            <div class="product-sale"><span>-${saleoff.getSaleoffvalue()}%</span></div>
-                                                                        </c:when>
-                                                                        <c:otherwise>
-                                                                            <div></div>
-                                                                        </c:otherwise>
-                                                                    </c:choose>
-                                                                </c:if>
-                                                            </c:forEach>
-
-                                                            <div class="tag-loop">
-                                                                <div class="icon icon_hot">
-                                                                    <img loading="lazy" decoding="async"
-                                                                         src="//theme.hstatic.net/200000065946/1001187274/14/icon_hot.png?v=582"
-                                                                         alt="icon hot"/>
-                                                                </div>
-                                                            </div>
-                                                            <a href="ProductDetailServlet?productId=${product.id}"
-                                                               title="${product.name}" class="image-resize">
-                                                                <picture class="loop-one-img ">
-                                                                    <img loading="lazy" decoding="async" width="480"
-                                                                         height="480" class="img-loop"
-                                                                         alt="${product.name}"
-                                                                         src="image/product/${product.image}" />
-                                                                </picture>
-                                                            </a>
-                                                        </div>
-                                                        <div class="product-detail clearfix">
-                                                            <div class="box-pro-detail">
-                                                                <h3 class="pro-name">
-                                                                    <a href="#"
-                                                                       title="${product.name}">
-                                                                        ${product.name}
-                                                                    </a>
-                                                                </h3>
-                                                                <div class="box-pro-prices">
-                                                                    <p class="pro-price highlight">
-                                                                        <c:set var="hasSale" value="false" />
-                                                                        <c:forEach items="${requestScope.saleOffList}" var="saleoff">
-                                                                            <c:if test="${saleoff.product_id == product.id}">  
-                                                                                <c:set var="hasSale" value="true" />
-                                                                                <c:choose>
-                                                                                    <c:when test="${saleoff.getSaleoffvalue() == 0}">
-                                                                                        <span style="color: black">${product.price}₫</span>
-                                                                                    </c:when>
-                                                                                    <c:otherwise>
-                                                                                        <span>${product.price - product.price * saleoff.getSaleoffvalue() / 100}₫</span>
-                                                                                        <span class="pro-price-del">
-                                                                                            <del class="compare-price">
-                                                                                                ${product.price}₫
-                                                                                            </del>
-                                                                                        </span>
-                                                                                    </c:otherwise>
-                                                                                </c:choose>
-                                                                            </c:if>
-                                                                        </c:forEach>
-                                                                        <c:if test="${!hasSale}">
-                                                                            <span style="color: black">${product.price}₫</span>
-                                                                        </c:if>
-                                                                    </p>
-                                                                </div>
-
-                                                                <div class="row">
-                                                                    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12 custom_review">
-                                                                        <c:set var="reviewCount" value="0" scope="page" />
-
-                                                                        <c:forEach items="${requestScope.feedbackList}" var="feedback">
-                                                                            <c:if test="${feedback.product_id == product.id}">
-                                                                                <c:set var="reviewCount" value="${reviewCount + 1}" scope="page" />
-                                                                            </c:if>
-                                                                        </c:forEach>
-                                                                        <div class="rating-container" data-rating="${product.staravg}" data-num-reviews="${reviewCount}">
-                                                                            <div class="rating"></div>
-                                                                            <span class="num-reviews"></span>
-                                                                        </div>
-                                                                        <div>Số lượng: ${product.getQuantity()}</div>
-                                                                    </div>
-                                                                    <c:set var="quantitySold" value="0" scope="page" /> 
-                                                                    <c:forEach items="${requestScope.orderDetailList}" var="orderDetail">
-                                                                        <c:forEach items="${requestScope.productDetailList}" var="productDetail">
-                                                                            <c:if test="${orderDetail.productdetail_id == productDetail.id}">
-                                                                                <c:if test="${productDetail.product_id == product.id}">
-                                                                                    <c:set var="quantitySold" value="${quantitySold + orderDetail.quantity}" scope="page" />
-                                                                                </c:if>
-                                                                            </c:if>
-                                                                        </c:forEach>
-                                                                    </c:forEach>
-                                                                    <div
-                                                                        class="col-lg-4 col-md-4 col-sm-4 col-xs-12 custom_sold_qty">
-                                                                        <div class="cmpText">Đã bán ${quantitySold}</div>
-                                                                        <span>
-                                                                            <c:forEach items="${productDetailList}" var="productDetail">
-                                                                                <c:if test="${product.id == productDetail.product_id}">
-                                                                                    <c:forEach items="${colorList}" var="color">
-                                                                                        <c:if test="${productDetail.color_id == color.id}">
-                                                                                            <label class="color-checkbox">
-                                                                                                <input type="checkbox" name="color" value="${color.id}" style="display: none;">
-                                                                                                <span class="color-circle" style="background-color:${color.colorcode};"></span>
-                                                                                            </label>
-                                                                                        </c:if>
-                                                                                    </c:forEach>
-                                                                                </c:if>
-                                                                            </c:forEach>
-                                                                        </span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </c:forEach>
-
-                                        </div>
+                                        <div class="row filter-here" id="product-container">
+                                            <c:set value="${requestScope.htmlResponse}" var="htmlResponse"/>
+                                            ${htmlResponse}
+                                        </div >
                                     </div>
+
                                     <div class="sortpagibar pagi clearfix text-center">
                                         <div id="pagination" class="clearfix">
 
                                             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                                <c:forEach var="page" items="${pagenumber}">
-                                                    <a class="page-node" href="ProductServlet?page=${page}" aria-label="Trang ${page}">${page}</a>
-                                                </c:forEach>
-                                                <span class="page-node ">&hellip;</span>
+                                                <form id="paginationForm" action="ProductServlet" method="post">
+                                                    <input type="hidden" name="action" value="pagination">
+                                                    <div id="page-pagination">
+                                                        <c:forEach var="page" items="${pagenumber}">
+                                                            <input type="radio" name="page" id="page${page}" value="${page}" style="display: none;">
+                                                            <label for="page${page}" style="width: 25px; border: groove;" class="page-node" aria-label="Trang ${page}">${page}</label>
+                                                        </c:forEach>
+                                                        <span class="page-node">&hellip;</span>
+                                                    </div>
+                                                </form>
+
                                             </div>
                                         </div>
                                     </div>
@@ -585,9 +535,256 @@
                 });
             });
 
+            $(document).ready(function () {
+                // Bắt sự kiện khi người dùng thay đổi radio button
+                $('input[type="radio"][name="sortby"]').change(function () {
+                    // Tự động submit form bằng AJAX
+                    submitFormWithAjax();
+                });
+
+                // Hàm để gửi yêu cầu AJAX
+                function submitFormWithAjax() {
+                    var form = $('#sortForm')[0]; // Lấy form theo id
+                    $.ajax({
+                        type: form.getAttribute("method"),
+                        url: form.getAttribute("action"),
+                        data: $(form).serialize(),
+                        success: function (response) {
+                            console.log(response);
+                            $("#product-container").html(response); // Cập nhật nội dung sản phẩm
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error: " + error);
+                        }
+                    });
+                }
+            });
+
+
+            $(document).ready(function () {
+                // Bắt sự kiện khi người dùng thay đổi checkbox trong form
+                $('#filterForm input[type="checkbox"]').change(function () {
+                    // Tự động submit form bằng AJAX
+                    submitFormWithAjax();
+                });
+
+                // Hàm để gửi yêu cầu AJAX
+                function submitFormWithAjax() {
+                    var form = $('#filterForm')[0]; // Lấy form theo id
+                    $.ajax({
+                        type: form.getAttribute("method"),
+                        url: form.getAttribute("action"),
+                        data: $(form).serialize(),
+                        success: function (response) {
+                            // Tách response bằng dấu '|'
+                            var responses = response.split('|');
+                            if (responses.length === 2) {
+                                var htmlResponse = responses[0];
+                                var pagePagination = responses[1];
+                                console.log("Đây là product:" + htmlResponse);
+                                console.log("Đây là phân trang:" + pagePagination);
+                                // Cập nhật nội dung sản phẩm
+                                $("#product-container").html(htmlResponse);
+
+                                // Cập nhật nội dung phân trang
+                                $("#page-pagination").html(pagePagination);
+                            } else {
+                                console.error("Unexpected response format");
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error: " + error);
+                        }
+                    });
+                }
+
+            });
+
+
+            document.addEventListener('DOMContentLoaded', function () {
+                function updateTags(inputSelector, tagId, filterClass) {
+                    const inputs = document.querySelectorAll(inputSelector);
+                    const tagElement = document.getElementById(tagId);
+                    const filterTagDiv = tagElement.closest('.filter_tags');
+                    const selectedItems = [];
+
+                    inputs.forEach(input => {
+                        if (input.checked) {
+                            selectedItems.push(input.getAttribute('data-category') || input.getAttribute('data-brand') || input.getAttribute('data-room') || input.getAttribute('data-price') || input.getAttribute('data-color'));
+                        }
+                    });
+
+                    tagElement.textContent = selectedItems.join(', ');
+
+                    if (tagElement.textContent.trim() !== '') {
+                        filterTagDiv.classList.add('opened');
+                    } else {
+                        filterTagDiv.classList.remove('opened');
+                    }
+                    updateRemoveAllTag();
+                }
+
+                function updateRemoveAllTag() {
+                    const removeAllTag = document.querySelector('.filter_tags_remove_all');
+                    const filterTags = document.querySelectorAll('.filter_tags b');
+                    let anyTagNotEmpty = false;
+
+                    filterTags.forEach(tag => {
+                        if (tag.textContent.trim() !== '') {
+                            anyTagNotEmpty = true;
+                        }
+                    });
+
+                    if (anyTagNotEmpty) {
+                        removeAllTag.classList.add('opened');
+                    } else {
+                        removeAllTag.classList.remove('opened');
+                    }
+                }
+
+                function submitFormWithAjax() {
+                    var form = $('#filterForm')[0]; // Lấy form theo id
+                    $.ajax({
+                        type: form.getAttribute("method"),
+                        url: form.getAttribute("action"),
+                        data: $(form).serialize(),
+                        success: function (response) {
+                            // Tách response bằng dấu '|'
+                            var responses = response.split('|');
+                            if (responses.length === 2) {
+                                var htmlResponse = responses[0];
+                                var pagePagination = responses[1];
+                                console.log("Đây là product:" + htmlResponse);
+                                console.log("Đây là phân trang:" + pagePagination);
+                                // Cập nhật nội dung sản phẩm
+                                $("#product-container").html(htmlResponse);
+
+                                // Cập nhật nội dung phân trang
+                                $("#page-pagination").html(pagePagination);
+                            } else {
+                                console.error("Unexpected response format");
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error: " + error);
+                        }
+                    });
+                }
+
+
+                function clearFilter(inputSelector, tagId) {
+                    const inputs = document.querySelectorAll(inputSelector);
+                    const tagElement = document.getElementById(tagId);
+
+                    inputs.forEach(input => {
+                        input.checked = false;
+                    });
+
+                    tagElement.textContent = '';
+                    const filterTagDiv = tagElement.closest('.filter_tags');
+                    filterTagDiv.classList.remove('opened');
+
+                    updateRemoveAllTag();
+                    submitFormWithAjax();
+                }
+
+                // Add click event listeners to each filter tag remove button
+                document.querySelectorAll('.filter_tags_remove').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const filterType = this.dataset.filter;
+                        switch (filterType) {
+                            case 'category':
+                                clearFilter('input[name="category-filter"]', 'category-tag');
+                                break;
+                            case 'brand':
+                                clearFilter('input[name="brand-filter"]', 'brand-tag');
+                                break;
+                            case 'room':
+                                clearFilter('input[name="room-filter"]', 'room-tag');
+                                break;
+                            case 'price':
+                                clearFilter('input[name="price-filter"]', 'price-tag');
+                                break;
+                            case 'color':
+                                clearFilter('input[name="color-filter"]', 'color-tag');
+                                break;
+                        }
+                    });
+                });
+
+                // Update category tag
+                document.querySelectorAll('input[name="category-filter"]').forEach(input => {
+                    input.addEventListener('change', () => {
+                        updateTags('input[name="category-filter"]', 'category-tag', 'category-filter');
+                    });
+                });
+
+                // Update brand tag
+                document.querySelectorAll('input[name="brand-filter"]').forEach(input => {
+                    input.addEventListener('change', () => {
+                        updateTags('input[name="brand-filter"]', 'brand-tag', 'brand-filter');
+                    });
+                });
+
+                // Update room tag
+                document.querySelectorAll('input[name="room-filter"]').forEach(input => {
+                    input.addEventListener('change', () => {
+                        updateTags('input[name="room-filter"]', 'room-tag', 'room-filter');
+                    });
+                });
+
+                // Update price tag
+                document.querySelectorAll('input[name="price-filter"]').forEach(input => {
+                    input.addEventListener('change', () => {
+                        updateTags('input[name="price-filter"]', 'price-tag', 'price-filter');
+                    });
+                });
+
+                // Update color tag
+                document.querySelectorAll('input[name="color-filter"]').forEach(input => {
+                    input.addEventListener('change', () => {
+                        updateTags('input[name="color-filter"]', 'color-tag', 'color-filter');
+                    });
+                });
+
+                // Initial update to set the state based on pre-selected filters
+                updateTags('input[name="category-filter"]', 'category-tag', 'category-filter');
+                updateTags('input[name="brand-filter"]', 'brand-tag', 'brand-filter');
+                updateTags('input[name="room-filter"]', 'room-tag', 'room-filter');
+                updateTags('input[name="price-filter"]', 'price-tag', 'price-filter');
+                updateTags('input[name="color-filter"]', 'color-tag', 'color-filter');
+            });
+
+            $(document).ready(function () {
+                $('.page-node').click(function (event) {
+                    event.preventDefault(); // Ngăn chặn hành động mặc định của liên kết
+
+                    var pageValue = $(this).text();
+                    $("input[name='page'][value='" + pageValue + "']").prop('checked', true);
+
+                    submitFormWithAjax();
+                });
+
+                function submitFormWithAjax() {
+                    var form = $('#paginationForm')[0]; // Lấy form theo id
+
+                    $.ajax({
+                        type: form.getAttribute("method"),
+                        url: form.getAttribute("action"),
+                        data: $(form).serialize(),
+                        success: function (response) {
+                            $("#product-container").html(response); // Cập nhật nội dung sản phẩm
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error: " + error);
+                        }
+                    });
+                }
+            });
+
         </script>
         <!-- Bootstrap JS and dependencies -->
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
         <style>

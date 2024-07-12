@@ -160,7 +160,7 @@
             </div>
             <c:set var="customer" value="${requestScope.customer}"/>
 
-            <div style="border: solid 2px black">
+            <div>
                 <div >
 
                     <div id="feedback-all"  style="display: block;">
@@ -168,7 +168,7 @@
                             <c:forEach items="${requestScope.userList}" var="user">
                                 <c:if test="${feedbackProduct.customer_id == user.id}">
                                     <div>
-                                        <div style="margin: 10px; border: solid; border-radius: 10px;">
+                                        <div style="margin: 10px; border: groove; border-radius: 10px;">
                                             <div style="margin: 10px">
                                                 <div class="d-flex" style="justify-content: space-between">
                                                     <b style="font-size: 15px">${user.fullname}</b>

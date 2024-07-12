@@ -53,9 +53,10 @@ public class RoomDAO extends DBContext {
 
     // Phương thức insertRoom
     public boolean insertRoom(Room room) {
-        String sql = "INSERT INTO room (roomname) VALUES (?)";
+        String sql = "INSERT INTO room (roomname, status) VALUES (?, ?)";
         try (PreparedStatement pstmt = connect.prepareStatement(sql)) {
             pstmt.setString(1, room.getRoomname());
+            pstmt.setString(2, room.getStatus());
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
         } catch (Exception ex) {

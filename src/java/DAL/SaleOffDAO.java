@@ -71,14 +71,13 @@ public class SaleOffDAO extends DBContext {
 
     // Phương thức updateSaleOff
     public boolean updateSaleOff(SaleOff saleOff) {
-        String sql = "UPDATE SaleOff SET product_id = ?, value = ? WHERE id = ?";
+        String sql = "UPDATE SaleOff SET value = ? WHERE id = ?";
 
         try (
             PreparedStatement pstmt = connect.prepareStatement(sql)
         ) {
-            pstmt.setInt(1, saleOff.getProduct_id());
-            pstmt.setInt(2, saleOff.getSaleoffvalue());
-            pstmt.setInt(3, saleOff.getId());
+            pstmt.setInt(1, saleOff.getSaleoffvalue());
+            pstmt.setInt(2, saleOff.getId());
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
         } catch (Exception ex) {

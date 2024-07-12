@@ -92,6 +92,7 @@
                 position: absolute;
                 z-index: 1000;
                 box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+                margin-left: -40px
             }
         </style>
     </head>
@@ -123,9 +124,9 @@
                         <div class="header-upper-search-top hidden-xs hidden-sm">
                             <div class="header-search">
                                 <div class="search-box wpo-wrapper-search">
-                                    <form action="${pageContext.request.contextPath}/ProductServlet" class="searchform searchform-categoris ultimate-search" method="post">
+                                    <form action="${pageContext.request.contextPath}/ProductSearchServlet" class="searchform searchform-categoris ultimate-search" method="get">
                                         <div class="wpo-search-inner">
-                                            <input type="hidden" name="type" value="product" />
+                                            <input type="hidden" name="action" value="search" />
                                             <input required id="inputSearchAuto" name="search" maxlength="40" autocomplete="off"
                                                    class="searchinput input-search search-input" type="text" size="20"
                                                    placeholder="Tìm kiếm sản phẩm...">
@@ -184,39 +185,39 @@
                                                 fill="#ffffff"></path>
                                             </svg>
                                         </span>
-                                        <div class="site-nav-container">
-                                            <p class="titlebox">Tìm kiếm</p>
-                                            <div class="wpo-wrapper-search">
-                                                <form action="${pageContext.request.contextPath}/ProductServlet" method="post"
-                                                      class="searchform searchform-categoris ultimate-search">
-                                                    <div class="wpo-search-inner">
-                                                        <input type="hidden" name="type" value="product" />
-                                                        <input required id="inputSearchAuto-dk" name="search" maxlength="40"
-                                                               autocomplete="off" class="searchinput input-search search-input"
-                                                               type="text" size="20" placeholder="Tìm kiếm sản phẩm...">
-                                                    </div>
-                                                    <button type="submit" title="Tìm kiếm" class="btn-search"
-                                                            id="search-header-btn-dk">
-                                                        <svg version="1.1" class="svg search"
-                                                             xmlns="http://www.w3.org/2000/svg"
-                                                             xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                                                             viewBox="0 0 24 27" style="enable-background:new 0 0 24 27;"
-                                                             xml:space="preserve">
-                                                        <path
-                                                            d="M10,2C4.5,2,0,6.5,0,12s4.5,10,10,10s10-4.5,10-10S15.5,2,10,2z M10,19c-3.9,0-7-3.1-7-7s3.1-7,7-7s7,3.1,7,7S13.9,19,10,19z">
-                                                        </path>
-                                                        <rect x="17" y="17"
-                                                              transform="matrix(0.7071 -0.7071 0.7071 0.7071 -9.2844 19.5856)"
-                                                              width="4" height="8"></rect>
-                                                        </svg>
-                                                    </button>
-                                                </form>
-                                                <div id="ajaxSearchResults-dk"
-                                                     class="smart-search-wrapper ajaxSearchResults" style="display: none">
-                                                    <div class="resultsContent"></div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <!--                                        <div class="site-nav-container">
+                                                                                    <p class="titlebox">Tìm kiếm</p>
+                                                                                    <div class="wpo-wrapper-search">
+                                                                                        <form action="${pageContext.request.contextPath}/ProductServlet" method="post"
+                                                                                              class="searchform searchform-categoris ultimate-search">
+                                                                                            <div class="wpo-search-inner">
+                                                                                                <input type="hidden" name="type" value="product" />
+                                                                                                <input required id="inputSearchAuto-dk" name="search" maxlength="40"
+                                                                                                       autocomplete="off" class="searchinput input-search search-input"
+                                                                                                       type="text" size="20" placeholder="Tìm kiếm sản phẩm...">
+                                                                                            </div>
+                                                                                            <button type="submit" title="Tìm kiếm" class="btn-search"
+                                                                                                    id="search-header-btn-dk">
+                                                                                                <svg version="1.1" class="svg search"
+                                                                                                     xmlns="http://www.w3.org/2000/svg"
+                                                                                                     xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                                                                                     viewBox="0 0 24 27" style="enable-background:new 0 0 24 27;"
+                                                                                                     xml:space="preserve">
+                                                                                                <path
+                                                                                                    d="M10,2C4.5,2,0,6.5,0,12s4.5,10,10,10s10-4.5,10-10S15.5,2,10,2z M10,19c-3.9,0-7-3.1-7-7s3.1-7,7-7s7,3.1,7,7S13.9,19,10,19z">
+                                                                                                </path>
+                                                                                                <rect x="17" y="17"
+                                                                                                      transform="matrix(0.7071 -0.7071 0.7071 0.7071 -9.2844 19.5856)"
+                                                                                                      width="4" height="8"></rect>
+                                                                                                </svg>
+                                                                                            </button>
+                                                                                        </form>
+                                                                                        <div id="ajaxSearchResults-dk"
+                                                                                             class="smart-search-wrapper ajaxSearchResults" style="display: none">
+                                                                                            <div class="resultsContent"></div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>-->
                                     </div>
                                 </div>
 
@@ -305,7 +306,7 @@
                                             <%@ include file="ResetPassword.jsp" %>
                                             <%@ include file="Register.jsp" %>
                                             <%@ include file="Login.jsp" %>
-                                            
+
                                         </c:otherwise>
                                     </c:choose>
 
@@ -316,7 +317,7 @@
                                 <div class="wrapper-cart header-action">
                                     <c:choose>
                                         <c:when test="${sessionScope.customer != null}">
-                                             <%@ include file="CartDropDown.jsp" %>
+                                            <%@ include file="CartDropDown.jsp" %>
                                             <a class="header-action-toggle"  href="#" data-bs-toggle="dropdown" aria-expanded="false" id="site-cart-handle" aria-label="3 Giỏ hàng">
                                                 <span class="box-icon">
                                                     <svg class="svg-ico-cart" enable-background="new 0 0 512 512" height="512"
@@ -340,7 +341,7 @@
                                                 </span>
                                                 <span class="icon-box-text">Giỏ hàng</span>
                                             </a>
-                                                   
+
                                         </c:when>
                                         <c:otherwise>
                                             <a class="header-action-toggle" href="#"  onclick="showlogin()" id="site-cart-handle-sucess" aria-label="3 Giỏ hàng">
@@ -417,7 +418,7 @@
 
                                     </li>
                                     <li class="has-submenu  levl-1">
-                                        <a href="${pageContext.request.contextPath}/ProductServlet?reload=yes" title="Sản Phẩm">
+                                        <a href="${pageContext.request.contextPath}/ProductServlet" title="Sản Phẩm">
                                             Sản Phẩm
 
                                             <label class="menu__label">NEW</label>
@@ -565,7 +566,7 @@
                     // Hide the other div
                     hideDiv.style.display = 'none';
                 }
-                function showlogin(){
+                function showlogin() {
                     var box1 = document.getElementById('box1');
                     box1.style.display = 'block';
                 }
@@ -588,9 +589,54 @@
                     }
                 });
             });
+
+            $(document).ready(function () {
+                var searchInput = $('#inputSearchAuto');
+                var searchForm = $('.searchform');
+                var resultsWrapper = $('#ajaxSearchResults');
+                var resultsContent = $('.resultsContent');
+                var typingTimer; // Timer identifier
+                var doneTypingInterval = 500; // Time in ms (500 ms)
+
+                // Function to handle the AJAX request
+                function submitSearch() {
+                    var searchData = searchInput.val().trim(); // Lấy giá trị của input và loại bỏ khoảng trắng đầu cuối
+
+                    // Kiểm tra nếu có giá trị trong input search
+                    if (searchData !== '') {
+                        $.ajax({
+                            type: 'POST', // Sử dụng phương thức POST
+                            url: searchForm.attr('action'), // Lấy địa chỉ URL từ thuộc tính action của form
+                            data: searchForm.serialize(), // Dữ liệu gửi đi là dữ liệu từ form đã được serialize
+                            success: function (response) {
+                                resultsWrapper.css('display', 'block'); // Hiển thị div lớn
+                                resultsContent.html(response); // Gán giá trị response vào resultContent
+                            },
+                            error: function (xhr, status, error) {
+                                console.error("Error: " + error);
+                            }
+                        });
+                    } else {
+                        resultsWrapper.css('display', 'none'); // Ẩn kết quả khi không có giá trị trong input
+                    }
+                }
+
+                // Bắt sự kiện khi thay đổi giá trị của input tìm kiếm
+                searchInput.on('input', function () {
+                    clearTimeout(typingTimer); // Clear the previous timer
+                    typingTimer = setTimeout(submitSearch, doneTypingInterval); // Set a new timer
+                });
+
+                // Bắt sự kiện khi click submit form
+                $('.btn-search').on('click', function () {
+                    resultsWrapper.css('display', 'none'); // Ẩn kết quả khi click vào nút tìm kiếm
+                });
+            });
+
+
         </script>
         <!-- Bootstrap JS and dependencies -->
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 

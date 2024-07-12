@@ -50,10 +50,11 @@ public class ColorDAO extends DBContext {
     }
 
     public boolean insertColor(Color color) {
-        String sql = "INSERT INTO color (colorname, colorcode) VALUES (?, ?)";
+        String sql = "INSERT INTO color (colorname, colorcode, status) VALUES (?, ?, ?)";
         try (PreparedStatement pstmt = connect.prepareStatement(sql)) {
             pstmt.setString(1, color.getColorname());
             pstmt.setString(2, color.getColorcode());
+            pstmt.setString(3, color.getStatus());
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
         } catch (Exception ex) {

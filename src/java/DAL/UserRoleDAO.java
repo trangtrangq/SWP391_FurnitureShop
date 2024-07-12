@@ -67,9 +67,27 @@ public class UserRoleDAO extends DBContext {
             return false;
         }
     }
+    
+    public boolean addNewUserRole(UserRole u){
+        String sql = """
+                     INSERT INTO userrole
+                     (`rolename`,
+                     `status`) VALUES (?, ?)""";
+        try(PreparedStatement ptsm = connect.prepareStatement(sql)) {
+            ptsm.setString(1, u.getRolename());
+            ptsm.setString(2, u.getStatus());
+            
+            int rowsAffected = ptsm.executeUpdate();
+            return rowsAffected > 0;
+        } catch (Exception e) {
+            return false;
+        }
+        
+    }
 
     public static void main(String[] args) {
         UserRoleDAO userRoleDAO = new UserRoleDAO();
-        userRoleDAO.changeStatus(1, "Active");
+        UserRole u = new UserRole("HI");
+        userRoleDAO.addNewUserRole(u);
     }
 }

@@ -98,6 +98,35 @@ public class CategoryOfPostDAO extends DBContext {
             Logger.getLogger(CategoryOfPostDAO.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
-
+    }
+    
+    public boolean inserCOP(CategoryOfPost categoryOfPost) {
+        String sql = """
+                     INSERT INTO `furniture`.`categoryofpost`
+                     (`category`, `status`)
+                     VALUES
+                     (?, ?);""";
+        try (PreparedStatement statement = connect.prepareStatement(sql)) {
+            statement.setString(1, categoryOfPost.getCategory());
+            statement.setString(2, categoryOfPost.getStatus());
+            int affectedRows = statement.executeUpdate();
+            return affectedRows > 0;
+        } catch (Exception ex) {
+            Logger.getLogger(CategoryOfPostDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+    }
+    
+    public boolean updateCOP(CategoryOfPost categoryOfPost){
+        String sql = "UPDATE categoryofpost SET category = ? WHERE id = ?";
+        try (PreparedStatement statement = connect.prepareStatement(sql)) {
+            statement.setString(1, categoryOfPost.getCategory());
+            statement.setInt(2, categoryOfPost.getId());
+            int affectedRows = statement.executeUpdate();
+            return affectedRows > 0;
+        } catch (Exception ex) {
+            Logger.getLogger(CategoryOfPostDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
     }
 }

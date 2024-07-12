@@ -78,6 +78,32 @@
             input:checked + .slider:after {
                 transform: translateX(56px);
             }
+
+            .edit-icon {
+                cursor: pointer;
+                color: #007bff;
+                font-size: 22px;
+            }
+            .edit-icon:hover {
+                color: #0056b3;
+            }
+            .save-icon, .cancel-icon {
+                cursor: pointer;
+                color: #28a745; /* Green for save */
+                font-size: 25px;
+            }
+            .cancel-icon {
+                color: #dc3545; /* Red for cancel */
+            }
+            .save-icon:hover {
+                color: #218838;
+            }
+            .cancel-icon:hover {
+                color: #c82333;
+            }
+            .hidden-form {
+                display: none;
+            }
         </style>
     </head>
     <body>
@@ -243,21 +269,22 @@
                             <!-- Tab content -->
                             <div class="tab-content col-md-10">
                                 <div id="userRole" class="tab-pane fade show active">
-                                    <h3>User Role</h3>
+                                    <div style="display: flex; justify-content: space-between">
+                                        <div><h3>User Role</h3></div>
+                                        <div><button class="btn btn-primary" type="button" data-toggle="modal" data-target="#addNewUserRoleModal">Add new +</button></div>
+                                    </div>
                                     <div style="border: groove">
                                         <table class="table">
                                             <thead>
                                             <th>ID</th>
                                             <th>Role Name</th>
                                             <th>Status</th>
-                                            <th>Action</th>
                                             </thead>
                                             <tbody>
                                                 <c:forEach items="${requestScope.userRoleList}" var="userRole">
                                                     <tr>
                                                         <td>${userRole.id}</td>
                                                         <td>${userRole.rolename}</td>
-                                                        <td class="status">${userRole.status}</td>
                                                         <td><form class="statusFormUserRole statusForm" action="SettingServlet" method="post">
                                                                 <input type="hidden" name="action" value="changeStatusUserRole">
                                                                 <input type="hidden" name="userRoleID" value="${userRole.id}">
@@ -275,7 +302,10 @@
                                     </div>
                                 </div>
                                 <div id="category" class="tab-pane fade">
-                                    <h3>Category</h3>
+                                    <div style="display: flex; justify-content: space-between">
+                                        <div><h3>Category</h3></div>
+                                        <div><button class="btn btn-primary" type="button" data-toggle="modal" data-target="#addNewCategoryModal">Add new +</button></div>
+                                    </div>
                                     <div style="border: groove">
                                         <table class="table">
                                             <thead>
@@ -288,8 +318,16 @@
                                                 <c:forEach items="${requestScope.categoryList}" var="category">
                                                     <tr>
                                                         <td>${category.id}</td>
-                                                        <td>${category.category}</td>
-                                                        <td class="status">${category.status}</td>
+                                                        <td class="edit">
+                                                            <div class="category-name">${category.category}</div>
+                                                            <div class="hidden-form">
+                                                                <form action="SettingServlet" method="POST" class="category-form">
+                                                                    <input type="hidden" name="action" value="editCategory"/>
+                                                                    <input type="hidden" name="categoryID" value="${category.id}"/>
+                                                                    <input type="text" name="categoryName" value="${category.category}" style="width: 150px"/>
+                                                                </form>
+                                                            </div>
+                                                        </td>
                                                         <td><form class="statusFormCategory statusForm" action="SettingServlet" method="post">
                                                                 <input type="hidden" name="action" value="changeStatusCategory">
                                                                 <input type="hidden" name="categoryID" value="${category.id}">
@@ -300,6 +338,17 @@
                                                                     </label>
                                                                 </form>
                                                             </td>
+                                                            <td>
+                                                                <button class="btn edit-category-btn">
+                                                                    <i class="fas fa-edit edit-icon"></i>
+                                                                </button>
+                                                                <button class="btn save-category-btn" style="display: none;">
+                                                                    <i class="fas fa-save save-icon"></i>
+                                                                </button>
+                                                                <button class="btn cancel-category-btn" style="display: none;">
+                                                                    <i class="fas fa-times cancel-icon"></i>
+                                                                </button>
+                                                            </td>
                                                         </tr>
                                                 </c:forEach>
 
@@ -308,7 +357,10 @@
                                     </div>
                                 </div>
                                 <div id="brand" class="tab-pane fade">
-                                    <h3>Brand</h3>
+                                    <div style="display: flex; justify-content: space-between">
+                                        <div><h3>Brand</h3></div>
+                                        <div><button class="btn btn-primary" type="button" data-toggle="modal" data-target="#addNewBrandModal">Add new +</button></div>
+                                    </div>
                                     <div style="border: groove">
                                         <table class="table">
                                             <thead>
@@ -321,8 +373,16 @@
                                                 <c:forEach items="${requestScope.brandList}" var="brand">
                                                     <tr>
                                                         <td>${brand.id}</td>
-                                                        <td>${brand.brandname}</td>
-                                                        <td class="status">${brand.status}</td>
+                                                        <td class="edit">
+                                                            <div class="brand-name">${brand.brandname}</div>
+                                                            <div class="hidden-form">
+                                                                <form action="SettingServlet" method="POST" class="brand-form">
+                                                                    <input type="hidden" name="action" value="editBrand"/>
+                                                                    <input type="hidden" name="brandID" value="${brand.id}"/>
+                                                                    <input type="text" name="brandName" value="${brand.brandname}" style="width: 100px"/>
+                                                                </form>
+                                                            </div>
+                                                        </td>
                                                         <td>
                                                             <form class="statusFormBrand statusForm" action="SettingServlet" method="post">
                                                                 <input type="hidden" name="action" value="changeStatusBrand">
@@ -334,6 +394,17 @@
                                                                     </label>
                                                                 </form>
                                                             </td>
+                                                            <td>
+                                                                <button class="btn edit-brand-btn">
+                                                                    <i class="fas fa-edit edit-icon"></i>
+                                                                </button>
+                                                                <button class="btn save-brand-btn" style="display: none;">
+                                                                    <i class="fas fa-save save-icon"></i>
+                                                                </button>
+                                                                <button class="btn cancel-brand-btn" style="display: none;">
+                                                                    <i class="fas fa-times cancel-icon"></i>
+                                                                </button>
+                                                            </td>
                                                         </tr>
                                                 </c:forEach>
                                             </tbody>
@@ -341,7 +412,10 @@
                                     </div>
                                 </div>
                                 <div id="room" class="tab-pane fade">
-                                    <h3>Room</h3>
+                                    <div style="display: flex; justify-content: space-between">
+                                        <div><h3>Room</h3></div>
+                                        <div><button class="btn btn-primary" type="button" data-toggle="modal" data-target="#addNewRoomModal">Add new +</button></div>
+                                    </div>
                                     <div style="border: groove">
                                         <table class="table">
                                             <thead>
@@ -354,8 +428,16 @@
                                                 <c:forEach items="${requestScope.roomList}" var="room">
                                                     <tr>
                                                         <td>${room.id}</td>
-                                                        <td>${room.roomname}</td>
-                                                        <td class="status">${room.status}</td>
+                                                        <td class="edit">
+                                                            <div class="room-name">${room.roomname}</div>
+                                                            <div class="hidden-form">
+                                                                <form action="SettingServlet" method="POST" class="room-form">
+                                                                    <input type="hidden" name="action" value="editRoom"/>
+                                                                    <input type="hidden" name="roomID" value="${room.id}"/>
+                                                                    <input type="text" name="roomName" value="${room.roomname}" style="width: 150px"/>
+                                                                </form>
+                                                            </div>
+                                                        </td>
                                                         <td><form class="statusFormRoom statusForm" action="SettingServlet" method="post">
                                                                 <input type="hidden" name="action" value="changeStatusRoom">
                                                                 <input type="hidden" name="roomID" value="${room.id}">
@@ -364,7 +446,19 @@
                                                                     <input type="checkbox" name="status" value="${room.status}" <c:if test="${room.status == 'Active'}">checked</c:if> >
                                                                         <span class="slider"></span>
                                                                     </label>
-                                                                </form></td>
+                                                                </form>
+                                                            </td>
+                                                            <td>
+                                                                <button class="btn edit-room-btn">
+                                                                    <i class="fas fa-edit edit-icon"></i>
+                                                                </button>
+                                                                <button class="btn save-room-btn" style="display: none;">
+                                                                    <i class="fas fa-save save-icon"></i>
+                                                                </button>
+                                                                <button class="btn cancel-room-btn" style="display: none;">
+                                                                    <i class="fas fa-times cancel-icon"></i>
+                                                                </button>
+                                                            </td>
                                                         </tr>
                                                 </c:forEach>
                                             </tbody>
@@ -372,7 +466,10 @@
                                     </div>
                                 </div>
                                 <div id="color" class="tab-pane fade">
-                                    <h3>Color</h3>
+                                    <div style="display: flex; justify-content: space-between">
+                                        <div><h3>Color</h3></div>
+                                        <div><button class="btn btn-primary" type="button" data-toggle="modal" data-target="#addNewColorModal">Add new +</button></div>
+                                    </div>
                                     <div style="border: groove">
                                         <table class="table">
                                             <thead>
@@ -386,9 +483,25 @@
                                                 <c:forEach items="${requestScope.colorList}" var="color">
                                                     <tr>
                                                         <td>${color.id}</td>
-                                                        <td>${color.colorname}</td>
-                                                        <td class="d-flex"><div style="width: 20px; height: 20px; background-color: ${color.colorcode}"></div> ${color.colorcode}</td>
-                                                        <td class="status">${color.status}</td>
+                                                        <td class="edit">
+                                                            <div class="color-name">${color.colorname}</div>
+                                                            <div class="hidden-form">
+                                                                <form action="SettingServlet" method="POST" class="color-form">
+                                                                    <input type="hidden" name="action" value="editColor"/>
+                                                                    <input type="hidden" name="colorID" value="${color.id}"/>
+                                                                    <input type="text" name="colorName" value="${color.colorname}" style="width: 150px"/>
+                                                                </form>
+                                                            </div>
+                                                        </td>
+                                                        <td class="edit" style="display: flex; align-items: center">
+                                                            <div style="width: 37px; height: 37px; background-color: ${color.colorcode}"></div>
+                                                            <div class="color-code">${color.colorcode}</div>
+                                                            <div class="hidden-form">
+                                                                <form action="SettingServlet" method="POST" class="color-form">
+                                                                    <input type="color" name="colorCode" value="${color.colorcode}" style="width: 37px; height: 37px" />
+                                                                </form>
+                                                            </div>
+                                                        </td>
                                                         <td><form class="statusFormColor statusForm" action="SettingServlet" method="post">
                                                                 <input type="hidden" name="action" value="changeStatusColor">
                                                                 <input type="hidden" name="colorID" value="${color.id}">
@@ -398,6 +511,17 @@
                                                                         <span class="slider"></span>
                                                                     </label>
                                                                 </form></td>
+                                                            <td>
+                                                                <button class="btn edit-color-btn">
+                                                                    <i class="fas fa-edit edit-icon"></i>
+                                                                </button>
+                                                                <button class="btn save-color-btn" style="display: none;">
+                                                                    <i class="fas fa-save save-icon"></i>
+                                                                </button>
+                                                                <button class="btn cancel-color-btn" style="display: none;">
+                                                                    <i class="fas fa-times cancel-icon"></i>
+                                                                </button>
+                                                            </td>
                                                         </tr>
                                                 </c:forEach>
                                             </tbody>
@@ -405,7 +529,10 @@
                                     </div>
                                 </div>
                                 <div id="saleOff" class="tab-pane fade">
-                                    <h3>Sale Off</h3>
+                                    <div style="display: flex; justify-content: space-between">
+                                        <div><h3>Sale Off</h3></div>
+                                        <div><button class="btn btn-primary" type="button" data-toggle="modal" data-target="#addNewSaleOffModal">Add new +</button></div>
+                                    </div>
                                     <div style="border: groove">
                                         <table class="table">
                                             <thead>
@@ -423,11 +550,19 @@
                                                         <c:forEach items="${requestScope.productList}" var="product">
                                                             <c:if test="${product.id == saleOff.product_id}">
                                                                 <td>${product.id}</td>
-                                                                <td class="d-flex"><div><img src="image/product/${product.image}" width="30px" height="30px" alt="alt"/></div> <div style="word-wrap: break-word;">${product.name}</div></td>
+                                                                <td style="display: flex; align-items: center"><div><img src="image/product/${product.image}" width="37px" height="37px" alt="alt"/></div><div style="word-wrap: break-word;">${product.name}</div></td>
                                                                     </c:if>
                                                                 </c:forEach>
-                                                        <td>${saleOff.getSaleoffvalue()} %</td>
-                                                        <td class="status">${saleOff.status}</td>
+                                                        <td class="edit">
+                                                            <div class="saleOff-value">${saleOff.getSaleoffvalue()}</div>
+                                                            <div class="hidden-form">
+                                                                <form action="SettingServlet" method="POST" class="saleOff-form">
+                                                                    <input type="hidden" name="action" value="editSaleOff"/>
+                                                                    <input type="hidden" name="saleOffID" value="${saleOff.id}"/>
+                                                                    <input type="text" name="saleOffValue" value="${saleOff.getSaleoffvalue()}" style="width: 50px"/>
+                                                                </form>
+                                                            </div>
+                                                        </td>
                                                         <td><form class="statusFormSaleOff statusForm" action="SettingServlet" method="post">
                                                                 <input type="hidden" name="action" value="changeStatusSaleOff">
                                                                 <input type="hidden" name="saleOffID" value="${saleOff.id}">
@@ -437,6 +572,17 @@
                                                                         <span class="slider"></span>
                                                                     </label>
                                                                 </form></td>
+                                                            <td>
+                                                                <button class="btn edit-saleOff-btn">
+                                                                    <i class="fas fa-edit edit-icon"></i>
+                                                                </button>
+                                                                <button class="btn save-saleOff-btn" style="display: none;">
+                                                                    <i class="fas fa-save save-icon"></i>
+                                                                </button>
+                                                                <button class="btn cancel-saleOff-btn" style="display: none;">
+                                                                    <i class="fas fa-times cancel-icon"></i>
+                                                                </button>
+                                                            </td>
                                                         </tr>
                                                 </c:forEach>
                                             </tbody>
@@ -444,7 +590,10 @@
                                     </div>
                                 </div>
                                 <div id="categoryOfPost" class="tab-pane fade">
-                                    <h3>Category of Post</h3>
+                                    <div style="display: flex; justify-content: space-between">
+                                        <div><h3>Category Of Post</h3></div>
+                                        <div><button class="btn btn-primary" type="button" data-toggle="modal" data-target="#addNewCategoryOfPostModal">Add new +</button></div>
+                                    </div>
                                     <div style="border: groove">
                                         <table class="table">
                                             <thead>
@@ -457,8 +606,16 @@
                                                 <c:forEach items="${requestScope.categoryOfPostList}" var="categoryOfPost">
                                                     <tr>
                                                         <td>${categoryOfPost.id}</td>
-                                                        <td>${categoryOfPost.category}</td>
-                                                        <td class="status">${categoryOfPost.status}</td>
+                                                        <td class="edit">
+                                                            <div class="categoryOfPost-name">${categoryOfPost.category}</div>
+                                                            <div class="hidden-form">
+                                                                <form action="SettingServlet" method="POST" class="room-form">
+                                                                    <input type="hidden" name="action" value="editcategoryOfPost"/>
+                                                                    <input type="hidden" name="categoryOfPostID" value="${categoryOfPost.id}"/>
+                                                                    <input type="text" name="categoryOfPostName" value="${categoryOfPost.category}" style="width: 100px"/>
+                                                                </form>
+                                                            </div>
+                                                        </td>
                                                         <td><form class="statusFormCategoryOfPost statusForm" action="SettingServlet" method="post">
                                                                 <input type="hidden" name="action" value="changeStatusCategoryOfPost">
                                                                 <input type="hidden" name="categoryOfPostID" value="${categoryOfPost.id}">
@@ -468,6 +625,17 @@
                                                                         <span class="slider"></span>
                                                                     </label>
                                                                 </form></td>
+                                                            <td>
+                                                                <button class="btn edit-categoryOfPost-btn">
+                                                                    <i class="fas fa-edit edit-icon"></i>
+                                                                </button>
+                                                                <button class="btn save-categoryOfPost-btn" style="display: none;">
+                                                                    <i class="fas fa-save save-icon"></i>
+                                                                </button>
+                                                                <button class="btn cancel-categoryOfPost-btn" style="display: none;">
+                                                                    <i class="fas fa-times cancel-icon"></i>
+                                                                </button>
+                                                            </td>
                                                         </tr>
                                                 </c:forEach>
                                             </tbody>
@@ -478,6 +646,213 @@
                         </div>
                     </div>
                 </main>
+            </div>
+        </div>
+
+        <!--Modal Add new User Role-->                            
+        <div class="modal fade" id="addNewUserRoleModal" tabindex="-1" aria-labelledby="addNewUserRoleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="addNewUserRoleModalLabel">Add new User Role</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h4>Information</h4>
+                        <form action="SettingServlet" method="post">
+                            <input type="hidden" name="action" value="addNewUserRole">
+                            <div class="form-group d-flex">
+                                <label for="content" style="width: 30%">User Role Name:</label>
+                                <input id="content" class="form-control" name="userRoleName" required/>
+                            </div>
+                            <div style="display: flex; justify-content: center; margin: 20px 0px 0px">
+                                <button type="submit" class="btn btn-primary">Add</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Modal Add new Category-->                            
+        <div class="modal fade" id="addNewCategoryModal" tabindex="-1" aria-labelledby="addNewCategoryModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="addNewCategoryModalLabel">Add new Category</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h4>Information</h4>
+                        <form action="SettingServlet" method="post">
+                            <input type="hidden" name="action" value="addNewCategory">
+                            <div class="form-group d-flex">
+                                <label for="content" style="width: 30%">Category Name:</label>
+                                <input id="content" class="form-control" name="categoryName" required/>
+                            </div>
+                            <div style="display: flex; justify-content: center; margin: 20px 0px 0px">
+                                <button type="submit" class="btn btn-primary">Add</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Modal Add new Brand-->                            
+        <div class="modal fade" id="addNewBrandModal" tabindex="-1" aria-labelledby="addNewBrandModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="addNewBrandModalLabel">Add new Brand</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h4>Information</h4>
+                        <form action="SettingServlet" method="post">
+                            <input type="hidden" name="action" value="addNewBrand">
+                            <div class="form-group d-flex">
+                                <label for="content" style="width: 30%">Brand Name:</label>
+                                <input id="content" class="form-control" name="brandName" required/>
+                            </div>
+                            <div style="display: flex; justify-content: center; margin: 20px 0px 0px">
+                                <button type="submit" class="btn btn-primary">Add</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Modal Add new Room-->                            
+        <div class="modal fade" id="addNewRoomModal" tabindex="-1" aria-labelledby="addNewRoomModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="addNewRoomModalLabel">Add new Room</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h4>Information</h4>
+                        <form action="SettingServlet" method="post">
+                            <input type="hidden" name="action" value="addNewRoom">
+                            <div class="form-group d-flex">
+                                <label for="content" style="width: 30%">Room Name:</label>
+                                <input id="content" class="form-control" name="roomName" required/>
+                            </div>
+                            <div style="display: flex; justify-content: center; margin: 20px 0px 0px">
+                                <button type="submit" class="btn btn-primary">Add</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Modal Add new Color-->                            
+        <div class="modal fade" id="addNewColorModal" tabindex="-1" aria-labelledby="addNewColorModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="addNewColorModalLabel">Add new Color</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h4>Information</h4>
+                        <form action="SettingServlet" method="post">
+                            <input type="hidden" name="action" value="addNewColor">
+                            <div class="form-group d-flex" style="margin-bottom: 10px">
+                                <label for="color-content" style="width: 30%">Color Name:</label>
+                                <input id="color-content" class="form-control" name="colorName" required/>
+                            </div>
+                            <div class="form-group row" style="justify-content: space-between">
+                                <div class="d-flex col-md-5">
+                                    <label for="code-content" style="width: 58%">Color Code:</label>
+                                    <input id="code-content" class="form-control" style="width:90px" name="colorCode" value="" required/>
+                                </div>
+                                <div class="d-flex col-md-5">
+                                    <label for="pickColor" style="width: 58%">Pick color: </label>
+                                    <input id="pickColor" type="color">
+                                </div>
+                            </div>
+                            <div style="display: flex; justify-content: center; margin: 20px 0px 0px">
+                                <button type="submit" class="btn btn-primary">Add</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Modal Add new Sale Off-->                            
+        <div class="modal fade" id="addNewSaleOffModal" tabindex="-1" aria-labelledby="addNewSaleOffModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="addNewSaleOffModalLabel">Add new Sale Off</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h4>Information</h4>
+                        <form action="SettingServlet" method="post">
+                            <input type="hidden" name="action" value="addNewSaleOff">
+                            <div class="form-group d-flex" style="margin-bottom: 10px">
+                                <label for="product" style="width: 30%">Product:</label>
+                                <select id="product" class="form-control" name="productID">
+                                    <c:forEach items="${requestScope.productList}" var="product">
+                                        <option value="${product.id}">${product.id}-${product.name}</option>
+                                    </c:forEach>
+                                </select>
+                            </div>
+                            <div class="form-group d-flex">
+                                <label for="content" style="width: 30%">Sale Off Value:</label>
+                                <input id="content" class="form-control" name="saleOfValue" required/>
+                            </div>
+                            <div style="display: flex; justify-content: center; margin: 20px 0px 0px">
+                                <button type="submit" class="btn btn-primary">Add</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Modal Add new Category Of Post-->                            
+        <div class="modal fade" id="addNewCategoryOfPostModal" tabindex="-1" aria-labelledby="addNewCategoryOfPostModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="addNewCategoryOfPostModalLabel">Add new Sale Off</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h4>Information</h4>
+                        <form action="SettingServlet" method="post">
+                            <input type="hidden" name="action" value="addNewCategoryOfPost">
+                            <div class="form-group d-flex">
+                                <label for="content" style="width: 50%">Category Of Post Name:</label>
+                                <input id="content" class="form-control" name="categoryOfPostName" required/>
+                            </div>
+                            <div style="display: flex; justify-content: center; margin: 20px 0px 0px">
+                                <button type="submit" class="btn btn-primary">Add</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -540,11 +915,11 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="new-content">New number of items</label>
-                                    <input id="new-content" name="itemsPerProductsList" class="form-control" style="height: 50px; font-size: 30px"/>
+                                    <input id="new-content" name="itemsPerProductsList" class="form-control" style="height: 50px; font-size: 30px" required/>
                                 </div>
                             </div>
                             <div style="display: flex; justify-content: center; margin: 20px 0px 0px">
-                               <button type="submit" class="btn btn-primary">Save</button>
+                                <button type="submit" class="btn btn-primary">Save</button>
                             </div>
 
                         </form>
@@ -576,7 +951,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="new-content">New number of items</label>
-                                    <input id="new-content" name="itemsPerFeedbacksList" class="form-control" style="height: 50px; font-size: 30px"/>
+                                    <input id="new-content" name="itemsPerFeedbacksList" class="form-control" style="height: 50px; font-size: 30px" required/>
                                 </div>
                             </div>
                             <div style="display: flex; justify-content: center; margin: 20px 0px 0px">
@@ -612,7 +987,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="new-content">New number of items</label>
-                                    <input id="new-content" name="itemsPerCustomersList" class="form-control" style="height: 50px; font-size: 30px"/>
+                                    <input id="new-content" name="itemsPerCustomersList" class="form-control" style="height: 50px; font-size: 30px" required/>
                                 </div>
                             </div>
                             <div style="display: flex; justify-content: center; margin: 20px 0px 0px">
@@ -648,7 +1023,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="new-content">New number of items</label>
-                                    <input id="new-content" name="itemsPerPostsList" class="form-control" style="height: 50px; font-size: 30px"/>
+                                    <input id="new-content" name="itemsPerPostsList" class="form-control" style="height: 50px; font-size: 30px" required/>
                                 </div>
                             </div>
                             <div style="display: flex; justify-content: center; margin: 20px 0px 0px">
@@ -684,7 +1059,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="new-content">New number of items</label>
-                                    <input id="new-content" name="itemsPerSlidersList" class="form-control" style="height: 50px; font-size: 30px"/>
+                                    <input id="new-content" name="itemsPerSlidersList" class="form-control" style="height: 50px; font-size: 30px" required/>
                                 </div>
                             </div>
                             <div style="display: flex; justify-content: center; margin: 20px 0px 0px">
@@ -720,7 +1095,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="new-content">New number of items</label>
-                                    <input id="new-content" name="itemsPerOrdersList" class="form-control" style="height: 50px; font-size: 30px"/>
+                                    <input id="new-content" name="itemsPerOrdersList" class="form-control" style="height: 50px; font-size: 30px" required/>
                                 </div>
                             </div>
                             <div style="display: flex; justify-content: center; margin: 20px 0px 0px">
@@ -756,7 +1131,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="new-content">New number of items</label>
-                                    <input id="new-content" name="itemsPerShoppingCartsList" class="form-control" style="height: 50px; font-size: 30px"/>
+                                    <input id="new-content" name="itemsPerShoppingCartsList" class="form-control" style="height: 50px; font-size: 30px" required/>
                                 </div>
                             </div>
                             <div style="display: flex; justify-content: center; margin: 20px 0px 0px">
@@ -771,6 +1146,11 @@
         <%@include file="DashboardFooter.jsp" %>   
         <script src="../js/app.js"></script>
         <script>
+
+            document.getElementById('pickColor').addEventListener('input', function () {
+                document.getElementById('code-content').value = this.value;
+            });
+
             $(document).ready(function () {
                 $('a[data-toggle="tab"]').on('click', function (e) {
                     e.preventDefault();
@@ -794,10 +1174,6 @@
                 checkbox.addEventListener('change', function () {
                     var newValue = this.checked ? 'Active' : 'Inactive';
                     this.closest('.statusForm').querySelector('input[name="statusChange"]').value = newValue;
-                    var tdElement = this.closest('tr').querySelector('.status'); // Tìm thẻ <td> chứa class 'status'
-                    if (tdElement) {
-                        tdElement.textContent = newValue;
-                    }
                     console.log('Giá trị đã cập nhật:', newValue);
                 });
             });
@@ -1005,66 +1381,476 @@
                     xhr.send(params);
                 });
             });
+//          edit category
+            document.addEventListener("DOMContentLoaded", function () {
+                document.querySelectorAll(".edit-category-btn").forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        let row = this.closest("tr");
+                        let xDiv = row.querySelector(".category-name");
+                        let formDiv = row.querySelector(".hidden-form");
+                        let editButton = row.querySelector(".edit-category-btn");
+                        let saveButton = row.querySelector(".save-category-btn");
+                        let cancelButton = row.querySelector(".cancel-category-btn");
 
-//            document.getElementById('submitHomeProductsListForm').addEventListener('click', function () {
-//                var form = document.getElementById('HomeProductsListItemsForm');
-//                var action = form.querySelector('input[name="action"]').value;
-//                var itemsPerHomeProductsList = form.querySelector('input[name="itemsPerHomeProductsList"]').value;
-//
-//                console.log(action);
-//                console.log(itemsPerHomeProductsList);
-//                // Gửi dữ liệu bằng Ajax
-//                var xhr = new XMLHttpRequest();
-//                xhr.open('POST', form.getAttribute('action'), true);
-//                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-//                xhr.onreadystatechange = function () {
-//                    if (xhr.readyState == 4) {
-//                        if (xhr.status == 200) {
-//                            console.log('Cập nhật số lượng sản phẩm thành công');
-//                        } else {
-//                            console.error('Đã xảy ra lỗi trong quá trình cập nhật số lượng sản phẩm');
-//                        }
-//                    }
-//                };
-//
-//                // Chuẩn bị dữ liệu gửi đi
-//                var params = 'action=' + encodeURIComponent(action) +
-//                        '&itemsPerHomeProductsList=' + encodeURIComponent(itemsPerHomeProductsList);
-//
-//                console.log(params);
-//                xhr.send(params);
-//            });
-//
-//            document.getElementById('submitProductsListForm').addEventListener('click', function () {
-//                var form = document.getElementById('ProductsListItemsForm');
-//                var action = form.querySelector('input[name="action"]').value;
-//                var itemsPerProductsList = form.querySelector('input[name="itemsPerProductsList"]').value;
-//
-//                console.log(action);
-//                console.log(itemsPerProductsList);
-//                // Gửi dữ liệu bằng Ajax
-//                var xhr = new XMLHttpRequest();
-//                xhr.open('POST', form.getAttribute('action'), true);
-//                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-//                xhr.onreadystatechange = function () {
-//                    if (xhr.readyState == 4) {
-//                        if (xhr.status == 200) {
-//                            console.log('Cập nhật số lượng sản phẩm thành công');
-//                        } else {
-//                            console.error('Đã xảy ra lỗi trong quá trình cập nhật số lượng sản phẩm');
-//                        }
-//                    }
-//                };
-//
-//                // Chuẩn bị dữ liệu gửi đi
-//                var params = 'action=' + encodeURIComponent(action) +
-//                        '&itemsPerProductsList=' + encodeURIComponent(itemsPerHomeProductsList);
-//
-//                console.log(params);
-//                xhr.send(params);
-//            });
+                        // Show the form and the save/cancel buttons, hide the edit button
+                        xDiv.style.display = "none";
+                        formDiv.style.display = "block";
+                        editButton.style.display = "none";
+                        saveButton.style.display = "inline-block";
+                        cancelButton.style.display = "inline-block";
+                    });
+                });
+
+                document.querySelectorAll(".save-category-btn").forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        let row = this.closest("tr");
+                        let xDiv = row.querySelector(".category-name");
+                        let form = row.querySelector(".hidden-form form");
+                        let formDiv = row.querySelector(".hidden-form");
+                        let editButton = row.querySelector(".edit-category-btn");
+                        let saveButton = row.querySelector(".save-category-btn");
+                        let cancelButton = row.querySelector(".cancel-category-btn");
+                        $.ajax({
+                            type: form.getAttribute("method"),
+                            url: form.getAttribute("action"),
+                            data: $(form).serialize(),
+                            success: function (response) {
+                                // Update new value
+                                let newValue = form.querySelector("input[name='categoryName']").value;
+                                xDiv.textContent = newValue;
+
+                                // Hide the form and the save/cancel buttons, show the edit button
+                                xDiv.style.display = "block";
+                                formDiv.style.display = "none";
+                                editButton.style.display = "inline-block";
+                                saveButton.style.display = "none";
+                                cancelButton.style.display = "none";
+                            },
+                            error: function () {
+                                alert("Error updating category name.");
+                            }
+                        });
+                    });
+                });
+
+                document.querySelectorAll(".cancel-category-btn").forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        let row = this.closest("tr");
+                        let xDiv = row.querySelector(".category-name");
+                        let formDiv = row.querySelector(".hidden-form");
+                        let editButton = row.querySelector(".edit-category-btn");
+                        let saveButton = row.querySelector(".save-category-btn");
+                        let cancelButton = row.querySelector(".cancel-category-btn");
+
+                        // Hide the form and the save/cancel buttons, show the edit button
+                        xDiv.style.display = "block";
+                        formDiv.style.display = "none";
+                        editButton.style.display = "inline-block";
+                        saveButton.style.display = "none";
+                        cancelButton.style.display = "none";
+                    });
+                });
+            });
+//          edit brand
+            document.addEventListener("DOMContentLoaded", function () {
+                document.querySelectorAll(".edit-brand-btn").forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        let row = this.closest("tr");
+                        let xDiv = row.querySelector(".brand-name");
+                        let formDiv = row.querySelector(".hidden-form");
+                        let editButton = row.querySelector(".edit-brand-btn");
+                        let saveButton = row.querySelector(".save-brand-btn");
+                        let cancelButton = row.querySelector(".cancel-brand-btn");
+
+                        // Show the form and the save/cancel buttons, hide the edit button
+                        xDiv.style.display = "none";
+                        formDiv.style.display = "block";
+                        editButton.style.display = "none";
+                        saveButton.style.display = "inline-block";
+                        cancelButton.style.display = "inline-block";
+                    });
+                });
+
+                document.querySelectorAll(".save-brand-btn").forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        let row = this.closest("tr");
+                        let form = row.querySelector(".hidden-form form");
+                        let xDiv = row.querySelector(".brand-name");
+                        let formDiv = row.querySelector(".hidden-form");
+                        let editButton = row.querySelector(".edit-brand-btn");
+                        let saveButton = row.querySelector(".save-brand-btn");
+                        let cancelButton = row.querySelector(".cancel-brand-btn");
+                        // Perform AJAX request to submit form data
+                        $.ajax({
+                            type: form.getAttribute("method"),
+                            url: form.getAttribute("action"),
+                            data: $(form).serialize(),
+                            success: function (response) {
+                                // Update new value
+                                let newValue = form.querySelector("input[name='brandName']").value;
+                                xDiv.textContent = newValue;
+
+                                // Hide the form and the save/cancel buttons, show the edit button
+                                xDiv.style.display = "block";
+                                formDiv.style.display = "none";
+                                editButton.style.display = "inline-block";
+                                saveButton.style.display = "none";
+                                cancelButton.style.display = "none";
+                            },
+                            error: function () {
+                                alert("Error updating brand name.");
+                            }
+                        });
+                    });
+                });
 
 
+                document.querySelectorAll(".cancel-brand-btn").forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        let row = this.closest("tr");
+                        let xDiv = row.querySelector(".brand-name");
+                        let formDiv = row.querySelector(".hidden-form");
+                        let editButton = row.querySelector(".edit-brand-btn");
+                        let saveButton = row.querySelector(".save-brand-btn");
+                        let cancelButton = row.querySelector(".cancel-brand-btn");
+
+                        // Hide the form and the save/cancel buttons, show the edit button
+                        xDiv.style.display = "block";
+                        formDiv.style.display = "none";
+                        editButton.style.display = "inline-block";
+                        saveButton.style.display = "none";
+                        cancelButton.style.display = "none";
+                    });
+                });
+            });
+//          edit room
+            document.addEventListener("DOMContentLoaded", function () {
+                document.querySelectorAll(".edit-room-btn").forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        let row = this.closest("tr");
+                        let xDiv = row.querySelector(".room-name");
+                        let formDiv = row.querySelector(".hidden-form");
+                        let editButton = row.querySelector(".edit-room-btn");
+                        let saveButton = row.querySelector(".save-room-btn");
+                        let cancelButton = row.querySelector(".cancel-room-btn");
+
+                        // Show the form and the save/cancel buttons, hide the edit button
+                        xDiv.style.display = "none";
+                        formDiv.style.display = "block";
+                        editButton.style.display = "none";
+                        saveButton.style.display = "inline-block";
+                        cancelButton.style.display = "inline-block";
+                    });
+                });
+
+                document.querySelectorAll(".save-room-btn").forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        let row = this.closest("tr");
+                        let form = row.querySelector(".hidden-form form");
+                        let xDiv = row.querySelector(".room-name");
+                        let formDiv = row.querySelector(".hidden-form");
+                        let editButton = row.querySelector(".edit-room-btn");
+                        let saveButton = row.querySelector(".save-room-btn");
+                        let cancelButton = row.querySelector(".cancel-room-btn");
+                        // Perform AJAX request to submit form data
+                        $.ajax({
+                            type: form.getAttribute("method"),
+                            url: form.getAttribute("action"),
+                            data: $(form).serialize(),
+                            success: function (response) {
+                                // Update new value
+                                let newValue = form.querySelector("input[name='roomName']").value;
+                                xDiv.textContent = newValue;
+
+                                // Hide the form and the save/cancel buttons, show the edit button
+                                xDiv.style.display = "block";
+                                formDiv.style.display = "none";
+                                editButton.style.display = "inline-block";
+                                saveButton.style.display = "none";
+                                cancelButton.style.display = "none";
+                            },
+                            error: function () {
+                                alert("Error updating room name.");
+                            }
+                        });
+                    });
+                });
+
+
+                document.querySelectorAll(".cancel-room-btn").forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        let row = this.closest("tr");
+                        let xDiv = row.querySelector(".room-name");
+                        let formDiv = row.querySelector(".hidden-form");
+                        let editButton = row.querySelector(".edit-room-btn");
+                        let saveButton = row.querySelector(".save-room-btn");
+                        let cancelButton = row.querySelector(".cancel-room-btn");
+
+                        // Hide the form and the save/cancel buttons, show the edit button
+                        xDiv.style.display = "block";
+                        formDiv.style.display = "none";
+                        editButton.style.display = "inline-block";
+                        saveButton.style.display = "none";
+                        cancelButton.style.display = "none";
+                    });
+                });
+            });
+//          edit color
+            document.addEventListener("DOMContentLoaded", function () {
+                document.querySelectorAll(".edit-color-btn").forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        let row = this.closest("tr");
+
+                        // Find all editable td elements and their respective form elements
+                        row.querySelectorAll(".edit").forEach(function (editableTd) {
+                            let colorNameDiv = editableTd.querySelector(".color-name");
+                            let colorCodeDiv = editableTd.querySelector(".color-code");
+                            let formDiv = editableTd.querySelector(".hidden-form");
+                            let editButton = row.querySelector(".edit-color-btn");
+                            let saveButton = row.querySelector(".save-color-btn");
+                            let cancelButton = row.querySelector(".cancel-color-btn");
+
+                            if (colorNameDiv) {
+                                colorNameDiv.style.display = "none";
+                            }
+                            if (colorCodeDiv) {
+                                colorCodeDiv.style.display = "none";
+                                colorCodeDiv.previousElementSibling.style.display = "none";
+                            }
+                            formDiv.style.display = "block";
+                            editButton.style.display = "none";
+                            saveButton.style.display = "inline-block";
+                            cancelButton.style.display = "inline-block";
+                        });
+                    });
+                });
+
+                document.querySelectorAll(".save-color-btn").forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        let row = this.closest("tr");
+                        let colorNameDiv = row.querySelector(".color-name");
+                        let colorCodeDiv = row.querySelector(".color-code");
+
+                        // Gather all forms in the row and serialize their data
+                        let formsData = [];
+                        row.querySelectorAll(".color-form").forEach(function (form) {
+                            formsData.push($(form).serialize());
+                        });
+
+                        // Perform AJAX request to submit form data
+                        $.ajax({
+                            type: "POST",
+                            url: "SettingServlet",
+                            data: formsData.join("&"),
+                            success: function (response) {
+                                // Update the color name and color code with the new values
+                                let newColorName = row.querySelector("input[name='colorName']").value;
+                                let newColorCode = row.querySelector("input[name='colorCode']").value;
+                                colorNameDiv.textContent = newColorName;
+                                colorCodeDiv.textContent = newColorCode;
+                                colorCodeDiv.previousElementSibling.style.backgroundColor = newColorCode;
+
+                                // Hide the form and the save/cancel buttons, show the edit button
+                                row.querySelectorAll(".edit").forEach(function (editableTd) {
+                                    let colorNameDiv = editableTd.querySelector(".color-name");
+                                    let colorCodeDiv = editableTd.querySelector(".color-code");
+                                    let formDiv = editableTd.querySelector(".hidden-form");
+                                    let editButton = row.querySelector(".edit-color-btn");
+                                    let saveButton = row.querySelector(".save-color-btn");
+                                    let cancelButton = row.querySelector(".cancel-color-btn");
+
+                                    if (colorNameDiv) {
+                                        colorNameDiv.style.display = "block";
+                                    }
+                                    if (colorCodeDiv) {
+                                        colorCodeDiv.style.display = "flex";
+                                        colorCodeDiv.previousElementSibling.style.display = "block";
+                                    }
+                                    formDiv.style.display = "none";
+                                    editButton.style.display = "inline-block";
+                                    saveButton.style.display = "none";
+                                    cancelButton.style.display = "none";
+                                });
+                            },
+                            error: function () {
+                                alert("Error updating color.");
+                            }
+                        });
+                    });
+                });
+
+                document.querySelectorAll(".cancel-color-btn").forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        let row = this.closest("tr");
+
+                        // Hide the form and the save/cancel buttons, show the edit button
+                        row.querySelectorAll(".edit").forEach(function (editableTd) {
+                            let colorNameDiv = editableTd.querySelector(".color-name");
+                            let colorCodeDiv = editableTd.querySelector(".color-code");
+                            let formDiv = editableTd.querySelector(".hidden-form");
+                            let editButton = row.querySelector(".edit-color-btn");
+                            let saveButton = row.querySelector(".save-color-btn");
+                            let cancelButton = row.querySelector(".cancel-color-btn");
+
+                            if (colorNameDiv) {
+                                colorNameDiv.style.display = "block";
+                            }
+                            if (colorCodeDiv) {
+                                colorCodeDiv.style.display = "flex";
+                                colorCodeDiv.previousElementSibling.style.display = "block";
+                            }
+                            formDiv.style.display = "none";
+                            editButton.style.display = "inline-block";
+                            saveButton.style.display = "none";
+                            cancelButton.style.display = "none";
+                        });
+                    });
+                });
+            });
+//          edit saleOff
+            document.addEventListener("DOMContentLoaded", function () {
+                document.querySelectorAll(".edit-saleOff-btn").forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        let row = this.closest("tr");
+                        let xDiv = row.querySelector(".saleOff-value");
+                        let formDiv = row.querySelector(".hidden-form");
+                        let editButton = row.querySelector(".edit-saleOff-btn");
+                        let saveButton = row.querySelector(".save-saleOff-btn");
+                        let cancelButton = row.querySelector(".cancel-saleOff-btn");
+
+                        // Show the form and the save/cancel buttons, hide the edit button
+                        xDiv.style.display = "none";
+                        formDiv.style.display = "block";
+                        editButton.style.display = "none";
+                        saveButton.style.display = "inline-block";
+                        cancelButton.style.display = "inline-block";
+                    });
+                });
+
+                document.querySelectorAll(".save-saleOff-btn").forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        let row = this.closest("tr");
+                        let form = row.querySelector(".hidden-form form");
+                        let xDiv = row.querySelector(".saleOff-value");
+                        let formDiv = row.querySelector(".hidden-form");
+                        let editButton = row.querySelector(".edit-saleOff-btn");
+                        let saveButton = row.querySelector(".save-saleOff-btn");
+                        let cancelButton = row.querySelector(".cancel-saleOff-btn");
+                        // Perform AJAX request to submit form data
+                        $.ajax({
+                            type: form.getAttribute("method"),
+                            url: form.getAttribute("action"),
+                            data: $(form).serialize(),
+                            success: function (response) {
+                                // Update the brand name with the new value
+                                let newValue = form.querySelector("input[name='saleOffValue']").value;
+                                xDiv.textContent = newValue;
+
+                                // Hide the form and the save/cancel buttons, show the edit button
+                                xDiv.style.display = "block";
+                                formDiv.style.display = "none";
+                                editButton.style.display = "inline-block";
+                                saveButton.style.display = "none";
+                                cancelButton.style.display = "none";
+                            },
+                            error: function () {
+                                alert("Error updating room name.");
+                            }
+                        });
+                    });
+                });
+
+
+                document.querySelectorAll(".cancel-saleOff-btn").forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        let row = this.closest("tr");
+                        let xDiv = row.querySelector(".saleOff-value");
+                        let formDiv = row.querySelector(".hidden-form");
+                        let editButton = row.querySelector(".edit-saleOff-btn");
+                        let saveButton = row.querySelector(".save-saleOff-btn");
+                        let cancelButton = row.querySelector(".cancel-saleOff-btn");
+
+                        // Hide the form and the save/cancel buttons, show the edit button
+                        xDiv.style.display = "block";
+                        formDiv.style.display = "none";
+                        editButton.style.display = "inline-block";
+                        saveButton.style.display = "none";
+                        cancelButton.style.display = "none";
+                    });
+                });
+            });
+//          edit category of post
+            document.addEventListener("DOMContentLoaded", function () {
+                document.querySelectorAll(".edit-categoryOfPost-btn").forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        let row = this.closest("tr");
+                        let xDiv = row.querySelector(".categoryOfPost-name");
+                        let formDiv = row.querySelector(".hidden-form");
+                        let editButton = row.querySelector(".edit-categoryOfPost-btn");
+                        let saveButton = row.querySelector(".save-categoryOfPost-btn");
+                        let cancelButton = row.querySelector(".cancel-categoryOfPost-btn");
+
+                        // Show the form and the save/cancel buttons, hide the edit button
+                        xDiv.style.display = "none";
+                        formDiv.style.display = "block";
+                        editButton.style.display = "none";
+                        saveButton.style.display = "inline-block";
+                        cancelButton.style.display = "inline-block";
+                    });
+                });
+
+                document.querySelectorAll(".save-categoryOfPost-btn").forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        let row = this.closest("tr");
+                        let form = row.querySelector(".hidden-form form");
+                        let xDiv = row.querySelector(".categoryOfPost-name");
+                        let formDiv = row.querySelector(".hidden-form");
+                        let editButton = row.querySelector(".edit-categoryOfPost-btn");
+                        let saveButton = row.querySelector(".save-categoryOfPost-btn");
+                        let cancelButton = row.querySelector(".cancel-categoryOfPost-btn");
+                        // Perform AJAX request to submit form data
+                        $.ajax({
+                            type: form.getAttribute("method"),
+                            url: form.getAttribute("action"),
+                            data: $(form).serialize(),
+                            success: function (response) {
+                                // Update new value
+                                let newValue = form.querySelector("input[name='categoryOfPostName']").value;
+                                xDiv.textContent = newValue;
+
+                                // Hide the form and the save/cancel buttons, show the edit button
+                                xDiv.style.display = "block";
+                                formDiv.style.display = "none";
+                                editButton.style.display = "inline-block";
+                                saveButton.style.display = "none";
+                                cancelButton.style.display = "none";
+                            },
+                            error: function () {
+                                alert("Error updating Category Of Post name.");
+                            }
+                        });
+                    });
+                });
+
+
+                document.querySelectorAll(".cancel-categoryOfPost-btn").forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        let row = this.closest("tr");
+                        let xDiv = row.querySelector(".categoryOfPost-name");
+                        let formDiv = row.querySelector(".hidden-form");
+                        let editButton = row.querySelector(".edit-categoryOfPost-btn");
+                        let saveButton = row.querySelector(".save-categoryOfPost-btn");
+                        let cancelButton = row.querySelector(".cancel-categoryOfPost-btn");
+
+                        // Hide the form and the save/cancel buttons, show the edit button
+                        xDiv.style.display = "block";
+                        formDiv.style.display = "none";
+                        editButton.style.display = "inline-block";
+                        saveButton.style.display = "none";
+                        cancelButton.style.display = "none";
+                    });
+                });
+            });
         </script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

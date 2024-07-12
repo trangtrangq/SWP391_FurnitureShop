@@ -66,4 +66,27 @@ public class PaginationHelper<T> {
         List<T> paginatedProductList = paginationHelper.getPage(page);
         request.setAttribute(attribute, paginatedProductList);
     }
+    
+    public ArrayList<T> PaginationList(HttpServletRequest request, List<T> list, ServletContext context, String itemsPerPage) {
+        ConfigReaderHelper configReaderHelper = new ConfigReaderHelper();
+        String CONFIG_FILE_PATH = context.getRealPath("/");
+        int pageSize = configReaderHelper.getValueOfItemsPerPage(CONFIG_FILE_PATH, itemsPerPage);
+        PaginationHelper<T> paginationHelper = new PaginationHelper<>(list, pageSize);
+        int[] pagenumber = paginationHelper.getPageNumbers();
+        request.setAttribute("pagenumber", pagenumber);
+
+        String pageStr = request.getParameter("page");
+        int page = 0;
+
+        if (pageStr != null && !pageStr.isEmpty()) {
+            try {
+                page = Integer.parseInt(pageStr) - 1;
+            } catch (NumberFormatException e) {
+                page = 0; // default to first page if there's an error in parsing
+            }
+        }
+
+        List<T> paginatedList = paginationHelper.getPage(page);
+        return new ArrayList<>(paginatedList);
+    }
 }

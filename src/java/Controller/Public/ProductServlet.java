@@ -57,15 +57,6 @@ import java.util.stream.Collectors;
  */
 public class ProductServlet extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -112,8 +103,7 @@ public class ProductServlet extends HttpServlet {
         ProductDetailDAO pddao = new ProductDetailDAO();
         ArrayList<ProductDetail> productDetailList = pddao.getAllProductDetails();
         request.setAttribute("productDetailList", productDetailList);
-        
-        
+
         HttpSession session = request.getSession(false);
         if (session != null) {
             User user = (User) session.getAttribute("customer");
@@ -141,68 +131,20 @@ public class ProductServlet extends HttpServlet {
                 }
                 request.setAttribute("sumtotalprice", sumtotalprice);
             }
-        }   
-
-        request.getRequestDispatcher("Views/ProductList.jsp").forward(request, response);
+        }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        HttpSession session = request.getSession();
-
-        String clearfilter = request.getParameter("clearfilter");
-        String reload = request.getParameter("reload");
-
-        if ((clearfilter != null && !clearfilter.isEmpty()) || (reload != null && !reload.isEmpty())) {
-            session.removeAttribute("productList");
-        }
-
-        ArrayList<Product> productList = (ArrayList<Product>) session.getAttribute("productList");
-
-        if (productList == null) {
-            ProductDAO productDAO = new ProductDAO();
-            productList = productDAO.getProductList();
-            session.setAttribute("productList", productList); // Lưu danh sách vào session sau khi lấy từ cơ sở dữ liệu
-        }
-
+    private ArrayList<Product> sortProduct(HttpServletRequest request, ArrayList<Product> productList) {
         String sortby = request.getParameter("sortby");
         ComparatorHelper comparatorHelper = new ComparatorHelper();
-        if (sortby != null && !sortby.isEmpty()) {
-            productList = comparatorHelper.sortProductList(productList, sortby);
-            session.setAttribute("productList", productList); // Cập nhật lại danh sách sau khi sắp xếp vào session
-        }
-
-        PaginationHelper paginationHelper = new PaginationHelper();
-        ServletContext context = getServletContext();
-        String itemsPerPage = "itemsPerProductListPage";
-        String attribute = "productList";
-        paginationHelper.Pagination(request, productList, context, itemsPerPage, attribute);
-
-        processRequest(request, response);
+        productList = comparatorHelper.sortProductList(productList, sortby);
+        HttpSession session = request.getSession();
+        session.setAttribute("productList", productList);
+        return productList;
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String search = request.getParameter("search");
+    private ArrayList<Product> filterProduct(HttpServletRequest request, ArrayList<Product> productList) {
+        ProductDAO productDAO = new ProductDAO();
         String[] brandIDStr = request.getParameterValues("brand-filter");
         String[] roomSIDtr = request.getParameterValues("room-filter");
         String[] categoryIDStr = request.getParameterValues("category-filter");
@@ -222,24 +164,266 @@ public class ProductServlet extends HttpServlet {
         request.setAttribute("selectedPriceList", selectedPriceList);
         request.setAttribute("selectedColorList", selectedColorList);
 
-        ProductDAO productDAO = new ProductDAO();
-        ArrayList<Product> productList;
-
-        if (search != null && !search.isEmpty()) {
-            productList = productDAO.searchProductByName(search);
-        } else {
-            productList = productDAO.filterProductList(brandIDStr, roomSIDtr, categoryIDStr, colorIDStr, priceIDStr);
-        }
-
+        productList = productDAO.filterProductList(brandIDStr, roomSIDtr, categoryIDStr, colorIDStr, priceIDStr);
         HttpSession session = request.getSession();
         session.setAttribute("productList", productList);
-        request.setAttribute("productList", productList);
+        return productList;
+    }
+
+    private String listProduct(HttpServletRequest request, ArrayList<Product> productList) {
+        SaleOffDAO saleOffDAO = new SaleOffDAO();
+        ArrayList<SaleOff> saleOffList = saleOffDAO.getSaleOffList();
+
+        FeedbackDAO feedbackDAO = new FeedbackDAO();
+        ArrayList<Feedback> feedbackList = feedbackDAO.getFeedbackList();
+
+        OrderDetailDAO orderDetailDAO = new OrderDetailDAO();
+        ArrayList<OrderDetail> orderDetailList = orderDetailDAO.getOrderDetailsList();
+
+        ProductDetailDAO pddao = new ProductDetailDAO();
+        ArrayList<ProductDetail> productDetailList = pddao.getAllProductDetails();
+
+        ColorDAO colorDAO = new ColorDAO();
+        ArrayList<Color> colorList = colorDAO.getColorList();
+
         PaginationHelper paginationHelper = new PaginationHelper();
         ServletContext context = getServletContext();
         String itemsPerPage = "itemsPerProductListPage";
-        String attribute = "productList";
-        paginationHelper.Pagination(request, productList, context, itemsPerPage, attribute);
-        processRequest(request, response);
+        productList = paginationHelper.PaginationList(request, productList, context, itemsPerPage);
 
+        StringBuilder htmlResponse = new StringBuilder();
+
+        if (productList.isEmpty()) {
+            htmlResponse.append("<div class=\"no-products\">\n")
+                    .append("    <p>Không tìm thấy sản phẩm phù hợp.</p>\n")
+                    .append("</div>\n");
+        } else {
+            for (Product product : productList) {
+                htmlResponse.append("<div class=\"col-md-3 col-sm-6 col-xs-6 pro-loop col-4\">\n")
+                        .append("<div class=\"product-block product-resize site-animation single-product\">\n")
+                        .append("<div class=\"product-img fade-box\">\n");
+
+                boolean hasSale = false;
+                for (SaleOff saleOff : saleOffList) {
+                    if (saleOff.getProduct_id() == product.getId() && saleOff.getSaleoffvalue() != 0) {
+                        htmlResponse.append("<div class=\"product-sale\"><span>-")
+                                .append(saleOff.getSaleoffvalue())
+                                .append("%</span></div>\n");
+                        hasSale = true;
+                        break;
+                    }
+                }
+                if (!hasSale) {
+                    htmlResponse.append("<div></div>\n");
+                }
+
+                htmlResponse.append("<div class=\"tag-loop\">\n")
+                        .append("<div class=\"icon icon_hot\">\n")
+                        .append("<img loading=\"lazy\" decoding=\"async\"\n")
+                        .append("    src=\"//theme.hstatic.net/200000065946/1001187274/14/icon_hot.png?v=582\"\n")
+                        .append("    alt=\"icon hot\"/>\n")
+                        .append("</div>\n")
+                        .append("</div>\n")
+                        .append("<a href=\"ProductDetailServlet?productId=")
+                        .append(product.getId())
+                        .append("\"\n")
+                        .append("title=\"")
+                        .append(product.getName())
+                        .append("\" class=\"image-resize\">\n")
+                        .append("<picture class=\"loop-one-img \">\n")
+                        .append("<img loading=\"lazy\" decoding=\"async\" width=\"480\"\n")
+                        .append("    height=\"480\" class=\"img-loop\"\n")
+                        .append("    alt=\"")
+                        .append(product.getName())
+                        .append("\"\n")
+                        .append("    src=\"image/product/")
+                        .append(product.getImage())
+                        .append("\" />\n")
+                        .append("</picture>\n")
+                        .append("</a>\n")
+                        .append("</div>\n") // Closing product-img fade-box div
+                        .append("<div class=\"product-detail clearfix\">\n")
+                        .append("<div class=\"box-pro-detail\">\n")
+                        .append("<h3 class=\"pro-name\">\n")
+                        .append("<a href=\"#\" title=\"")
+                        .append(product.getName())
+                        .append("\">\n")
+                        .append(product.getName())
+                        .append("\n")
+                        .append("</a>\n")
+                        .append("</h3>\n")
+                        .append("<div class=\"box-pro-prices\">\n")
+                        .append("<p class=\"pro-price highlight\">\n");
+
+                hasSale = false;
+                for (SaleOff saleOff : saleOffList) {
+                    if (saleOff.getProduct_id() == product.getId()) {
+                        hasSale = true;
+                        if (saleOff.getSaleoffvalue() == 0) {
+                            htmlResponse.append("<span style=\"color: black\">")
+                                    .append(product.getPrice())
+                                    .append("₫</span>\n");
+                        } else {
+                            htmlResponse.append("<span>")
+                                    .append(product.getPrice() - product.getPrice() * saleOff.getSaleoffvalue() / 100)
+                                    .append("₫</span>\n")
+                                    .append("<span class=\"pro-price-del\">\n")
+                                    .append("<del class=\"compare-price\">")
+                                    .append(product.getPrice())
+                                    .append("₫</del>\n")
+                                    .append("</span>\n");
+                        }
+                        break;
+                    }
+                }
+                if (!hasSale) {
+                    htmlResponse.append("<span style=\"color: black\">")
+                            .append(product.getPrice())
+                            .append("₫</span>\n");
+                }
+
+                htmlResponse.append("</p>\n")
+                        .append("</div>\n") // Closing box-pro-prices div
+                        .append("<div class=\"row\">\n")
+                        .append("<div class=\"col-lg-8 col-md-8 col-sm-8 col-xs-12 custom_review\">\n");
+
+                int reviewCount = 0;
+                for (Feedback feedback : feedbackList) {
+                    if (feedback.getProduct_id() == product.getId()) {
+                        reviewCount++;
+                    }
+                }
+
+                htmlResponse.append("<div class=\"rating-container\" data-rating=\"")
+                        .append(product.getStaravg())
+                        .append("\" data-num-reviews=\"")
+                        .append(reviewCount)
+                        .append("\">\n")
+                        .append("<div class=\"rating\"></div>\n")
+                        .append("<span class=\"num-reviews\"></span>\n")
+                        .append("</div>\n")
+                        .append("<div>Số lượng: ")
+                        .append(product.getQuantity())
+                        .append("</div>\n")
+                        .append("</div>\n") // Closing custom_review div
+                        .append("<div class=\"col-lg-4 col-md-4 col-sm-4 col-xs-12 custom_sold_qty\">\n");
+
+                int quantitySold = 0;
+                for (OrderDetail orderDetail : orderDetailList) {
+                    for (ProductDetail productDetail : productDetailList) {
+                        if (orderDetail.getProductdetail_id() == productDetail.getId() && productDetail.getProduct_id() == product.getId()) {
+                            quantitySold += orderDetail.getQuantity();
+                        }
+                    }
+                }
+
+                htmlResponse.append("<div class=\"cmpText\">Đã bán ")
+                        .append(quantitySold)
+                        .append("</div>\n")
+                        .append("<span>\n");
+
+                for (ProductDetail productDetail : productDetailList) {
+                    if (product.getId() == productDetail.getProduct_id()) {
+                        for (Color color : colorList) {
+                            if (productDetail.getColor_id() == color.getId()) {
+                                htmlResponse.append("<label class=\"color-checkbox\">\n")
+                                        .append("<input type=\"checkbox\" name=\"color\" value=\"")
+                                        .append(color.getId())
+                                        .append("\" style=\"display: none;\">\n")
+                                        .append("<span class=\"color-circle\" style=\"background-color:")
+                                        .append(color.getColorcode())
+                                        .append(";\"></span>\n")
+                                        .append("</label>\n");
+                            }
+                        }
+                    }
+                }
+
+                htmlResponse.append("</span>\n")
+                        .append("</div>\n") // Closing custom_sold_qty div
+                        .append("</div>\n") // Closing row div
+                        .append("</div>\n") // Closing box-pro-detail div
+                        .append("</div>\n") // Closing product-detail clearfix div
+                        .append("</div>\n") // Closing product-block product-resize site-animation single-product div
+                        .append("</div>\n");  // Closing col-md-3 col-sm-6 col-xs-6 pro-loop col-4 div
+            }
+        }
+
+        return htmlResponse.toString();
+    }
+
+    private String pagePagination(HttpServletRequest request, ArrayList<Product> productList) {
+        ServletContext context = request.getServletContext();
+        ConfigReaderHelper configReaderHelper = new ConfigReaderHelper();
+        String CONFIG_FILE_PATH = context.getRealPath("/");
+        String itemsPerPage = "itemsPerProductListPage";
+        int pageSize = configReaderHelper.getValueOfItemsPerPage(CONFIG_FILE_PATH, itemsPerPage);
+
+        PaginationHelper paginationHelper = new PaginationHelper(productList, pageSize);
+        int numberOfPage = paginationHelper.getTotalPages();
+        StringBuilder pagePaginationHtml = new StringBuilder();
+
+        for (int i = 1; i <= numberOfPage; i++) {
+            pagePaginationHtml.append("<input type=\"radio\" name=\"page\" id=\"page")
+                    .append(i)
+                    .append("\" value=\"")
+                    .append(i)
+                    .append("\" style=\"display: none;\">")
+                    .append("<label for=\"page")
+                    .append(i)
+                    .append("\" style=\"width: 25px; border: groove;\" class=\"page-node\" aria-label=\"Trang ")
+                    .append(i)
+                    .append("\">")
+                    .append(i)
+                    .append("</label>");
+        }
+        pagePaginationHtml.append("<span class=\"page-node\">&hellip;</span>");
+
+        return pagePaginationHtml.toString();
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        ProductDAO productDAO = new ProductDAO();
+        ArrayList<Product> productList = productDAO.getProductList();
+        HttpSession session = request.getSession();
+        session.setAttribute("productList", productList);
+        String htmlResponse = listProduct(request, productList);
+        request.setAttribute("htmlResponse", htmlResponse);
+        processRequest(request, response);
+        request.getRequestDispatcher("Views/ProductList.jsp").forward(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String action = request.getParameter("action");
+        ProductDAO productDAO = new ProductDAO();
+        HttpSession session = request.getSession();
+        ArrayList<Product> productList = productDAO.getProductList();
+        if ("sort".equals(action)) {
+            productList = (ArrayList<Product>) session.getAttribute("productList");
+
+            productList = sortProduct(request, productList);
+            String htmlResponse = listProduct(request, productList);
+            response.setContentType("text/html;charset=UTF-8");
+            response.getWriter().print(htmlResponse);
+
+        } else if ("filter".equals(action)) {
+            productList = filterProduct(request, productList);
+            String htmlResponse = listProduct(request, productList);
+            String pagePagination = pagePagination(request, productList);
+            response.setContentType("text/html;charset=UTF-8");
+            response.getWriter().print(htmlResponse + "|" + pagePagination);
+
+        } else if ("pagination".equals(action)) {
+            productList = (ArrayList<Product>) session.getAttribute("productList");
+
+            String htmlResponse = listProduct(request, productList);
+            response.setContentType("text/html;charset=UTF-8");
+            response.getWriter().print(htmlResponse);
+        }
+        processRequest(request, response);
     }
 }

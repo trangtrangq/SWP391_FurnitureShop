@@ -144,7 +144,9 @@ public class OrderListServlet extends HttpServlet {
         String[] statusIDStr = request.getParameterValues("status-filter");
         String fromDate = request.getParameter("fromDate");
         String toDate = request.getParameter("toDate");
-
+//        
+//        PrintWriter out = response.getWriter();
+//        out.print(fromDate  + "  " + toDate);
         List<String> selectStatusList = statusIDStr != null ? Arrays.asList(statusIDStr) : null;
         HttpSession session = request.getSession();
         User customer = (User) session.getAttribute("customer");

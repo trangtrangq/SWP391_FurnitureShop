@@ -48,9 +48,10 @@ public class BrandDAO extends DBContext {
     }
 
     public boolean insertBrand(Brand brand) {
-        String sql = "INSERT INTO brand (brandname) VALUES (?)";
+        String sql = "INSERT INTO brand (brandname, status) VALUES (?, ?)";
         try (PreparedStatement pstmt = connect.prepareStatement(sql)) {
             pstmt.setString(1, brand.getBrandname());
+            pstmt.setString(2, brand.getStatus());
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
         } catch (Exception ex) {

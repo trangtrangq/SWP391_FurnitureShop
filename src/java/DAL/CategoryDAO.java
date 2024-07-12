@@ -50,34 +50,35 @@ public class CategoryDAO extends DBContext {
 
         return categoryList;
     }
-//
-//    // Phương thức insertCategory
-//    public boolean insertCategory(Category category) {
-//        String sql = "INSERT INTO category (category) VALUES (?)";
-//        try (PreparedStatement pstmt = connect.prepareStatement(sql)) {
-//            pstmt.setString(1, category.getCategory());
-//            int affectedRows = pstmt.executeUpdate();
-//            return affectedRows > 0;
-//        } catch (Exception ex) {
-//            LOGGER.log(Level.SEVERE, "Error inserting category", ex);
-//            return false;
-//        }
-//    }
-//
-//    // Phương thức updateCategory
-//    public boolean updateCategory(Category category) {
-//        String sql = "UPDATE category SET category = ? WHERE id = ?";
-//        try (PreparedStatement pstmt = connect.prepareStatement(sql)) {
-//            pstmt.setString(1, category.getCategory());
-//            pstmt.setInt(2, category.getId());
-//            int affectedRows = pstmt.executeUpdate();
-//            return affectedRows > 0;
-//        } catch (Exception ex) {
-//            LOGGER.log(Level.SEVERE, "Error updating category", ex);
-//            return false;
-//        }
-//    }
-//
+
+    // Phương thức insertCategory
+    public boolean insertCategory(Category category) {
+        String sql = "INSERT INTO category (category, status) VALUES (?, ?)";
+        try (PreparedStatement pstmt = connect.prepareStatement(sql)) {
+            pstmt.setString(1, category.getCategory());
+            pstmt.setString(2, category.getStatus());
+            int affectedRows = pstmt.executeUpdate();
+            return affectedRows > 0;
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "Error inserting category", ex);
+            return false;
+        }
+    }
+
+    // Phương thức updateCategory
+    public boolean updateCategory(Category category) {
+        String sql = "UPDATE category SET category = ? WHERE id = ?";
+        try (PreparedStatement pstmt = connect.prepareStatement(sql)) {
+            pstmt.setString(1, category.getCategory());
+            pstmt.setInt(2, category.getId());
+            int affectedRows = pstmt.executeUpdate();
+            return affectedRows > 0;
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "Error updating category", ex);
+            return false;
+        }
+    }
+
     // Phương thức deleteCategory (xóa mềm)
     public boolean changeStatus(int categoryId, String newSatus) {
         String sql = "UPDATE category SET status = ? WHERE id = ?";
