@@ -4,7 +4,9 @@
  */
 package Controller.Public;
 
+import Controller.Customer.CartDetail;
 import DAL.BrandDAO;
+import DAL.CartItemDAO;
 import DAL.CategoryDAO;
 import DAL.CategoryOfPostDAO;
 import DAL.ColorDAO;
@@ -20,6 +22,7 @@ import Helper.ComparatorHelper;
 import Helper.ConfigReaderHelper;
 import Helper.PaginationHelper;
 import Models.Brand;
+import Models.CartItemWithDetail;
 import Models.Category;
 import Models.CategoryOfPost;
 import Models.Color;
@@ -31,6 +34,7 @@ import Models.Product;
 import Models.ProductDetail;
 import Models.Room;
 import Models.SaleOff;
+import Models.User;
 import jakarta.servlet.ServletContext;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
@@ -39,9 +43,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -103,9 +110,39 @@ public class ProductServlet extends HttpServlet {
         request.setAttribute("colorList", colorList);
 
         ProductDetailDAO pddao = new ProductDetailDAO();
-        ArrayList<ProductDetail> productDetailList= pddao.getAllProductDetails();
+        ArrayList<ProductDetail> productDetailList = pddao.getAllProductDetails();
         request.setAttribute("productDetailList", productDetailList);
         
+        
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            User user = (User) session.getAttribute("customer");
+            if (user != null) {
+
+                CartItemDAO cartItemDAO = new CartItemDAO();
+                try {
+                    request.setAttribute("countcart", cartItemDAO.countCartItemsByCustomerId(user.getId()));
+                } catch (SQLException ex) {
+                    Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                List<CartItemWithDetail> cartItemWithDetails = new ArrayList<>();
+                try {
+                    cartItemWithDetails = cartItemDAO.getCartItemsDetail(user.getId());
+                } catch (SQLException ex) {
+                    Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                request.setAttribute("listcartdetail", cartItemWithDetails);
+                double sumtotalprice = 0;
+                try {
+                    sumtotalprice = cartItemDAO.getTotalCostNoStatus(user.getId());
+                } catch (SQLException ex) {
+                    Logger.getLogger(CartDetail.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                request.setAttribute("sumtotalprice", sumtotalprice);
+            }
+        }   
+
         request.getRequestDispatcher("Views/ProductList.jsp").forward(request, response);
     }
 
@@ -135,13 +172,14 @@ public class ProductServlet extends HttpServlet {
         if (productList == null) {
             ProductDAO productDAO = new ProductDAO();
             productList = productDAO.getProductList();
+            session.setAttribute("productList", productList); // Lưu danh sách vào session sau khi lấy từ cơ sở dữ liệu
         }
 
         String sortby = request.getParameter("sortby");
         ComparatorHelper comparatorHelper = new ComparatorHelper();
         if (sortby != null && !sortby.isEmpty()) {
             productList = comparatorHelper.sortProductList(productList, sortby);
-            session.setAttribute("productList", productList);
+            session.setAttribute("productList", productList); // Cập nhật lại danh sách sau khi sắp xếp vào session
         }
 
         PaginationHelper paginationHelper = new PaginationHelper();
@@ -149,6 +187,7 @@ public class ProductServlet extends HttpServlet {
         String itemsPerPage = "itemsPerProductListPage";
         String attribute = "productList";
         paginationHelper.Pagination(request, productList, context, itemsPerPage, attribute);
+
         processRequest(request, response);
     }
 
@@ -169,7 +208,7 @@ public class ProductServlet extends HttpServlet {
         String[] categoryIDStr = request.getParameterValues("category-filter");
         String[] priceIDStr = request.getParameterValues("price-filter");
         String[] colorIDStr = request.getParameterValues("color-filter");
-        
+
         List<Integer> selectedBrandList = brandIDStr != null ? Arrays.stream(brandIDStr).map(Integer::parseInt).collect(Collectors.toList()) : null;
         List<Integer> selectedRoomList = roomSIDtr != null ? Arrays.stream(roomSIDtr).map(Integer::parseInt).collect(Collectors.toList()) : null;
         List<Integer> selectedCategoryList = categoryIDStr != null ? Arrays.stream(categoryIDStr).map(Integer::parseInt).collect(Collectors.toList()) : null;
@@ -182,7 +221,7 @@ public class ProductServlet extends HttpServlet {
         request.setAttribute("selectedCategoryList", selectedCategoryList);
         request.setAttribute("selectedPriceList", selectedPriceList);
         request.setAttribute("selectedColorList", selectedColorList);
-        
+
         ProductDAO productDAO = new ProductDAO();
         ArrayList<Product> productList;
 
@@ -201,6 +240,6 @@ public class ProductServlet extends HttpServlet {
         String attribute = "productList";
         paginationHelper.Pagination(request, productList, context, itemsPerPage, attribute);
         processRequest(request, response);
-        
+
     }
 }

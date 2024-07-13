@@ -5,6 +5,7 @@
 package DAL;
 
 import DAL.DBContext;
+import Models.User;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -52,7 +53,33 @@ public class VerifyAccountDAO extends DBContext {
         return false;
     }
 
-        
-   
+    public void signUpUser(User user) {
+        String mysql = "INSERT INTO `furniture`.`verifyaccount`\n"
+                + "(\n"
+                + "`fullname`,\n"
+                + "`gender`,\n"
+                + "`phonenumber`,\n"
+                + "`address`,\n"
+                + "`email`,\n"
+                + "`password`,\n"
+                + "`role_id`,\n"
+                + "`status`,\n"
+                + "`time`)\n"
+                + "VALUES\n"
+                + "(?,?,?,?,?,?,?,?,current_timestamp)";
+        try(PreparedStatement statement = connect.prepareStatement(mysql)){
+            statement.setString(1, user.getFullname());
+            statement.setString(2, user.getGender());
+            statement.setString(3, user.getPhonenumber());
+            statement.setString(4, user.getAddress());
+            statement.setString(5, user.getEmail());
+            statement.setString(6, user.getPassword());
+            statement.setInt(7, user.getRole_id());
+            statement.setString(8, user.getStatus());
+            statement.executeUpdate();
+        }catch(SQLException e){
+            LOGGER.log(Level.SEVERE, "Error inserting verified customer", e);
+        }
+    }
 
 }

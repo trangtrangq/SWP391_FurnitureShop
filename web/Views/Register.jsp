@@ -57,21 +57,21 @@
                             <input type="email" class="form-control" id="email" name="email" required value="${param.email}"
                                    pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
                                    title="Vui lòng nhập địa chỉ email hợp lệ (ví dụ: example@example.com)">
-                            
+
                         </div>
                         <div class="form-group">
                             <label for="password">Mật khẩu</label>
-                            <input type="password" class="form-control" id="password3" name="password" required
+                            <input type="password" class="form-control password2" name="password" required
                                    pattern="(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}"
                                    title="Mật khẩu phải có ít nhất 8 ký tự, bao gồm ít nhất một chữ hoa, một số và một ký tự đặc biệt."
                                    value="${param.password}">
                         </div>
                         <div class="form-group">
                             <label for="pass">Nhập lại mật khẩu</label>
-                            <input type="password" class="form-control" id="password2" name="pass" required value="${param.pass}">
+                            <input type="password" class="form-control password2" name="pass" required value="${param.pass}">
                         </div>
                         <input type="hidden" name="role_id" value="1"/>
-                        <input type="hidden" name="status" value="Active"/>
+                        <input type="hidden" name="status" value="Inactive"/>
                         <div>
                             <input type="checkbox" id="togglePasswords" onclick="togglePasswordVisibility2()"> Hiển thị mật khẩu
                         </div>
@@ -94,16 +94,19 @@
         </div>
         <script>
             function togglePasswordVisibility2() {
-                const passwordField = document.getElementById('password2');
-                console.log(passwordField);
-                console.log(passwordField.type);
-                if (passwordField.type === "password") {
-                    passwordField.type = 'text';
+                const passwordFields = document.querySelectorAll('.password2'); // Lấy tất cả phần tử input bằng class
+                console.log(passwordFields);
+
+                passwordFields.forEach(function (passwordField) {
                     console.log(passwordField.type);
-                } else {
-                    passwordField.type = 'password';
-                    console.log(passwordField.type);
-                }
+                    if (passwordField.type === "password") {
+                        passwordField.type = 'text';
+                        console.log(passwordField.type);
+                    } else {
+                        passwordField.type = 'password';
+                        console.log(passwordField.type);
+                    }
+                });
             }
         </script>
     </body>

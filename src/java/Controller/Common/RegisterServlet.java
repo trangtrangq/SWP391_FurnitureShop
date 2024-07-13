@@ -17,6 +17,7 @@ import DAL.RoomDAO;
 import DAL.SaleOffDAO;
 import DAL.SliderDAO;
 import DAL.UserDAO;
+import DAL.VerifyAccountDAO;
 import Helper.PaginationHelper;
 import Models.Brand;
 import Models.Category;
@@ -30,6 +31,7 @@ import Models.Product;
 import Models.Room;
 import Models.SaleOff;
 import Models.Slider;
+import Models.User;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -140,9 +142,17 @@ public class RegisterServlet extends HttpServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         String rePass = request.getParameter("pass");
+        int role_id = Integer.parseInt(request.getParameter("role_id"));
+        String status = request.getParameter("status");
         processRequest(request, response);
         UserDAO userDAO = new UserDAO();
         if (userDAO.checkAccount(email) == true) {
+            request.setAttribute("fullname", fullname);
+            request.setAttribute("gender", gender);
+            request.setAttribute("phone", phone);
+            request.setAttribute("address", address);
+            request.setAttribute("email", email);
+            request.setAttribute("password", password);
             request.setAttribute("error", "Tài khoản đã tồn tại.");
             request.setAttribute("showregister", "block");
             request.getRequestDispatcher("Views/HomePage.jsp").forward(request, response);
@@ -156,7 +166,12 @@ public class RegisterServlet extends HttpServlet {
 
                 Email sendEmail = new Email();
                 sendEmail.sendSignUpEmail(email);
-                userDAO.insertVerifyCustomer(fullname, gender, phone, address, email, password);
+                User user = new User(fullname, gender, phone, email, role_id, status);
+                user.setAddress(address);
+                user.setPassword(password);
+                VerifyAccountDAO verifyAccountDAO = new VerifyAccountDAO();
+                verifyAccountDAO.signUpUser(user);
+                
                 request.setAttribute("success", "Đã gửi email. Vui lòng kiểm tra tài khoản email của bạn! ");
                 request.setAttribute("showregister", "block");
                 request.getRequestDispatcher("Views/HomePage.jsp").forward(request, response);

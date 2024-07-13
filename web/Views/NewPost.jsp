@@ -30,91 +30,97 @@
         </style>
     </head>
     <body>
-        <div class="container">
-            <h1 class="mb-4">Tạo bài viết mới</h1>
+        <div class="wrapper">
+            <%@include file="DashboardNavbar.jsp" %>
+            <div class="main">
+                <%@include file="DashboardHeader.jsp" %>
+                <div class="container" style="margin-top: 20px">
+                    <h1 class="mb-4">Tạo bài viết mới</h1>
 
-            <form id="postForm" action="NewPost" method="post" enctype="multipart/form-data">
-                <div class="form-group row">
-                    <label for="category" class="col-sm-2 col-form-label">Thể loại</label>
-                    <div class="col-sm-10 d-flex align-items-center">
-                        <select id="category" name="category" class="form-control">
-                            <c:forEach items="${listCategory}" var="c">
-                                <option value="${c.getId()}">${c.getCategory()}</option>
-                            </c:forEach>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="form-group row">
-                    <label for="thumbnail" class="col-sm-2 col-form-label">Thumbnail:</label>
-                    <div class="col-sm-10 d-flex align-items-center">
-                        <div class="thumbnail">
-                            <img id="anh" src="image/post/${post.getThumbnail()}" alt="Thumbnail" class="img-thumbnail">
+                    <form id="postForm" action="NewPost" method="post" enctype="multipart/form-data">
+                        <div class="form-group row">
+                            <label for="category" class="col-sm-2 col-form-label">Thể loại</label>
+                            <div class="col-sm-10 d-flex align-items-center">
+                                <select id="category" name="category" class="form-control">
+                                    <c:forEach items="${listCategory}" var="c">
+                                        <option value="${c.getId()}">${c.getCategory()}</option>
+                                    </c:forEach>
+                                </select>
+                            </div>
                         </div>
-                        <input id="thumbnailInput" onchange="previewImage(event, 'anh')" name="thumbnail" type="file" class="form-control-file ml-3 mt-2" accept="image/*" required>
 
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="title" class="col-sm-2 col-form-label">Tiêu đề</label>
-                    <div class="col-sm-10 d-flex align-items-center">
-                        <input id="title" type="text" class="form-control" name="title" required>
+                        <div class="form-group row">
+                            <label for="thumbnail" class="col-sm-2 col-form-label">Thumbnail:</label>
+                            <div class="col-sm-10 d-flex align-items-center">
+                                <div class="thumbnail">
+                                    <img id="anh" src="image/post/${post.getThumbnail()}" alt="Thumbnail" class="img-thumbnail">
+                                </div>
+                                <input id="thumbnailInput" onchange="previewImage(event, 'anh')" name="thumbnail" type="file" class="form-control-file ml-3 mt-2" accept="image/*" required>
 
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="subtitle" class="col-sm-2 col-form-label">Phụ đề</label>
-                    <div class="col-sm-10 d-flex align-items-center">
-                        <input id="subtitle" type="text" class="form-control" name="subtitle" required>
-
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="status" class="col-sm-2 col-form-label">Trạng thái</label>
-                    <div class="col-sm-10 d-flex align-items-center">
-                        <select id="status" name="status" class="form-control">
-                            <c:forEach items="${listStatus}" var="s">
-                                <option value="${s}">${s}</option>
-                            </c:forEach>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="content" class="col-sm-2 col-form-label">Nội dung</label>
-                    <div class="col-sm-10 d-flex align-items-center">
-                        <textarea id="content" class="form-control" name="content" rows="5" required></textarea>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-10 offset-sm-2">
-                        <button id="saveBtn" type="submit" class="btn btn-primary">Tạo</button>
-                    </div>
-                </div>
-            </form>
-
-            <!-- Modal -->
-            <div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="resultModalLabel">Thông báo</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                            </div>
                         </div>
-                        <div class="modal-body">
-                            <p id="modalMessage"></p>
+                        <div class="form-group row">
+                            <label for="title" class="col-sm-2 col-form-label">Tiêu đề</label>
+                            <div class="col-sm-10 d-flex align-items-center">
+                                <input id="title" type="text" class="form-control" name="title" required>
+
+                            </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                        <div class="form-group row">
+                            <label for="subtitle" class="col-sm-2 col-form-label">Phụ đề</label>
+                            <div class="col-sm-10 d-flex align-items-center">
+                                <input id="subtitle" type="text" class="form-control" name="subtitle" required>
+
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="status" class="col-sm-2 col-form-label">Trạng thái</label>
+                            <div class="col-sm-10 d-flex align-items-center">
+                                <select id="status" name="status" class="form-control">
+                                    <c:forEach items="${listStatus}" var="s">
+                                        <option value="${s}">${s}</option>
+                                    </c:forEach>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="content" class="col-sm-2 col-form-label">Nội dung</label>
+                            <div class="col-sm-10 d-flex align-items-center">
+                                <textarea id="content" class="form-control" name="content" rows="5" required></textarea>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-10 offset-sm-2" style="display: flex; justify-content: center">
+                                <button id="saveBtn" type="submit" class="btn btn-primary">Tạo Bài</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="resultModalLabel">Thông báo</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p id="modalMessage"></p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
+        <%@include file="DashboardFooter.jsp" %>
         <script>
-            
+
             $(document).ready(function () {
                 var result = '${result}';
                 if (result === 'success') {

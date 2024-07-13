@@ -24,6 +24,16 @@ public class User {
     public User() {
     }
 
+    public User(String fullname, String gender, String phonenumber, String email,  int role_id, String status) {
+        this.fullname = fullname;
+        this.gender = gender;
+        this.phonenumber = phonenumber;
+        this.email = email;
+        this.role_id = role_id;
+        this.status = status;
+    }
+    
+    
     public User(int id, String fullname, String gender, String avatar, String phonenumber, String address, String email, String password, int role_id, String status) {
         this.id = id;
         this.fullname = fullname;
@@ -134,5 +144,11 @@ this.role_id = role_id;
     public void setStatus(String status) {
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return "User{" + "id=" + id + ", fullname=" + fullname + ", gender=" + gender + ", avatar=" + avatar + ", phonenumber=" + phonenumber + ", address=" + address + ", email=" + email + ", password=" + password + ", role_id=" + role_id + ", status=" + status + '}';
+    }
+    
 
 }

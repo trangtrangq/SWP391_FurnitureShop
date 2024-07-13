@@ -13,11 +13,13 @@ import DAL.OrderDetailDAO;
 import DAL.PageDAO;
 import DAL.PostDAO;
 import DAL.ProductDAO;
+import DAL.ProductDetailDAO;
 import DAL.RoomDAO;
 import DAL.SaleOffDAO;
 import DAL.SliderDAO;
 import DAL.UserDAO;
 import Helper.PaginationHelper;
+import Util.Email;
 import Models.Brand;
 import Models.Category;
 import Models.CategoryOfPost;
@@ -27,6 +29,7 @@ import Models.OrderDetail;
 import Models.Page;
 import Models.Post;
 import Models.Product;
+import Models.ProductDetail;
 import Models.Room;
 import Models.SaleOff;
 import Models.Slider;
@@ -38,7 +41,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import Models.User;
 import java.util.ArrayList;
 import java.util.List;
-import Util.Email;
 
 /**
  *
@@ -93,6 +95,10 @@ public class VerifyEmail extends HttpServlet {
         ArrayList<OrderDetail> orderDetailList = orderDetailDAO.getOrderDetailsList();
         request.setAttribute("orderDetailList", orderDetailList);
 
+        ProductDetailDAO pddao = new ProductDetailDAO();
+        ArrayList<ProductDetail> productDetailList= pddao.getAllProductDetails();
+        request.setAttribute("productDetailList", productDetailList);
+        
         CategoryDAO categoryDAO = new CategoryDAO();
         ArrayList<Category> categoryList = categoryDAO.getCategoryList();
         request.setAttribute("categoryList", categoryList);
@@ -149,6 +155,7 @@ public class VerifyEmail extends HttpServlet {
             request.getRequestDispatcher("Views/HomePage.jsp").forward(request, response);
 
         }
+        
     }
 
     /**

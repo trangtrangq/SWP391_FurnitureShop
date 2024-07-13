@@ -261,7 +261,9 @@
                                                     <ul class="list-unstyled">
                                                         <li style="font-size: 14px"><span>${sessionScope.customer.fullname}</span></li>
                                                         <li><a class="dropdown-item" href="${pageContext.request.contextPath}/UserProfile">Tài khoản của bạn</a></li>
+                                                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/MyOrderServlet">Đơn hàng của tôi</a></li>
                                                         <li><a class="dropdown-item" href="${pageContext.request.contextPath}/ChangePassword">Thay đổi mật khẩu </a></li>
+                                                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/OrderListServlet">Dashboard</a></li>
                                                         <li><a class="dropdown-item" href="${pageContext.request.contextPath}/LogoutServlet">Đăng xuất</a></li>
                                                     </ul>
                                                 </div>
@@ -314,7 +316,8 @@
                                 <div class="wrapper-cart header-action">
                                     <c:choose>
                                         <c:when test="${sessionScope.customer != null}">
-                                            <a class="header-action-toggle" href="${pageContext.request.contextPath}/ShoppingCart" id="site-cart-handle" aria-label="3 Giỏ hàng">
+                                             <%@ include file="CartDropDown.jsp" %>
+                                            <a class="header-action-toggle"  href="#" data-bs-toggle="dropdown" aria-expanded="false" id="site-cart-handle" aria-label="3 Giỏ hàng">
                                                 <span class="box-icon">
                                                     <svg class="svg-ico-cart" enable-background="new 0 0 512 512" height="512"
                                                          viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg">
@@ -332,11 +335,12 @@
                                                         </svg>
                                                     </span>
                                                     <span class="box-text">
-                                                        <span class="count-holder">0</span>
+                                                        <span class="count-holder">${requestScope.countcart}</span>
                                                     </span>
                                                 </span>
                                                 <span class="icon-box-text">Giỏ hàng</span>
                                             </a>
+                                                   
                                         </c:when>
                                         <c:otherwise>
                                             <a class="header-action-toggle" href="#"  onclick="showlogin()" id="site-cart-handle-sucess" aria-label="3 Giỏ hàng">

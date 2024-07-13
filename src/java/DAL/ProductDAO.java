@@ -7,6 +7,7 @@ package DAL;
 import Models.Product;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,19 +44,18 @@ public class ProductDAO extends DBContext {
     }
 
     public boolean updateProduct(Product product) {
-        String sql = "UPDATE product SET category_id = ?, brand_id = ?, room_id = ?, name = ?, description = ?, staravg = ?, image = ?, price = ?, quantity = ?, status = ? WHERE id = ?";
+        String sql = "UPDATE product SET category_id = ?, brand_id = ?, room_id = ?, name = ?, description = ?, image = ?, price = ?, quantity = ?, status = ? WHERE id = ?";
         try (PreparedStatement preparedStatement = connect.prepareStatement(sql)) {
             preparedStatement.setInt(1, product.getCategory_id());
             preparedStatement.setInt(2, product.getBrand_id());
             preparedStatement.setInt(3, product.getRoom_id());
             preparedStatement.setString(4, product.getName());
             preparedStatement.setString(5, product.getDescription());
-            preparedStatement.setDouble(6, product.getStaravg());
-            preparedStatement.setString(7, product.getImage());
-            preparedStatement.setDouble(8, product.getPrice());
-            preparedStatement.setInt(9, product.getQuantity());
-            preparedStatement.setString(10, product.getStatus());
-            preparedStatement.setInt(11, product.getId());
+            preparedStatement.setString(6, product.getImage());
+            preparedStatement.setDouble(7, product.getPrice());
+            preparedStatement.setInt(8, product.getQuantity());
+            preparedStatement.setString(9, product.getStatus());
+            preparedStatement.setInt(10, product.getId());
 
             int affectedRows = preparedStatement.executeUpdate();
             return affectedRows > 0;
@@ -143,11 +143,11 @@ public class ProductDAO extends DBContext {
         ArrayList<Product> productList = new ArrayList<>();
 
         StringBuilder sql = new StringBuilder("""
-    SELECT 
+    SELECT DISTINCT
         Product.id, Product.category_id, Product.brand_id, Product.room_id, Product.name, Product.description, Product.staravg, Product.image, Product.price, Product.quantity, Product.status
     FROM 
         Product
-    JOIN 
+    JOIN     
         ProductDetail ON Product.id = ProductDetail.product_id
     WHERE 1=1
     """);
@@ -216,7 +216,7 @@ public class ProductDAO extends DBContext {
         ArrayList<Product> productList = new ArrayList<>();
 
         StringBuilder sql = new StringBuilder("""
-    SELECT 
+    SELECT DISTINCT
         Product.id, Product.category_id, Product.brand_id, Product.room_id, Product.name, Product.description, Product.staravg, Product.image, Product.price, Product.quantity, Product.status
     FROM 
         Product
@@ -349,12 +349,74 @@ public class ProductDAO extends DBContext {
         return product;
     }
 
-    public static void main(String[] args) {
-        ProductDAO productDAO = new ProductDAO();
-        ArrayList<Product> list = productDAO.searchProductByName("IKEA");
-        for (Product product : list) {
-            System.out.println(product.getName());
+    public String getProductName(int id) {
+        String query = "SELECT name FROM product WHERE id LIKE ?";
+
+        try (PreparedStatement preparedStatement = connect.prepareStatement(query)) {
+            preparedStatement.setInt(1, id);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    return resultSet.getString(1);
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error retrieving product list", e);
         }
+        return null;
+    }
+
+    // Phương thức để lấy danh sách sản phẩm theo id của brand hoặc category
+    public List<Product> getByBrandOrCategoryId(int brandId, int categoryId) throws SQLException {
+        List<Product> products = new ArrayList<>();
+        String query = "SELECT * FROM product WHERE brand_id = ? OR category_id = ?";
+
+        try (PreparedStatement stmt = connect.prepareStatement(query)) {
+            stmt.setInt(1, brandId);
+            stmt.setInt(2, categoryId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Product product = new Product();
+                product.setId(rs.getInt("id"));
+                product.setCategory_id(rs.getInt("category_id"));
+                product.setBrand_id(rs.getInt("brand_id"));
+                product.setRoom_id(rs.getInt("room_id"));
+                product.setName(rs.getString("name"));
+                product.setDescription(rs.getString("description"));
+
+                product.setImage(rs.getString("image"));
+                product.setPrice(rs.getDouble("price"));
+                product.setQuantity(rs.getInt("quantity"));
+                product.setStatus(rs.getString("status"));
+                products.add(product);
+            }
+        }
+
+        return products;
+    }
+
+    public void updateScoreOfProduct() {
+        String sql = "UPDATE Product p "
+                + "JOIN ( "
+                + "    SELECT product_id, AVG(votescore) as avg_score "
+                + "    FROM Feedback "
+                + "    GROUP BY product_id "
+                + ") f ON p.id = f.product_id "
+                + "SET p.staravg = f.avg_score";
+
+        try (PreparedStatement preparedStatement = connect.prepareStatement(sql)) {
+            // Thi hành câu lệnh SQL
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace(); // In ra lỗi nếu có
+        }
+    }
+
+    public static void main(String[] args) {
+        ProductDAO pdao = new ProductDAO();
+        pdao.updateScoreOfProduct();
+        
     }
 
 }

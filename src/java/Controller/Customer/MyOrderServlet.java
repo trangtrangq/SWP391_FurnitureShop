@@ -5,6 +5,7 @@
 package Controller.Customer;
 
 import DAL.ColorDAO;
+import DAL.FeedbackDAO;
 import DAL.OrderDAO;
 import DAL.OrderDetailDAO;
 import DAL.ProductDAO;
@@ -70,38 +71,39 @@ public class MyOrderServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        PrintWriter out = response.getWriter();
-//        processRequest(request, response);
-        OrderDAO orderDAO = new OrderDAO();
         HttpSession session = request.getSession();
         User customer = (User) session.getAttribute("customer");
-
-        ArrayList<Order> orderList = orderDAO.myOrder(1);
+        
+        OrderDAO orderDAO = new OrderDAO();
+        ArrayList<Order> orderList = orderDAO.myOrder(customer.getId());
 
         int[] order_IDs = new int[orderList.size()];
 
         for (int i = 0; i < orderList.size(); i++) {
             order_IDs[i] = orderList.get(i).getId();
         }
-        for (int order_ID : order_IDs) {
-            System.out.println(order_ID);
-        }
-        OrderDetailDAO orderDetailDAO = new OrderDetailDAO();
 
+        OrderDetailDAO orderDetailDAO = new OrderDetailDAO();
         ArrayList<OrderDetail> orderDetailList = orderDetailDAO.MyOrderDetails(order_IDs);
+        
         ProductDetailDAO prDetailDAO = new ProductDetailDAO();
         ArrayList<ProductDetail> productDetailList = prDetailDAO.getAllProductDetails();
+        
         ProductDAO prDAO = new ProductDAO();
         ArrayList<Product> productList = prDAO.getProductList();
 
         ColorDAO colorDAO = new ColorDAO();
         ArrayList<Color> colorList = colorDAO.getColorList();
         
+        FeedbackDAO feedbackDAO = new FeedbackDAO();
+        int[] historyFeedbackOrder = feedbackDAO.getHistory();
+        
         request.setAttribute("colorList", colorList);
         request.setAttribute("productDetailList", productDetailList);
         request.setAttribute("productList", productList);
         request.setAttribute("orderDetailList", orderDetailList);
         request.setAttribute("orderList", orderList);
+        request.setAttribute("historyFeedbackOrder", historyFeedbackOrder);
         
         PaginationHelper paginationHelper = new PaginationHelper();
         ServletContext context = getServletContext();
@@ -123,7 +125,30 @@ public class MyOrderServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String id = request.getParameter("order_id");
+
+        // Xử lý hủy đơn hàng
+        if (id != null) {
+            int order_id;
+            try {
+                order_id = Integer.parseInt(id);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                return;
+            }
+
+            // Ví dụ: cập nhật trạng thái đơn hàng trong cơ sở dữ liệu thành "Cancelled"
+            OrderDAO orderDAO = new OrderDAO();
+            orderDAO.updateOrderStatus(order_id, "Done");
+
+            // Phản hồi về cho client rằng đã hủy đơn hàng thành công
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.getWriter().write("Đã nhận đơn hàng thành công!");
+        } else {
+            // Xử lý khi không có order_id được gửi đến
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write("Lỗi: Không có order_id được gửi đến.");
+        }
     }
 
     /**

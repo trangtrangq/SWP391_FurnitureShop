@@ -6,6 +6,7 @@ package Controller.Sale;
 
 import DAL.CategoryDAO;
 import DAL.ColorDAO;
+import DAL.FeedbackDAO;
 import DAL.OrderDAO;
 import DAL.OrderDetailDAO;
 import DAL.ProductDAO;
@@ -62,12 +63,17 @@ public class OrderListServlet extends HttpServlet {
         ArrayList<Category> categoryList = categoryDAO.getCategoryList();
         UserDAO userDAO = new UserDAO();
         ArrayList<User> userList = userDAO.getUserList();
+        
+        FeedbackDAO feedbackDAO = new FeedbackDAO();
+        int[] historyFeedbackOrder = feedbackDAO.getHistory();
+        
         request.setAttribute("userList", userList);
         request.setAttribute("categoryList", categoryList);
 
         request.setAttribute("colorList", colorList);
         request.setAttribute("productDetailList", productDetailList);
         request.setAttribute("productList", productList);
+        request.setAttribute("historyFeedbackOrder", historyFeedbackOrder);
 
         request.getRequestDispatcher("Views/OrderList.jsp").forward(request, response);
     }
@@ -81,7 +87,6 @@ public class OrderListServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         UserDAO userDAO = new UserDAO();
@@ -99,7 +104,7 @@ public class OrderListServlet extends HttpServlet {
         OrderDAO orderDAO = new OrderDAO();
         ArrayList<Order> orderList = (ArrayList<Order>) session.getAttribute("orderList");
         if (orderList == null) {
-            orderList = orderDAO.OrderListOfSale(8);
+            orderList = orderDAO.OrderListOfSale(2);
         }
 
         String sortby = request.getParameter("sortby");
@@ -118,6 +123,7 @@ public class OrderListServlet extends HttpServlet {
         ArrayList<OrderDetail> orderDetailList = orderDetailDAO.MyOrderDetails(order_IDs);
         request.setAttribute("orderDetailList", orderDetailList);
         request.setAttribute("orderList", orderList);
+        
         PaginationHelper paginationHelper = new PaginationHelper();
         ServletContext context = getServletContext();
         String itemsPerPage = "itemsPerOrderList";
@@ -143,24 +149,22 @@ public class OrderListServlet extends HttpServlet {
         String[] statusIDStr = request.getParameterValues("status-filter");
         String fromDate = request.getParameter("fromDate");
         String toDate = request.getParameter("toDate");
-
         List<String> selectStatusList = statusIDStr != null ? Arrays.asList(statusIDStr) : null;
         HttpSession session = request.getSession();
         User customer = (User) session.getAttribute("customer");
-
         OrderDAO orderDAO = new OrderDAO();
         ArrayList<Order> orderList;
         if (search != null && !search.isEmpty()) {
             try {
                 int orderId = Integer.parseInt(search);
-                orderList = orderDAO.searchOrderById(search, 8);
+                orderList = orderDAO.searchOrderById(orderId, 2);
                 
             } catch (NumberFormatException e) {
                 // If searchParam is not a number, search by user.fullname
-                orderList = orderDAO.searchOrderByName(search, 8);
+                orderList = orderDAO.searchOrderByName(search, 2);
             }
         } else{
-            orderList = orderDAO.filterOrderList(fromDate, toDate, statusIDStr, 8);
+            orderList = orderDAO.filterOrderList(fromDate, toDate, statusIDStr, 2);
         }
         
          
@@ -171,12 +175,18 @@ public class OrderListServlet extends HttpServlet {
         for (int i = 0; i < orderList.size(); i++) {
             order_IDs[i] = orderList.get(i).getId();
         }
-        ServletContext context = getServletContext();
+        
         OrderDetailDAO orderDetailDAO = new OrderDetailDAO();
         ArrayList<OrderDetail> orderDetailList = orderDetailDAO.MyOrderDetails(order_IDs);
         request.setAttribute("orderDetailList", orderDetailList);
         request.setAttribute("orderList", orderList);
         request.setAttribute("selectStatusList", selectStatusList);
+        
+        PaginationHelper paginationHelper = new PaginationHelper();
+        ServletContext context = getServletContext();
+        String itemsPerPage = "itemsPerOrderList";
+        String attribute = "orderList";
+        paginationHelper.Pagination(request, orderList, context, itemsPerPage, attribute);
         processRequest(request, response);
 
     }
@@ -190,5 +200,4 @@ public class OrderListServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
 }

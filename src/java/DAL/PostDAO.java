@@ -21,8 +21,17 @@ public class PostDAO extends DBContext {
 
     private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(PostDAO.class.getName());
 
+//    public static void main(String[] args) {
+//        PostDAO postDAO = new PostDAO();
+//        ArrayList<Post> list = postDAO.getNewPostList();
+//        for (Post post : list) {
+//            System.out.println(post.getTitle());
+//        }
+//    }
+    //get list of all posts
+
     public ArrayList<Post> getNewPostList() {
-        String sql = "SELECT * FROM Post ORDER BY id DESC limit 5";
+        String sql = "SELECT * FROM Post ORDER BY updatedtime DESC";
         ArrayList<Post> list = new ArrayList<>();
 
         try (PreparedStatement statement = connect.prepareStatement(sql); ResultSet rs = statement.executeQuery()) {
@@ -46,12 +55,12 @@ public class PostDAO extends DBContext {
         return list;
     }
 
-    public ArrayList<Post> getPostListByCategoryId(String categoryOfPost_id) {
+    public ArrayList<Post> getPostListByFilter(int categoryOfPost_id) {
         String sql = "SELECT * FROM Post WHERE category_id = ?";
         ArrayList<Post> list = new ArrayList<>();
 
         try (PreparedStatement statement = connect.prepareStatement(sql)) {
-            statement.setString(1, categoryOfPost_id);
+            statement.setInt(1, categoryOfPost_id);
             try (ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
                     Post p = new Post();
@@ -74,9 +83,8 @@ public class PostDAO extends DBContext {
         return list;
     }
 
-    //list of all post
     public ArrayList<Post> getPostList() {
-        String sql = "SELECT * FROM Post";
+            String sql = "SELECT * FROM Post";
         ArrayList<Post> list = new ArrayList<>();
 
         try (PreparedStatement statement = connect.prepareStatement(sql); ResultSet rs = statement.executeQuery()) {
@@ -131,6 +139,32 @@ public class PostDAO extends DBContext {
         }
         return list;
     }
+    
+    //get list of all posts
+    public List<Post> getListPost() {
+        String sql = "SELECT * from Post";
+        List<Post> list = new ArrayList<>();
+        try {
+            PreparedStatement statement = connect.prepareStatement(sql);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                Post p = new Post();
+                p.setId(rs.getInt("id"));
+                p.setCategory_id(rs.getInt("category_id"));
+                p.setTitle(rs.getString("title"));
+                p.setSubtitle(rs.getString("subtitle"));
+                p.setThumbnail(rs.getString("thumbnail"));
+                p.setContent(rs.getString("content"));
+                p.setMkt_id(rs.getInt("mkt_id"));
+                p.setUpdatedtime(rs.getString("updatedtime"));
+                p.setStatus(rs.getString("status"));
+                list.add(p);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
 
     //get post detail by id
     public Post getPostbyID(String id) {
@@ -157,7 +191,6 @@ public class PostDAO extends DBContext {
         }
         return null;
     }
-
     //*************************** FOR MARKETING ****************************************
     //get posts list by filter
     public ArrayList<Post> getPostListbyFilter(String category_id, String mkt_id, String status) {
@@ -308,9 +341,4 @@ public class PostDAO extends DBContext {
         }
     }
     
-    public static void main(String[] args) {
-        PostDAO p = new PostDAO();
-        System.out.println(p.createPost(4, 1, "ava.jpg", "ngucv", "abcd", "hide", "dlakfjhewr"));
-    }
-
 }

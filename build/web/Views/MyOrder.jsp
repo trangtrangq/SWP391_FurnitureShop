@@ -9,15 +9,27 @@
     <link rel="preload stylesheet" as="style" fetchpriority="low"
           href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="preload stylesheet" as="style" fetchpriority="low" href="css/style-theme.scss.css">
+    <link rel="preload stylesheet" as="style" fetchpriority="low"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+    <link rel="preload stylesheet" as="style" fetchpriority="low"
+          href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script defer fetchpriority="low" src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"></script>
+
+    <script defer fetchpriority="low" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
     <style>
         body {
             margin-top: 20px;
         }
         .order-card {
-            background-color: rgb(237 237 237);
+            /*background-color: rgb(237 237 237);*/
             color: rgb(0, 0, 0);
             padding: 20px;
-            border-radius: 8px;
+            /*            border-radius: 8px;*/
             border: solid 1px;
             border-color: rgb(0, 0, 0);
         }
@@ -46,30 +58,54 @@
 </head>
 
 <body>
-    <div class="container">
+    <%@include file="HomeHeader.jsp" %>
+    <div class="breadcrumb-shop">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 pd5  ">
+                    <ol class="breadcrumb breadcrumb-arrows" itemscope
+                        itemtype="http://schema.org/BreadcrumbList">
+                        <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                            <a href="HomePage" target="_self" itemprop="item" content=""><span
+                                    itemprop="name">Trang chủ</span></a>
+                            <meta itemprop="position" content="1" />
+                        </li>
+
+                        <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                            <a href="MyOrderServlet" target="_self">
+                                <span itemprop="item" content=""><span
+                                        itemprop="name">Đơn hàng của tôi</span></span>
+                            </a>
+                            <meta itemprop="position" content="2" />
+                        </li>
+                    </ol>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="container" style="margin-top: 15px">
         <div class="row justify-content-center">
             <div class="col-md-2">
             </div>
             <div class="col-md-8">
                 <c:forEach items="${orderList}" var="order" >
-                    <div class="order-card">
+                    <div class="order-card" style="margin-bottom: 30px">
                         <h3>OrderID: #${order.id}</h3>
-                        <div class="row mt-3">
-
-                            <div class="col-md-4 text-md-end">
-                                <h6>OrderTime: ${order.orderDate}</h6>
-                            </div>
+                        <div style="display: flex; justify-content: flex-end">
+                            <h6><b>Order Time: <u>${order.orderDate}</u></b></h6>
                         </div>
+
                         <div class="table-responsive">
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>Product</th>
-                                        <th>ProductName</th>
-                                        <th>Color</th>
-                                        <th>Price</th>
-                                        <th>Quantity</th>
-                                        <th>Total</th>
+                                        <th style="background-color: white; text-align: center">Product</th>
+                                        <th style="background-color: white; text-align: center">ProductName</th>
+                                        <th style="background-color: white; text-align: center">Color</th>
+                                        <th style="background-color: white; text-align: center">Price</th>
+                                        <th style="background-color: white; text-align: center">Quantity</th>
+                                        <th style="background-color: white; text-align: center">Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -83,16 +119,16 @@
                                                         <c:if test="${product.id == productDetail.product_id}">
                                                             <tr>
                                                                 <c:if test="${firstProduct}">
-                                                                    <td><img src="image/product/${product.image}" alt="Product" style="width:100px"></td>
-                                                                    <td>${product.name}</td>
+                                                                    <td style="text-align: center; background-color: white;"><img src="image/product/${product.image}" alt="Product" style="width:100px"></td>
+                                                                    <td style="text-align: center; background-color: white;">${product.name}</td>
                                                                     <c:forEach items="${colorList}" var="color">
                                                                         <c:if test="${productDetail.color_id == color.id}">
-                                                                            <td>${color.colorname}</td>
+                                                                            <td style="text-align: center; background-color: white;">${color.colorname}</td>
                                                                         </c:if>
                                                                     </c:forEach>
-                                                                    <td>${orderDetail.price}</td>
-                                                                    <td>${orderDetail.quantity}</td>
-                                                                    <td>${order.totalcost}</td>
+                                                                    <td style="text-align: center; background-color: white;">${orderDetail.price}</td>
+                                                                    <td style="text-align: center; background-color: white;">${orderDetail.quantity}</td>
+                                                                    <td style="text-align: center; background-color: white;">${order.totalcost}</td>
                                                                     <c:set var="firstProduct" value="false"/>
                                                                 </c:if>
                                                                 <c:if test="${!firstProduct}">
@@ -107,7 +143,7 @@
                                     </c:forEach>
                                     <c:if test="${productCount > 1}">
                                         <tr>
-                                            <td colspan="6" style="text-decoration: none; color: black;">
+                                            <td colspan="6" style="text-decoration: none; color: black;  background-color: white;">
                                                 <a href="MyOrderInformationServlet?id=${order.id}" style="text-decoration: none; color: black;">
                                                     Số sản phẩm khác: ${productCount-1}
                                                 </a>
@@ -115,7 +151,7 @@
                                         </tr>
                                     </c:if>
                                     <tr>
-                                        <td colspan="6" style="text-align: center;">
+                                        <td  colspan="6" style="text-align: center; background-color: white;">
                                             <a href="MyOrderInformationServlet?id=${order.id}" style="text-decoration: none; color: black;">
                                                 Xem chi tiết đơn hàng
                                             </a>
@@ -128,22 +164,47 @@
                                 <div></div>
                                 <div><b>Total: </b>${order.totalcost}</div>
                             </div>
-                            <div class="button-order">
+                            <div class="button-order" style="display: flex; justify-content: flex-end; margin-top: 10px">
                                 <c:choose>
                                     <c:when test="${order.status == 'Order'}">
-                                        <button class="btn btn-secondary btn-block" style="margin-left:200px">Order</button>
+                                        <button style="width: 80px; height: 30px" class="btn btn-secondary">Đang xử lí</button>
                                     </c:when>
-                                    <c:when test="${order.status == 'Cancel'}">
-                                        <button class="btn btn-danger btn-block" style="margin-left:200px">Cancel</button>
+                                    <c:when test="${order.status == 'Cancled'}">
+                                        <button style="width: 80px; height: 30px" class="btn btn-danger">Đã hủy</button>
+                                    </c:when>
+                                    <c:when test="${order.status == 'Confirmed'}">
+                                        <button style="height: 30px" class="btn btn-info">Đang giao</button>
+                                        <button id="receivedButton" class="btn btn-primary" style="height: 30px; margin-left: 10px" onclick="handleReceivedButtonClick(${order.id})">
+                                            Đã nhận được đơn hàng
+                                        </button>
                                     </c:when>
                                     <c:when test="${order.status == 'Done'}">
-                                        <button class="btn btn-success btn-block" style="margin-left:200px">Done</button>
+                                        <c:set var="hasFeedback" value="false" />
+                                        <c:forEach items="${requestScope.historyFeedbackOrder}" var="history">
+                                            <c:if test="${order.id == history}">
+                                                <c:set var="hasFeedback" value="true" />
+                                            </c:if>
+                                        </c:forEach>
+
+                                        <c:choose>
+                                            <c:when test="${hasFeedback}">
+                                                <button class="btn btn-success" style="height: 30px; margin-right: 10px">
+                                                    Hoàn thành đơn hàng
+                                                </button>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <button class="btn btn-warning" style="height: 30px; margin-right: 10px">
+                                                    Hoàn thành đơn hàng
+                                                </button>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </c:when>
                                     <c:otherwise>
-                                        <button class="btn btn-secondary btn-block" style="margin-left:200px">${order.status}</button>
+                                        <button style="width: 80px; height: 30px" class="btn btn-warning">${order.status}</button>
                                     </c:otherwise>
                                 </c:choose>
                             </div>
+
 
                         </div>
                     </div>
@@ -164,6 +225,35 @@
             </div>
         </div>
     </div>
+    <%@include file="HomeFooter.jsp" %>
+    <script>
+        function handleReceivedButtonClick(order_id) {
+            // Gửi yêu cầu AJAX để cập nhật trạng thái đơn hàng trên máy chủ
+            var confirmDone = confirm("Bạn đã nhận được đơn hàng?");
+            if (confirmDone) {
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "MyOrderServlet", true);
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
+                            // Xử lý phản hồi thành công (nếu cần)
+                            alert("Đã nhận đơn hàng thành công!");
+                            // Reload trang sau khi xác nhận hủy đơn hàng thành công
+                            window.location.reload();
+                        } else {
+                            // Xử lý lỗi nếu cần
+                            alert("Có lỗi xảy ra khi nhận đơn hàng.");
+                        }
+                    }
+                };
+                xhr.send("order_id=" + order_id);
+            } else {
+                // Người dùng chọn No, không làm gì cả
+            }
+        }
+    </script>
+
 </body>
 
 </html>

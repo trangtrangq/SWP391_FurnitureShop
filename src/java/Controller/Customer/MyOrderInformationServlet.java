@@ -7,6 +7,7 @@ package Controller.Customer;
 import DAL.AddressDAO;
 import DAL.CategoryDAO;
 import DAL.ColorDAO;
+import DAL.FeedbackDAO;
 import DAL.OrderDAO;
 import DAL.OrderDetailDAO;
 import DAL.ProductDAO;
@@ -27,6 +28,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -88,7 +90,7 @@ public class MyOrderInformationServlet extends HttpServlet {
 
         OrderDetailDAO orderDetailDAO = new OrderDetailDAO();
         ArrayList<OrderDetail> orderDetailList = orderDetailDAO.MyOrderDetails(order_IDs);
-        
+
         ProductDetailDAO prDetailDAO = new ProductDetailDAO();
         ArrayList<ProductDetail> productDetailList = prDetailDAO.getAllProductDetails();
         ProductDAO prDAO = new ProductDAO();
@@ -104,7 +106,10 @@ public class MyOrderInformationServlet extends HttpServlet {
         ArrayList<Category> categoryList = categoryDAO.getCategoryList();
 
         AddressDAO addressDAO = new AddressDAO();
-        ArrayList<Address> address = addressDAO.getAddressList();
+        List<Address> address = addressDAO.getAllAddresses();
+
+        FeedbackDAO feedbackDAO = new FeedbackDAO();
+        int[] historyFeedbackOrder = feedbackDAO.getHistory();
 
         request.setAttribute("address", address);
         request.setAttribute("categoryList", categoryList);
@@ -114,23 +119,9 @@ public class MyOrderInformationServlet extends HttpServlet {
         request.setAttribute("productList", productList);
         request.setAttribute("orderDetailList", orderDetailList);
         request.setAttribute("order", order);
+        request.setAttribute("historyFeedbackOrder", historyFeedbackOrder);
 
         request.getRequestDispatcher("Views/MyOrderInformation.jsp").forward(request, response);
-    }
-    
-    public static void main(String[] args) {
-        UserDAO user = new UserDAO();
-        ArrayList<User> userList = user.getUserList();
-        for (User user1 : userList) {
-            System.out.println(user1.toString());
-        }
-        System.out.println(userList.toString());
-//        AddressDAO addressDAO = new AddressDAO();
-//        ArrayList<Address> addresses = addressDAO.getAddressList();
-//        for (Address addresse : addresses) {
-//            System.out.println(addresses.toString());
-//        }
-        
     }
 
     /**
@@ -159,22 +150,24 @@ public class MyOrderInformationServlet extends HttpServlet {
             // Ví dụ: cập nhật trạng thái đơn hàng trong cơ sở dữ liệu thành "Cancelled"
             OrderDAO orderDAO = new OrderDAO();
             orderDAO.updateOrderStatus(order_id, "Cancled");
-            request.getRequestDispatcher("Views/MyOrderInformation.jsp").forward(request, response);
-        }
 
-        // Chuyển hướng người dùng đến trang xác nhận hoặc trang đơn hàng
-        response.sendRedirect("orderConfirmation.jsp");
+            // Phản hồi về cho client rằng đã hủy đơn hàng thành công
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.getWriter().write("Đã hủy đơn hàng thành công!");
+        } else {
+            // Xử lý khi không có order_id được gửi đến
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write("Lỗi: Không có order_id được gửi đến.");
+        }
     }
 
     // Giả sử bạn có phương thức để cập nhật trạng thái đơn hàng trong cơ sở dữ liệu
-
-
-/**
- * Returns a short description of the servlet.
- *
- * @return a String containing servlet description
- */
-@Override
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
+    @Override
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>

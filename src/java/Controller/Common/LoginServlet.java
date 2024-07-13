@@ -115,11 +115,14 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
         UserDAO userDAO = new UserDAO();
         User customer = userDAO.login(email, password);
-        if (customer != null && "Active".equals(customer.getStatus())) {
+        if (customer != null && !("Block".equals(customer.getStatus()))) {
             HttpSession session = request.getSession();
             session.setAttribute("customer", customer);
+            request.setAttribute("email", email);
+            request.setAttribute("password", password);
+            userDAO.UpdateUser(customer.getRole_id(), "Active", customer.getId());
             response.sendRedirect("HomePage");
-        }else if(customer != null && "Inactive".equals(customer.getStatus())){
+        }else if(customer != null && "Block".equals(customer.getStatus())){
             processRequest(request, response);
             request.setAttribute("showlogin", "block");
             request.setAttribute("errorlogin", "Tài khoản đang bị khóa.");

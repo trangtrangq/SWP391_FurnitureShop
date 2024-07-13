@@ -39,153 +39,159 @@
         </style>
     </head>
     <body>
-        <div class="container">
-            <h1 class="mb-4">Chi tiết tài khoản: #${cus.getId()}</h1>
-            <div class="row justify-content-between">
-                <button class="btn btn-secondary col-2 mb-5" data-toggle="modal" data-target="#customerChangesModal">Lịch sử chỉnh sửa</button>
-            </div>
-            <!-- The Modal -->
-            <div class="modal fade" id="customerChangesModal">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
+        <div class="wrapper">
+            <%@include file="DashboardNavbar.jsp" %>
+            <div class="main">
+                <%@include file="DashboardHeader.jsp" %>
+                <div class="container" style="margin-top: 20px">
+                    <h1 class="mb-4">Chi tiết tài khoản: #${cus.getId()}</h1>
+                    <div style="display: flex; justify-content: flex-end">
+                        <button class="btn btn-secondary col-2 mb-5" data-toggle="modal" data-target="#customerChangesModal">Lịch sử chỉnh sửa</button>
+                    </div>
+                    <!-- The Modal -->
+                    <div class="modal fade" id="customerChangesModal">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
 
-                        <!-- Modal Header -->
-                        <div class="modal-header">
-                            <h4 class="modal-title">Lịch sử thay đổi</h4>
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Lịch sử thay đổi</h4>
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                </div>
+
+                                <!-- Modal Body -->
+                                <div class="modal-body">
+                                    <table class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Tên</th>
+                                                <th>Email</th>
+                                                <th>Số điện thoại</th>
+                                                <th>Giới tính</th>
+                                                <th>Địa chỉ</th>
+                                                <th>Ngày cập nhật</th>
+                                                <th>Người cập nhật</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <c:forEach items="${listchanges}" var="change">
+                                                <tr>
+                                                    <td>${change.getFullname()}</td>
+                                                    <td>${change.getEmail()}</td>
+                                                    <td>${change.getPhone()}</td>
+                                                    <td>${change.getGender()}</td>
+                                                    <td>${change.getAddress()} </td>
+                                                    <td>${change.getUpdateddate()}</td>
+                                                    <td><c:forEach items="${listMkt}" var="mkt">
+                                                            <c:if test="${mkt.getId() == change.getUpdatedby()}">
+                                                                <p>${mkt.getFullname()}</p>
+                                                            </c:if>
+                                                        </c:forEach></td>
+                                                </tr>
+                                            </c:forEach>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Modal Footer -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <form id="postForm" action="CustomerDetails?id=${cus.getId()}" method="post">
+
+                        <div class="form-group row">
+                            <label for="title" class="col-sm-2 col-form-label">Tên</label>
+                            <div class="col-sm-10 d-flex align-items-center">
+                                <input id="fullname" type="text" class="form-control" name="fullname" value="${cus.getFullname()}" readonly>
+                                <button type="button" class="btn btn-secondary btn-sm edit-btn" onclick="editField('fullname')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="subtitle" class="col-sm-2 col-form-label">Giới tính</label>
+                            <div class="col-sm-10 d-flex align-items-center">
+                                <input id="gender" type="text" class="form-control" name="gender" value="${cus.getGender()}" readonly>
+                                <button type="button" class="btn btn-secondary btn-sm edit-btn" onclick="editField('gender')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </div>
                         </div>
 
-                        <!-- Modal Body -->
-                        <div class="modal-body">
-                            <table class="table table-bordered table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Tên</th>
-                                        <th>Email</th>
-                                        <th>Số điện thoại</th>
-                                        <th>Giới tính</th>
-                                        <th>Địa chỉ</th>
-                                        <th>Ngày cập nhật</th>
-                                        <th>Người cập nhật</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <c:forEach items="${listchanges}" var="change">
-                                        <tr>
-                                            <td>${change.getFullname()}</td>
-                                            <td>${change.getEmail()}</td>
-                                            <td>${change.getPhone()}</td>
-                                            <td>${change.getGender()}</td>
-                                            <td>${change.getAddress()} </td>
-                                            <td>${change.getUpdateddate()}</td>
-                                            <td><c:forEach items="${listMkt}" var="mkt">
-                                                    <c:if test="${mkt.getId() == change.getUpdatedby()}">
-                                                        <p>${mkt.getFullname()}</p>
-                                                    </c:if>
-                                                </c:forEach></td>
-                                        </tr>
-                                    </c:forEach>
-                                </tbody>
-                            </table>
+                        <div class="form-group row">
+                            <label for="subtitle" class="col-sm-2 col-form-label">Email</label>
+                            <div class="col-sm-10 d-flex align-items-center">
+                                <input id="email" type="email" class="form-control" name="email" value="${cus.getEmail()}" readonly>
+                                <button type="button" class="btn btn-secondary btn-sm edit-btn" onclick="editField('email')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </div>
                         </div>
 
-                        <!-- Modal Footer -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        <div class="form-group row">
+                            <label for="subtitle" class="col-sm-2 col-form-label">Số điên thoại</label>
+                            <div class="col-sm-10 d-flex align-items-center">
+                                <input id="phone" type="text" class="form-control" name="phone" value="${cus.getPhonenumber()}" readonly>
+                                <button type="button" class="btn btn-secondary btn-sm edit-btn" onclick="editField('phone')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </div>
                         </div>
 
-                    </div>
-                </div>
-            </div>
-
-
-            <form id="postForm" action="CustomerDetails?id=${cus.getId()}" method="post">
-
-                <div class="form-group row">
-                    <label for="title" class="col-sm-2 col-form-label">Tên</label>
-                    <div class="col-sm-10 d-flex align-items-center">
-                        <input id="fullname" type="text" class="form-control" name="fullname" value="${cus.getFullname()}" readonly>
-                        <button type="button" class="btn btn-secondary btn-sm edit-btn" onclick="editField('fullname')">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="subtitle" class="col-sm-2 col-form-label">Giới tính</label>
-                    <div class="col-sm-10 d-flex align-items-center">
-                        <input id="gender" type="text" class="form-control" name="gender" value="${cus.getGender()}" readonly>
-                        <button type="button" class="btn btn-secondary btn-sm edit-btn" onclick="editField('gender')">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label for="subtitle" class="col-sm-2 col-form-label">Email</label>
-                    <div class="col-sm-10 d-flex align-items-center">
-                        <input id="email" type="email" class="form-control" name="email" value="${cus.getEmail()}" readonly>
-                        <button type="button" class="btn btn-secondary btn-sm edit-btn" onclick="editField('email')">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label for="subtitle" class="col-sm-2 col-form-label">Số điên thoại</label>
-                    <div class="col-sm-10 d-flex align-items-center">
-                        <input id="phone" type="text" class="form-control" name="phone" value="${cus.getPhonenumber()}" readonly>
-                        <button type="button" class="btn btn-secondary btn-sm edit-btn" onclick="editField('phone')">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label for="subtitle" class="col-sm-2 col-form-label">Địa chỉ</label>
-                    <div class="col-sm-10 d-flex align-items-center">
-                        <input id="add" type="text" class="form-control" name="add" value="${cus.getAddress()}" readonly>
-                        <button type="button" class="btn btn-secondary btn-sm edit-btn" onclick="editField('add')">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label for="subtitle" class="col-sm-2 col-form-label">Trạng thái</label>
-                    <div class="col-sm-10 d-flex align-items-center">
-                        <input id="status" type="text" class="form-control" name="status" value="${cus.getStatus()}" readonly>
-                        <div style="margin-left: 42px"></div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-10 offset-sm-2">
-                        <button id="saveBtn" type="submit" class="btn btn-primary" style="display:none;">Lưu</button>
-                    </div>
-                </div>
-            </form>
-
-            <!-- Modal -->
-            <div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="resultModalLabel">Thông báo</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                        <div class="form-group row">
+                            <label for="subtitle" class="col-sm-2 col-form-label">Địa chỉ</label>
+                            <div class="col-sm-10 d-flex align-items-center">
+                                <input id="add" type="text" class="form-control" name="add" value="${cus.getAddress()}" readonly>
+                                <button type="button" class="btn btn-secondary btn-sm edit-btn" onclick="editField('add')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </div>
                         </div>
-                        <div class="modal-body">
-                            <p id="modalMessage"></p>
+
+                        <div class="form-group row">
+                            <label for="subtitle" class="col-sm-2 col-form-label">Trạng thái</label>
+                            <div class="col-sm-10 d-flex align-items-center">
+                                <input id="status" type="text" class="form-control" name="status" value="${cus.getStatus()}" readonly>
+                                <div style="margin-left: 42px"></div>
+                            </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+
+                        <div class="row">
+                            <div class="col-sm-10 offset-sm-2">
+                                <button id="saveBtn" type="submit" class="btn btn-primary" style="display:none;">Lưu</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="resultModalLabel">Thông báo</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p id="modalMessage"></p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
+        <%@include file="DashboardFooter.jsp" %>
         <script>
             function editField(fieldId) {
                 var field = document.getElementById(fieldId);
