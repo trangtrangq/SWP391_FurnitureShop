@@ -243,9 +243,21 @@
         <%@include file="DashboardNavbar.jsp" %>
         <div class="main">
             <%@include file="DashboardHeader.jsp" %>
-            <div class="container-fluid" style="margin-top: 15px">
+
+            <div class="container" style="margin-top: 15px">
+                <a href="OrderListServlet" class="btn btn-primary"> <i class="fas fa-arrow-left"></i>Back to list</a>
+                <div class="container-fluid" style="margin-top: 20px; margin-bottom: 20px">
+                    <div class="title-wrapper pt-30">
+                        <div class="row align-items-center">
+                            <div class="col-md-10">
+                                <div class="title">
+                                    <h2>Order Detail</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="container">
-                    <a href="OrderListServlet" class="btn btn-primary" style="margin-bottom: 15px"> < Back to list</a>
                     <div class="row">
                         <div class="col-md-8">
                             <!-- Details -->
@@ -345,7 +357,7 @@
                                                                 </c:when>
                                                                 <c:when test="${order.status == 'Done'}">
                                                                     <button class="btn btn-success" style="width: 80px; height: 30px; margin-right: 10px;"><a href="link-to-your-page" style="text-decoration: none; color: white" >${order.status}</a></button>
-                                                                 
+
                                                                 </c:when>
                                                                 <c:otherwise>
                                                                     <button class="btn btn-warning" style="width: 100px; height: 30px;">${order.status}</button>

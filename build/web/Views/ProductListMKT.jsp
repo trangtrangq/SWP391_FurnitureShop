@@ -16,6 +16,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
               integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
         <style>
             th,
             td {
@@ -238,7 +239,7 @@
                                 <div class="row align-items-center">
                                     <div class="col-md-6">
                                         <div class="title">
-                                            <h2>Product List</h2>
+                                            <h2><a href="ProductListMKTServlet" style="text-decoration: none">Product List</a></h2>
                                         </div>
                                     </div>
                                 </div>
@@ -281,34 +282,41 @@
                                                 <input type="radio" name="sortby" value="quantityDesc" id="quantityDesc" style="display: none;">
                                                 <label for="quantityDesc">Số lượng giảm dần</label>
                                             </li>
+                                            <li>
+                                                <input type="radio" name="sortby" value="createDateDesc" id="createDateDesc" style="display: none;">
+                                                <label for="createDateDesc">Sản phẩm mới nhất</label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" name="sortby" value="createDateAsc" id="createDateAsc" style="display: none;">
+                                                <label for="createDateAsc">Sản phẩm cũ nhất</label>
+                                            </li>
                                         </ul>
                                     </form>
                                 </div>
                             </div>
                         </div>
 
-
                         <!-- Add New Product Modal -->
                         <div class="modal fade" id="addProductModal" tabindex="-1" role="dialog" aria-labelledby="addProductModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-lg" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="addProductModalLabel">Add New Product</h5>
+                                        <h3 class="modal-title" id="addProductModalLabel"><b>Add New Product</b></h3>
                                         <button type="button" class="close btn btn-danger" data-dismiss="modal" aria-label="Close" style="margin-left: 532px;">
-                                            <span aria-hidden="true" style="width: 40px; height: 20px">X</span>
+                                            <span aria-hidden="true" style="width: 30px; height: 20px">X</span>
                                         </button>
                                     </div>
                                     <div class="modal-body">
                                         <form action="ManageProductServlet" method="post" enctype="multipart/form-data">
                                             <input type="hidden" name="action" value="addNewProduct">
                                             <div class="form-group">
-                                                <label for="productName">Product Name:</label>
+                                                <label for="productName"><b>Product Name:</b></label>
                                                 <input type="text" class="form-control" id="productName" name="productName">
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-7">
                                                     <div class="form-group">
-                                                        <label for="categoryId">Category:</label>
+                                                        <label for="categoryId"><b>Category:</b></label>
                                                         <select class="form-control" id="categoryId" name="categoryId">
                                                             <c:forEach items="${requestScope.categoryList}" var="category">
                                                                 <option value="${category.id}">${category.category}</option>
@@ -316,7 +324,7 @@
                                                         </select>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="brandId">Brand:</label>
+                                                        <label for="brandId"><b>Brand:</b></label>
                                                         <select class="form-control" id="brandId" name="brandId">
                                                             <c:forEach items="${requestScope.brandList}" var="brand">
                                                                 <option value="${brand.id}">${brand.brandname}</option>
@@ -324,25 +332,25 @@
                                                         </select>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="roomId">Room:</label>
+                                                        <label for="roomId"><b>Room:</b></label>
                                                         <select class="form-control" id="roomId" name="roomId">
                                                             <c:forEach items="${requestScope.roomList}" var="room">
                                                                 <option value="${room.id}">${room.roomname}</option>
                                                             </c:forEach>
                                                         </select>
                                                     </div>
-                                                    <div class="row">
+                                                    <div class="row" style="margin-bottom: 10px">
                                                         <div class="form-group col-md-6">
-                                                            <label for="priceProduct">Price:</label>
+                                                            <label for="priceProduct"><b>Price:</b></label>
                                                             <input type="text" class="form-control" id="priceProduct" name="priceProduct">
                                                         </div>
                                                         <div class="form-group col-md-6">
-                                                            <label for="quantityProduct">Quantity:</label>
+                                                            <label for="quantityProduct"><b>Quantity:</b></label>
                                                             <input type="text" class="form-control" id="quantityProduct" name="quantityProduct">
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="imageProductInput">Image:</label>
+                                                        <label for="imageProductInput"><b>Image:</b></label>
                                                         <input type="file" class="form-control-file" id="imageProductInput" name="imageProduct" accept="image/*" onchange="previewImage(event, 'imageProduct')">
                                                     </div>
                                                 </div>
@@ -351,9 +359,12 @@
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label for="descriptionProduct">Description:</label>
+                                                <label for="descriptionProduct"><b>Description:</b></label>
                                                 <textarea class="form-control" id="descriptionProduct" name="descriptionProduct" rows="4"></textarea>
                                             </div>
+                                            <script>
+                                                CKEDITOR.replace('descriptionProduct');
+                                            </script>
                                             <div class="d-flex" style="justify-content: center; margin-top: 10px">
                                                 <button type="submit" class="btn btn-primary">Save</button>
                                             </div>
@@ -368,56 +379,64 @@
                             <div class="modal-dialog modal-lg" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="addProductDetailModalLabel">Add New Product Detail</h5>
+                                        <h3 class="modal-title" id="addProductDetailModalLabel"><b>Add New Product Detail</b></h3>
                                         <button type="button" class="close btn btn-danger" data-dismiss="modal" aria-label="Close" style="margin-left: 495px">
-                                            <span aria-hidden="true" style="width: 40px; height: 20px">X</span>
+                                            <span aria-hidden="true" style="width: 30px; height: 20px">X</span>
                                         </button>
                                     </div>
                                     <div class="modal-body">
                                         <form action="ManageProductServlet" method="post" enctype="multipart/form-data">
                                             <input type="hidden" name="action" value="addNewProductDetail">
-                                            <div class="form-group">
-                                                <label for="productDetailName">Product:</label>
-                                                <select class="form-control" id="productDetailName" name="productId">
-                                                    <c:forEach items="${requestScope.productList}" var="product">
-                                                        <option value="${product.id}">${product.name}</option>
-                                                    </c:forEach>
-                                                </select>
-                                            </div>
                                             <div class="row">
-                                                <div class="form-group col-md-6">
-                                                    <label for="colorId">Color:</label>
-                                                    <select class="form-control" id="colorId" name="colorId">
-                                                        <c:forEach items="${requestScope.colorList}" var="color">
-                                                            <option value="${color.id}">${color.colorname}</option>
-                                                        </c:forEach>
-                                                    </select>
+                                                <div class="col-md-6 row">
+                                                    <div class="form-group">
+                                                        <label for="productDetailName"><b>Product:</b></label>
+                                                        <select class="form-control" id="productDetailName" name="productId">
+                                                            <c:forEach items="${requestScope.productList}" var="product">
+                                                                <option value="${product.id}">${product.name}</option>
+                                                            </c:forEach>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group col-md-6">
+                                                        <label for="colorId"><b>Color:</b></label>
+                                                        <select class="form-control" id="colorId" name="colorId">
+                                                            <c:forEach items="${requestScope.colorList}" var="color">
+                                                                <option value="${color.id}">${color.colorname}</option>
+                                                            </c:forEach>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group col-md-6">
+                                                        <label for="quantityProductDetail"><b>Quantity:</b></label>
+                                                        <input style="height: 33px" type="text" class="form-control" id="quantityProductDetail" name="quantityProductDetail">
+                                                    </div>
+                                                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
                                                 </div>
-                                                <div class="form-group col-md-6">
-                                                    <label for="quantityProductDetail">Quantity:</label>
-                                                    <input type="text" class="form-control" id="quantityProductDetail" name="quantityProductDetail">
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="form-group col-md-3">
-                                                    <label for="imageProductDetailInput1">Image 1:</label>
-                                                    <input type="file" class="form-control-file" id="imageProductDetailInput1" name="imageProductDetail1" accept="image/*" onchange="previewImage(event, 'imagePreview1')" style="width: 90px; margin-bottom: 10px; margin-top: 10px">
-                                                    <img id="imagePreview1" src="" width="173px" height="173px" style="max-width: 100%">
-                                                </div>
-                                                <div class="form-group col-md-3">
-                                                    <label for="imageProductDetailInput2">Image 2:</label>
-                                                    <input type="file" class="form-control-file" id="imageProductDetailInput2" name="imageProductDetail2" accept="image/*" onchange="previewImage(event, 'imagePreview2')" style="width: 90px; margin-bottom: 10px; margin-top: 10px">
-                                                    <img id="imagePreview2" src="" width="173px" height="173px" style="max-width: 100%">
-                                                </div>
-                                                <div class="form-group col-md-3">
-                                                    <label for="imageProductDetailInput3">Image 3:</label>
-                                                    <input type="file" class="form-control-file" id="imageProductDetailInput3" name="imageProductDetail3" accept="image/*" onchange="previewImage(event, 'imagePreview3')" style="width: 90px; margin-bottom: 10px; margin-top: 10px">
-                                                    <img id="imagePreview3" src="" width="173px" height="173px" style="max-width: 100%">
-                                                </div>
-                                                <div class="form-group col-md-3">
-                                                    <label for="imageProductDetailInput4">Image 4:</label>
-                                                    <input type="file" class="form-control-file" id="imageProductDetailInput4" name="imageProductDetail4" accept="image/*" onchange="previewImage(event, 'imagePreview4')" style="width: 90px; margin-bottom: 10px; margin-top: 10px">
-                                                    <img id="imagePreview4" src="" width="173px" height="173px"  style="max-width: 100%">
+
+                                                <div class="col-md-6 row">
+                                                    <div class="form-group col-md-6">
+                                                        <img id="imagePreview1" src="" width="173px" height="173px" style="max-width: 100%">
+                                                        <div style="display: flex; justify-content: center">
+                                                            <input type="file" class="form-control-file" id="imageProductDetailInput1" name="imageProductDetail1" accept="image/*" onchange="previewImage(event, 'imagePreview1')" style="width: 80px; margin-top: 10px">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-md-6">
+                                                        <img id="imagePreview2" src="" width="173px" height="173px" style="max-width: 100%">
+                                                        <div style="display: flex; justify-content: center">
+                                                            <input type="file" class="form-control-file" id="imageProductDetailInput2" name="imageProductDetail2" accept="image/*" onchange="previewImage(event, 'imagePreview2')" style="width: 80px; margin-top: 10px">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-md-6">
+                                                        <img id="imagePreview3" src="" width="173px" height="173px" style="max-width: 100%">
+                                                        <div style="display: flex; justify-content: center">
+                                                            <input type="file" class="form-control-file" id="imageProductDetailInput3" name="imageProductDetail3" accept="image/*" onchange="previewImage(event, 'imagePreview3')" style="width: 80px; margin-top: 10px">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-md-6">
+                                                        <img id="imagePreview4" src="" width="173px" height="173px"  style="max-width: 100%">
+                                                        <div style="display: flex; justify-content: center">
+                                                            <input type="file" class="form-control-file" id="imageProductDetailInput4" name="imageProductDetail4" accept="image/*" onchange="previewImage(event, 'imagePreview4')" style="width: 80px; margin-top: 10px">
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="d-flex" style="justify-content: center; margin-top: 10px">
@@ -428,9 +447,11 @@
                                 </div>
                             </div>
                         </div>
+
                         <!--Search Form-->
                         <div class="ml-15 mb-15">
-                            <form method="post">
+                            <form id="searchForm" action="ProductListMKTServlet" method="get">
+                                <input type="hidden" name="action" value="search"/>
                                 <div class="d-flex button-add">
                                     <input type="text" class="form-control" name="search" placeholder="Tên sản phẩm" style="width: 350px;" />
                                     <button class="btn btn-primary" type="submit">Search</button>
@@ -529,7 +550,7 @@
                                                     <input type="checkbox" value="Active" data-status="Active" name="status-filter" /><span> Active</span>
                                                 </li>
                                                 <li>
-                                                    <input type="checkbox" value="In Active" data-status="Inactive" name="status-filter" /><span> In Active</span>
+                                                    <input type="checkbox" value="Inactive" data-status="Inactive" name="status-filter" /><span> Inactive</span>
                                                 </li>
                                             </ul>
                                         </div>
@@ -606,365 +627,6 @@
                                                 </tr>
                                             </thead>
                                             <tbody id="product-container">
-                                            <%--<c:forEach items="${requestScope.productList}" var="product">--%>
-                                            <!--                                                <tr>
-                                                                                                <td>
-                                                                                                    <div>
-                                                                                                        <p class="text-sm">${product.id}</p>
-                                                                                                    </div>
-                                                                                                </td>
-                                                                                                <td>
-                                                                                                    <div class="image">
-                                                                                                        <img src="image/product/${product.image}" alt="${product.name}" />
-                                                                                                    </div>
-                                                                                                </td>
-                                                                                                <td>
-                                                                                                    <div class="text-sm">
-                                                                                                        <p class="text-sm">${product.name}</p>
-                                                                                                    </div>
-                                                                                                </td>
-                                                                                                <td>
-                                                                                                    <p class="text-sm">
-                                            <c:forEach items="${requestScope.categoryList}" var="category">
-                                                <c:if test="${product.category_id == category.id}">${category.category}
-                                                </c:if>
-                                            </c:forEach>
-                                        </p>
-                                    </td>
-                                    <td>
-                                        <p class="text-sm">
-                                            <c:forEach items="${requestScope.brandList}" var="brand">
-                                                <c:if test="${product.brand_id == brand.id}">${brand.brandname}
-                                                </c:if>
-                                            </c:forEach>
-                                        </p>
-                                    </td>
-                                    <td>
-                                        <p class="text-sm">
-                                            <c:forEach items="${requestScope.roomList}" var="room">
-                                                <c:if test="${product.room_id == room.id}">${room.roomname}
-                                                </c:if>
-                                            </c:forEach>
-                                        </p>
-                                    </td>
-                                    <td>
-                                        <p class="text-sm">
-                                            <span class="text-danger">
-                                            <c:forEach items="${requestScope.saleOffList}" var="saleOff">
-                                                <c:if test="${product.id == saleOff.product_id}">${product.price - saleOff.getSaleoffvalue() * product.price / 100}VND
-                                                </c:if>
-                                            </c:forEach>
-                                        </span>
-                                        <del>${product.price} VND</del>
-                                    </p>
-                                </td>
-                                <td>
-                                    <p class="text-sm text-danger" >
-                                        <span class="text-sm">-</span>
-                                        <span class="text-sm">
-                                            <c:forEach items="${requestScope.saleOffList}" var="saleOff">
-                                                <c:if test="${product.id == saleOff.product_id}">${saleOff.getSaleoffvalue()}
-                                                </c:if>
-                                            </c:forEach>
-                                        </span>
-                                        <span class="text-sm">%</span>
-                                    </p>
-                                </td>
-                                <td>
-                                    <p class="text-sm">${product.quantity}</p>
-                                </td>
-                                <td>
-                                    <p class="text-sm">${product.status}</p>
-                                </td>
-                                <td class="actions">
-                                    <p>
-                                        <a href="#" title="View" data-toggle="modal" data-target="#viewProductModal_${product.id}"><i class="fas fa-eye"></i></a>
-                                        <a href="#" title="Edit" data-toggle="modal" data-target="#editProductModal_${product.id}"><i class="fas fa-edit"></i></a>
-                                        <a href="#" title="Delete" data-toggle="modal" data-target="#deleteProductModal_${product.id}"><i class="fas fa-trash-alt"></i></a>
-                                    </p>
-
-                                </td>
-                            </tr>
-                            Modal View Detail
-                        <div class="modal fade" id="viewProductModal_${product.id}" tabindex="-1" aria-labelledby="viewProductModalLabel_${product.id}" aria-hidden="true">
-                            <div class="modal-dialog modal-fullscreen">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="viewProductModalLabel">Product Details</h5>
-                                        <button type="button" class="close custom-close-btn btn btn-danger" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true" style="width: 40px; height: 20px">X</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="row">
-                                            <div class="col-md-6 row">
-                                                <div class="col-md-6">
-                                                    <img src="image/product/${product.image}" alt="" style="max-width: 100%">
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <b>Product ID:</b> #${product.id}<br/>
-                                                    <b>Product Name:</b> ${product.name}<br/>
-                                                    <b>Category:</b> 
-                                            <c:forEach items="${requestScope.categoryList}" var="category">
-                                                <c:if test="${product.category_id == category.id}">${category.category}</c:if>
-                                            </c:forEach><br/>
-                                            <b>Brand:</b> 
-                                            <c:forEach items="${requestScope.brandList}" var="brand">
-                                                <c:if test="${product.brand_id == brand.id}">${brand.brandname}</c:if>
-                                            </c:forEach><br/>
-                                            <b>Score:</b> ${product.staravg} sao<br/>
-                                            <b>Price:</b> ${product.price} VNĐ<br/>
-                                            <b>Room:</b> 
-                                            <c:forEach items="${requestScope.roomList}" var="room">
-                                                <c:if test="${product.room_id == room.id}">${room.roomname}</c:if>
-                                            </c:forEach><br/>
-                                            <b>Quantity:</b> ${product.quantity}<br/>
-                                            <b>Status:</b> ${product.status}<br/>
-                                            <c:forEach items="${requestScope.productDetailList}" var="productDetail">
-                                                <c:if test="${productDetail.product_id == product.id}">
-                                                    <c:forEach items="${requestScope.colorList}" var="color">
-                                                        <c:if test="${productDetail.color_id == color.id}">
-                                                            <b>Color:</b> ${color.colorname}<br/>
-                                                        </c:if>
-                                                    </c:forEach>
-                                                    <b>SL:</b> ${productDetail.quantity}<br/>
-                                                </c:if>
-                                            </c:forEach>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <b>Description:</b><br/>
-                                            ${product.description}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                            <c:forEach items="${requestScope.productDetailList}" var="productDetail">
-                                                <c:if test="${productDetail.product_id == product.id}">
-                                                    <c:forEach items="${requestScope.colorList}" var="color">
-                                                        <c:if test="${productDetail.color_id == color.id}">
-                                                            <b>Color:</b> ${color.colorname}<br/><br/>
-                                                        </c:if>
-                                                    </c:forEach>
-                                                    <div class="row">
-                                                    <c:forEach items="${requestScope.attachedImageList}" var="attachedImage">
-                                                        <c:if test="${productDetail.id == attachedImage.productdetail_id}">
-                                                            <div class="col-md-3">
-                                                                <img src="image/product/${attachedImage.image}" alt="${attachedImage.image}" style="max-width: 100%;">
-                                                            </div>
-                                                        </c:if>
-                                                    </c:forEach>
-                                                </div>
-                                                </c:if>
-                                            </c:forEach>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-
-                    Modal Edit
-                    <div class="modal fade" id="editProductModal_${product.id}" tabindex="-1" aria-labelledby="editProductModalLabel_${product.id}" aria-hidden="true">
-                         Modal content 
-                        <div class="modal-dialog modal-fullscreen">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="editProductModalLabel">Edit Product</h5>
-                                    <button type="button" class="close custom-close-btn btn btn-danger" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true" style="width: 40px; height: 20px">X</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <form id="editProductForm" action="ManageProductServlet" method="post" enctype="multipart/form-data">
-                                        <input type="hidden" name="action" value="editProduct">
-                                        <input type="hidden" name="editProductId" id="editProductId" value="${product.id}">
-                                        <div class="row">
-                                            <div class="col-md-6 row">
-                                                <div class="col-md-6">
-                                                    <img id="imageProductPreview_${product.id}" src="image/product/${product.image}" alt="" style="max-width: 100%">
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div style="margin-bottom: 5px">
-                                                        <b>Product Name:</b><input name="productName" value="${product.name}" style="width: 346px"/><br/>
-                                                    </div>
-                                                    <div style="margin-bottom: 5px">
-                                                        <b>Category:</b>
-                                                        <select name="categoryID">
-                                            <c:forEach items="${requestScope.categoryList}" var="category">
-                                                <c:choose>
-                                                    <c:when test="${category.id == product.category_id}">
-                                                        <option value="${category.id}" selected>${category.category}</option>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <option value="${category.id}">${category.category}</option>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </c:forEach>
-                                        </select>
-                                    </div>
-                                    <div style="margin-bottom: 5px">
-                                        <b>Brand:</b> 
-                                        <select name="brandID" style="margin-left: 28px; width: 140px">
-                                            <c:forEach items="${requestScope.brandList}" var="brand">
-                                                <c:choose>
-                                                    <c:when test="${brand.id == product.brand_id}">
-                                                        <option value="${brand.id}" selected>${brand.brandname}</option>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <option value="${brand.id}">${brand.brandname}</option>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </c:forEach>
-                                        </select>
-                                    </div>
-
-                                    <div style="margin-bottom: 5px">
-                                        <b>Room:</b>
-                                        <select name="roomID" style="margin-left: 29px; width: 140px">
-                                            <c:forEach items="${requestScope.roomList}" var="room">
-                                                <c:choose>
-                                                    <c:when test="${room.id == product.room_id}">
-                                                        <option value="${room.id}" selected>${room.roomname}</option>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <option value="${room.id}">${room.roomname}</option>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </c:forEach>
-                                        </select>
-                                    </div>
-
-                                    <div style="margin-bottom: 5px">
-                                        <b>Price:</b><input type="text" name="priceProduct" value="${product.price}" style="margin-left: 38px; width: 140px"/> VNĐ<br/> 
-                                    </div>
-
-                                    <div style="margin-bottom: 5px">
-                                        <b>Quantity:</b><input type="text" name="quantityProduct" value="${product.quantity}" style="margin-left: 9px; width: 140px"/><br/>
-                                    </div>
-
-                                    <div style="margin-bottom: 5px">
-                                        <b>Status:</b>
-                                        <select name="statusProduct" style="margin-left: 25px; width: 140px">
-                                            <c:choose>
-                                                <c:when test="${product.status == 'Active'}">
-                                                    <option value="Active" selected>Active</option>
-                                                    <option value="In Active">In Active</option>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <option value="Active">Active</option>
-                                                    <option value="In Active" selected>In Active</option>
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </select>
-                                    </div>
-                                    <b>Image: </b>
-                                    <input type="hidden" name="oldImageProduct" value="${product.image}"/>
-                                    <input type="file" name="imageProduct" id="imageProductInput_${product.id}" onchange="previewImage(event, 'imageProductPreview_${product.id}')" accept="image/*"/>
-                                </div>
-                                <div class="col-md-12">
-                                    <b>Description:</b><br/>
-                                    <textarea name="desciptionProduct" rows="8" cols="56">
-                                            ${product.description}
-                                        </textarea>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div style="margin-top: 5px">
-                                            <c:set var="count" value="1" scope="page"/>
-                                            <c:set var="countImg" value="1" scope="page"/>
-                                            <c:forEach items="${requestScope.productDetailList}" var="productDetail">
-                                                <c:if test="${productDetail.product_id == product.id}">
-                                                    <input type="hidden" name="productDetailID_${count}" value="${productDetail.id}"/>
-                                                    <c:forEach items="${requestScope.colorList}" var="color">
-                                                        <c:if test="${productDetail.color_id == color.id}">
-                                                            <span style="margin-bottom: 5px">
-                                                                <b>Color:</b>
-                                                                <select name="colorID_${count}" style="width: 140px; margin-left: 10px">
-                                                            <c:forEach items="${requestScope.colorList}" var="color">
-                                                                <c:choose>
-                                                                    <c:when test="${productDetail.color_id == color.id}">
-                                                                        <option value="${color.id}" selected>${color.colorname}</option>
-                                                                    </c:when>
-                                                                    <c:otherwise>
-                                                                        <option value="${color.id}">${color.colorname}</option>
-                                                                    </c:otherwise>
-                                                                </c:choose>
-                                                            </c:forEach>
-                                                        </select>
-                                                    </span>
-                                                        </c:if>
-                                                    </c:forEach>
-                                                    <b>Quantity detail:</b> <input type="text" name="quantityProductDetail_${count}" value="${productDetail.quantity}" style="width: 50px; margin-left: 10px"/><br/>
-                                                    <b>Status:</b>
-                                                    <select name="statusProductDetail_${count}" style="margin-left: 25px; width: 140px">
-                                                    <c:choose>
-                                                        <c:when test="${productDetail.status == 'Active'}">
-                                                            <option value="Active" selected>Active</option>
-                                                            <option value="In Active">In Active</option>
-                                                        </c:when>
-                                                        <c:otherwise>
-                                                            <option value="Active">Active</option>
-                                                            <option value="In Active" selected>In Active</option>
-                                                        </c:otherwise>
-                                                    </c:choose>
-                                                </select>
-                                                    <c:set var="count" value="${count + 1}" scope="page"/>
-                                                    <div class="modal-body row">
-                                                    <c:forEach items="${requestScope.attachedImageList}" var="attachedImage">
-                                                        <c:if test="${productDetail.id == attachedImage.productdetail_id}">
-                                                            <input type="hidden" name="attachedImageID_${countImg}" value="${attachedImage.id}"/>
-                                                            <input type="hidden" name="oldImageAttached_${countImg}" value="${attachedImage.image}"/>
-                                                            <div class="col-md-3">
-                                                                <img id="imagePreview_${attachedImage.id}" src="image/product/${attachedImage.image}" alt="${attachedImage.image}" style="max-width: 100%">
-                                                                <div style="margin-bottom: 5px; display: flex">
-                                                                    <b>Image: </b>
-                                                                    <input type="file" name="imageProductDetail_${countImg}" id="imageProductDetailInput_${attachedImage.id}" style="width: 90px; margin-left: 15px" onchange="previewImage(event, 'imagePreview_${attachedImage.id}')" accept="image/*"/>
-                                                                </div>
-                                                            <c:set var="countImg" value="${countImg + 1}" scope="page"/>
-                                                        </div>
-                                                        </c:if>
-                                                    </c:forEach>
-                                                </div><hr>
-                                                </c:if>
-                                            </c:forEach>
-                                        </div>
-                                    </div>
-                                    <div style="display: flex; justify-content: center">
-                                        <button type="submit" class="btn btn-primary">Update</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-                                            
-                                            
-             Modal Delete 
-            <div class="modal fade" id="deleteProductModal_${product.id}" tabindex="-1" aria-labelledby="deleteProductModalLabel_${product.id}" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="deleteProductModalLabel_${product.id}">Confirm Delete</h5>
-                            <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <p>Are you sure you want to delete this product ?</p>
-                            <form id="deleteProductForm" action="ManageProductServlet" method="post">
-                                <input type="hidden" name="action" value="deleteProduct">
-                                <input type="hidden" name="deleteProductId" id="deleteProductId" value="${product.id}">
-                                <div class="d-flex justify-content-center">
-                                    <button type="submit" class="btn btn-danger mx-2" style="width: 70px;">Yes</button>
-                                    <button type="button" class="btn btn-secondary mx-2" data-bs-dismiss="modal" style="width: 70px;">No</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>-->
-
-                                            <%--</c:forEach>--%>
                                             <c:set value="${requestScope.htmlResponse}" var="htmlResponse"/>
                                             ${htmlResponse}
                                         </tbody>
@@ -997,20 +659,6 @@
         <%@include file="DashboardFooter.jsp" %>
     </main>
 
-    <div class="modal fade" id="editProductModal_${product.id}" tabindex="-1" aria-labelledby="editProductModalLabel_${product.id}" aria-hidden="true">
-        <div class="modal-dialog modal-fullscreen">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editProductModalLabel">Edit Product</h5>
-                    <button type="button" class="close custom-close-btn btn btn-danger" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true" style="width: 40px; height: 20px">X</span>
-                    </button>
-                </div>
-                <div class="modal-body" id="editModal-container">
-                </div>
-            </div>
-        </div>
-    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>

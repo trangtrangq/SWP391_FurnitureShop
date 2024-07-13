@@ -5,12 +5,22 @@ package Controller.Marketing;
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 import DAL.AttachedImageDAO;
+import DAL.BrandDAO;
+import DAL.CategoryDAO;
+import DAL.ColorDAO;
 import DAL.ProductDAO;
 import DAL.ProductDetailDAO;
+import DAL.RoomDAO;
+import DAL.SaleOffDAO;
 import Helper.FileUploadHelper;
 import Models.AttachedImage;
+import Models.Brand;
+import Models.Category;
+import Models.Color;
 import Models.Product;
 import Models.ProductDetail;
+import Models.Room;
+import Models.SaleOff;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -20,6 +30,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 /**
  *
@@ -77,26 +88,19 @@ public class ManageProductServlet extends HttpServlet {
         editProduct.setImage(imageProduct);
         editProduct.setDescription(desciptionProduct);
 
-        PrintWriter out = response.getWriter();
-        out.println("ImageProduct: " + editProduct.getImage());
         ProductDAO productDAO = new ProductDAO();
         productDAO.updateProduct(editProduct);
 
         int count = 1;
         while (true) {
             String productDetailIDStr = request.getParameter("productDetailID_" + count);
-            out.println("Product Detail: " + productDetailIDStr);
             if (productDetailIDStr == null) {
                 break;
             }
             int productDetailId = tryParseInt(productDetailIDStr, 0);
-            out.println("Product Detail:" + productDetailId);
             int colorId = tryParseInt(request.getParameter("colorID_" + count), 0);
-            out.println("Color: " + colorId);
             int quantityProductDetail = tryParseInt(request.getParameter("quantityProductDetail_" + count), 0);
-            out.println("Quantity Product Detail: " + quantityProductDetail);
             String statusProductDetail = request.getParameter("statusProductDetail_" + count);
-            out.println("Status Product Detail: " + statusProductDetail);
 
             ProductDetail editProductDetail = new ProductDetail();
             editProductDetail.setId(productDetailId);
@@ -106,7 +110,6 @@ public class ManageProductServlet extends HttpServlet {
             editProductDetail.setStatus(statusProductDetail);
 
             ProductDetailDAO productDetailDAO = new ProductDetailDAO();
-            out.println(productDetailDAO.updateProductDetail(editProductDetail));
 
             int start = (count - 1) * 4 + 1;
             int end = start + 3;
@@ -127,7 +130,6 @@ public class ManageProductServlet extends HttpServlet {
                 editAttachedImage.setId(attachedImageId);
                 editAttachedImage.setProductdetail_id(productDetailId);
                 editAttachedImage.setImage(imageAttachedImage);
-                out.println("AttachedImage: " + editAttachedImage.getId() + "   " + editAttachedImage.getProductdetail_id() + "  " + editAttachedImage.getImage());
                 AttachedImageDAO attachedImageDAO = new AttachedImageDAO();
                 attachedImageDAO.updateAttachedImage(editAttachedImage);
             }
@@ -214,6 +216,37 @@ public class ManageProductServlet extends HttpServlet {
         }
     }
 
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        BrandDAO brandDao = new BrandDAO();
+        ArrayList<Brand> brandList = brandDao.getBrandList();
+        request.setAttribute("brandList", brandList);
+
+        RoomDAO roomDAO = new RoomDAO();
+        ArrayList<Room> roomList = roomDAO.getRoomList();
+        request.setAttribute("roomList", roomList);
+
+        CategoryDAO categoryDAO = new CategoryDAO();
+        ArrayList<Category> categoryList = categoryDAO.getCategoryList();
+        request.setAttribute("categoryList", categoryList);
+
+        ColorDAO colorDAO = new ColorDAO();
+        ArrayList<Color> colorList = colorDAO.getColorList();
+        request.setAttribute("colorList", colorList);
+
+        ProductDetailDAO pddao = new ProductDetailDAO();
+        ArrayList<ProductDetail> productDetailList = pddao.getAllProductDetails();
+        request.setAttribute("productDetailList", productDetailList);
+
+        AttachedImageDAO attachedImageDAO = new AttachedImageDAO();
+        ArrayList<AttachedImage> attachedImageList = attachedImageDAO.getAllAttachedImages();
+        request.setAttribute("attachedImageList", attachedImageList);
+
+        SaleOffDAO saleOffDAO = new SaleOffDAO();
+        ArrayList<SaleOff> saleOffList = saleOffDAO.getSaleOffList();
+        request.setAttribute("saleOffList", saleOffList);
+    }
+
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -226,7 +259,12 @@ public class ManageProductServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        UpdateProduct(request, response);
+        int productID = Integer.parseInt(request.getParameter("productID"));
+        ProductDAO productDAO = new ProductDAO();
+        Product product = productDAO.getProductByID(productID);
+        request.setAttribute("product", product);
+        processRequest(request, response);
+        request.getRequestDispatcher("Views/ManageProductMKT.jsp").forward(request, response);
     }
 
     /**
@@ -241,24 +279,33 @@ public class ManageProductServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
+        HttpSession session = request.getSession();
         switch (action) {
             case "addNewProduct":
                 InsertProduct(request, response);
+                session.removeAttribute("productList");
+                response.sendRedirect("ProductListMKTServlet");
                 break;
             case "addNewProductDetail":
                 InsertProductDetail(request, response);
+                session.removeAttribute("productList");
+                response.sendRedirect("ProductListMKTServlet");
                 break;
             case "editProduct":
                 UpdateProduct(request, response);
+                int productID = Integer.parseInt(request.getParameter("editProductId"));
+                ProductDAO productDAO = new ProductDAO();
+                Product product = productDAO.getProductByID(productID);
+                request.setAttribute("product", product);
+                processRequest(request, response);
+                request.getRequestDispatcher("Views/ManageProductMKT.jsp").forward(request, response);
                 break;
             case "deleteProduct":
                 DeleteProduct(request, response);
+                session.removeAttribute("productList");
+//                response.sendRedirect("ProductListMKTServlet");
                 break;
         }
-
-        HttpSession session = request.getSession();
-        session.removeAttribute("productList");
-        response.sendRedirect("ProductListMKTServlet");
 
     }
 
@@ -272,10 +319,4 @@ public class ManageProductServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    public static void main(String[] args) {
-        int count = 2;
-        for (int i = count; i <= 4 * count; i += count) {
-            System.out.println(i);
-        }
-    }
 }

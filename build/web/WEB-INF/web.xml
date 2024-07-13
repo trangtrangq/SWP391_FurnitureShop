@@ -181,14 +181,6 @@
         <servlet-class>Controller.Admin.SettingServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>ProductServlet1</servlet-name>
-        <servlet-class>Controller.Public.ProductServlet1</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>test</servlet-name>
-        <servlet-class>Controller.Public.test</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>ProductSearchServlet</servlet-name>
         <servlet-class>Controller.Public.ProductSearchServlet</servlet-class>
     </servlet>
@@ -371,14 +363,6 @@
     <servlet-mapping>
         <servlet-name>SettingServlet</servlet-name>
         <url-pattern>/SettingServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ProductServlet1</servlet-name>
-        <url-pattern>/ProductServlet1</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>test</servlet-name>
-        <url-pattern>/test</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ProductSearchServlet</servlet-name>

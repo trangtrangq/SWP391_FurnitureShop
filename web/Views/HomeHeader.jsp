@@ -124,7 +124,7 @@
                         <div class="header-upper-search-top hidden-xs hidden-sm">
                             <div class="header-search">
                                 <div class="search-box wpo-wrapper-search">
-                                    <form action="${pageContext.request.contextPath}/ProductSearchServlet" class="searchform searchform-categoris ultimate-search" method="get">
+                                    <form id="searchForm" action="${pageContext.request.contextPath}/ProductSearchServlet" class="searchform searchform-categoris ultimate-search" method="get">
                                         <div class="wpo-search-inner">
                                             <input type="hidden" name="action" value="search" />
                                             <input required id="inputSearchAuto" name="search" maxlength="40" autocomplete="off"
@@ -400,7 +400,7 @@
                             </a>
 
                         </div>
-                        <div id="main-nav-menu">
+                        <div id="main-nav-menu" style="display: flex; justify-content: center">
                             <nav class="navbar-mainmenu">
                                 <ul class="menuList-main">
 
@@ -522,14 +522,6 @@
                                     </li>
                                     <li class="">
                                         <!--			<a href="/pages/brand-story" title="About Us"  > -->
-                                        <a href="${pageContext.request.contextPath}/Feedback" title="Feedback">
-                                            Feedback
-
-                                            <label class="menu__label"></label>
-                                        </a>
-                                    </li>
-                                    <li class="">
-                                        <!--			<a href="/pages/brand-story" title="About Us"  > -->
                                         <a href="AboutUs" title="About Us">
                                             About Us
 
@@ -590,9 +582,54 @@
                 });
             });
 
+//            $(document).ready(function () {
+//                var searchInput = $('#inputSearchAuto');
+//                var searchForm = $('#searchForm');
+//                var resultsWrapper = $('#ajaxSearchResults');
+//                var resultsContent = $('.resultsContent');
+//                var typingTimer; // Timer identifier
+//                var doneTypingInterval = 500; // Time in ms (500 ms)
+//
+//                // Function to handle the AJAX request
+//                function submitSearch() {
+//                    var searchData = searchInput.val().trim(); // Lấy giá trị của input và loại bỏ khoảng trắng đầu cuối
+//
+//                    // Kiểm tra nếu có giá trị trong input search
+//                    if (searchData !== '') {
+//                        $.ajax({
+//                            type: 'POST', // Sử dụng phương thức POST
+//                            url: searchForm.attr('action'), // Lấy địa chỉ URL từ thuộc tính action của form
+//                            data: searchForm.serialize(), // Dữ liệu gửi đi là dữ liệu từ form đã được serialize
+//                            success: function (response) {
+//                                resultsWrapper.css('display', 'block'); // Hiển thị div lớn
+//                                resultsContent.html(response); // Gán giá trị response vào resultContent
+//                                console.log(response);
+//                            },
+//                            error: function (xhr, status, error) {
+//                                console.error("Error: " + error);
+//                            }
+//                        });
+//                    } else {
+//                        resultsWrapper.css('display', 'none'); // Ẩn kết quả khi không có giá trị trong input
+//                    }
+//                }
+//
+//                // Bắt sự kiện khi thay đổi giá trị của input tìm kiếm
+//                searchInput.on('input', function () {
+//                    clearTimeout(typingTimer); // Clear the previous timer
+//                    typingTimer = setTimeout(submitSearch, doneTypingInterval); // Set a new timer
+//                });
+//
+//                // Bắt sự kiện khi click submit form
+//                $('.btn-search').on('click', function () {
+//                    resultsWrapper.css('display', 'none'); // Ẩn kết quả khi click vào nút tìm kiếm
+//                    searchForm.submit();
+//                });
+//            });
+
             $(document).ready(function () {
                 var searchInput = $('#inputSearchAuto');
-                var searchForm = $('.searchform');
+                var searchForm = $('#searchForm');
                 var resultsWrapper = $('#ajaxSearchResults');
                 var resultsContent = $('.resultsContent');
                 var typingTimer; // Timer identifier
@@ -600,40 +637,39 @@
 
                 // Function to handle the AJAX request
                 function submitSearch() {
-                    var searchData = searchInput.val().trim(); // Lấy giá trị của input và loại bỏ khoảng trắng đầu cuối
+                    var searchData = searchInput.val().trim();
 
-                    // Kiểm tra nếu có giá trị trong input search
                     if (searchData !== '') {
                         $.ajax({
-                            type: 'POST', // Sử dụng phương thức POST
-                            url: searchForm.attr('action'), // Lấy địa chỉ URL từ thuộc tính action của form
-                            data: searchForm.serialize(), // Dữ liệu gửi đi là dữ liệu từ form đã được serialize
+                            type: 'POST',
+                            url: searchForm.attr('action'),
+                            data: searchForm.serialize(),
                             success: function (response) {
-                                resultsWrapper.css('display', 'block'); // Hiển thị div lớn
-                                resultsContent.html(response); // Gán giá trị response vào resultContent
+                                resultsWrapper.show(); // Use .show() to display results
+                                resultsContent.html(response);
+                                console.log(response);
                             },
                             error: function (xhr, status, error) {
                                 console.error("Error: " + error);
                             }
                         });
                     } else {
-                        resultsWrapper.css('display', 'none'); // Ẩn kết quả khi không có giá trị trong input
+                        resultsWrapper.hide(); // Use .hide() to hide results
                     }
                 }
 
-                // Bắt sự kiện khi thay đổi giá trị của input tìm kiếm
+                // Handle input change event with a delay
                 searchInput.on('input', function () {
-                    clearTimeout(typingTimer); // Clear the previous timer
-                    typingTimer = setTimeout(submitSearch, doneTypingInterval); // Set a new timer
+                    clearTimeout(typingTimer);
+                    typingTimer = setTimeout(submitSearch, doneTypingInterval);
                 });
 
-                // Bắt sự kiện khi click submit form
+                // Handle click event on search button
                 $('.btn-search').on('click', function () {
-                    resultsWrapper.css('display', 'none'); // Ẩn kết quả khi click vào nút tìm kiếm
+                    resultsWrapper.hide(); // Hide results when search button is clicked
+//                    searchForm.submit();
                 });
             });
-
-
         </script>
         <!-- Bootstrap JS and dependencies -->
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

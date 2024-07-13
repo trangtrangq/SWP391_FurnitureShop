@@ -36,6 +36,14 @@ public class ComparatorHelper {
     public static Comparator<Product> sortByStarDesc() {
         return Comparator.comparingDouble(Product::getStaravg).reversed();
     }
+    
+    public static Comparator<Product> sortByCreateDateAsc(){
+        return Comparator.comparing(Product::getCreateDate);
+    }
+    
+    public static Comparator<Product> sortByCreateDateDesc(){
+        return Comparator.comparing(Product::getCreateDate).reversed();
+    }
 
     public ArrayList<Product> sortProductList(ArrayList<Product> productList, String sortby) {
         if (sortby.equals("priceAsc")) {
@@ -50,6 +58,10 @@ public class ComparatorHelper {
             Collections.sort(productList, ComparatorHelper.sortByStarAsc());
         } else if (sortby.equals("starDesc")) {
             Collections.sort(productList, ComparatorHelper.sortByStarDesc());
+        }else if(sortby.equals("createDateAsc")){
+            Collections.sort(productList, ComparatorHelper.sortByCreateDateAsc());
+        }else if(sortby.equals("createDateDesc")){
+            Collections.sort(productList, ComparatorHelper.sortByCreateDateDesc());
         }
         return productList;
     }

@@ -5,6 +5,7 @@
 package DAL;
 
 import Models.Product;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,7 +24,7 @@ public class ProductDAO extends DBContext {
     private static final Logger LOGGER = Logger.getLogger(ProductDAO.class.getName());
 
     public boolean insertProduct(Product product) {
-        String sql = "INSERT INTO product (category_id, brand_id, room_id, name, description, image, price, quantity, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO product (category_id, brand_id, room_id, name, description, image, price, quantity, status, createdate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement preparedStatement = connect.prepareStatement(sql)) {
             preparedStatement.setInt(1, product.getCategory_id());
             preparedStatement.setInt(2, product.getBrand_id());
@@ -34,6 +35,7 @@ public class ProductDAO extends DBContext {
             preparedStatement.setDouble(7, product.getPrice());
             preparedStatement.setInt(8, product.getQuantity());
             preparedStatement.setString(9, product.getStatus());
+            preparedStatement.setDate(10, new java.sql.Date(product.getCreateDate().getTime()));
 
             int affectedRows = preparedStatement.executeUpdate();
             return affectedRows > 0;
@@ -96,7 +98,8 @@ public class ProductDAO extends DBContext {
                 product.setPrice(resultSet.getDouble("price"));
                 product.setQuantity(resultSet.getInt("quantity"));
                 product.setStatus(resultSet.getString("status"));
-
+                product.setCreateDate(resultSet.getDate("createdate"));
+                
                 productList.add(product);
             }
         } catch (Exception e) {
@@ -128,6 +131,7 @@ public class ProductDAO extends DBContext {
                     product.setPrice(resultSet.getDouble("price"));
                     product.setQuantity(resultSet.getInt("quantity"));
                     product.setStatus(resultSet.getString("status"));
+                    product.setCreateDate(resultSet.getDate("createdate"));
 
                     productList.add(product);
                 }
@@ -144,7 +148,7 @@ public class ProductDAO extends DBContext {
 
         StringBuilder sql = new StringBuilder("""
     SELECT DISTINCT
-        Product.id, Product.category_id, Product.brand_id, Product.room_id, Product.name, Product.description, Product.staravg, Product.image, Product.price, Product.quantity, Product.status
+        Product.id, Product.category_id, Product.brand_id, Product.room_id, Product.name, Product.description, Product.staravg, Product.image, Product.price, Product.quantity, Product.status, Product.createdate
     FROM 
         Product
     JOIN     
@@ -202,6 +206,7 @@ public class ProductDAO extends DBContext {
                     product.setPrice(rs.getDouble("price"));
                     product.setQuantity(rs.getInt("quantity"));
                     product.setStatus(rs.getString("status"));
+                    product.setCreateDate(rs.getDate("createdate"));
 
                     productList.add(product);
                 }
@@ -217,11 +222,9 @@ public class ProductDAO extends DBContext {
 
         StringBuilder sql = new StringBuilder("""
     SELECT DISTINCT
-        Product.id, Product.category_id, Product.brand_id, Product.room_id, Product.name, Product.description, Product.staravg, Product.image, Product.price, Product.quantity, Product.status
+        Product.id, Product.category_id, Product.brand_id, Product.room_id, Product.name, Product.description, Product.staravg, Product.image, Product.price, Product.quantity, Product.status, Product.createdate
     FROM 
         Product
-    JOIN 
-        ProductDetail ON Product.id = ProductDetail.product_id
     WHERE 1=1
     """);
 
@@ -275,6 +278,7 @@ public class ProductDAO extends DBContext {
                     product.setPrice(rs.getDouble("price"));
                     product.setQuantity(rs.getInt("quantity"));
                     product.setStatus(rs.getString("status"));
+                    product.setCreateDate(rs.getDate("createdate"));
 
                     productList.add(product);
                 }
@@ -340,6 +344,7 @@ public class ProductDAO extends DBContext {
                     product.setPrice(resultSet.getDouble("price"));
                     product.setQuantity(resultSet.getInt("quantity"));
                     product.setStatus(resultSet.getString("status"));
+                    product.setCreateDate(resultSet.getDate("createdate"));
                 }
             }
         } catch (Exception e) {
@@ -415,7 +420,17 @@ public class ProductDAO extends DBContext {
 
     public static void main(String[] args) {
         ProductDAO pdao = new ProductDAO();
-        pdao.updateScoreOfProduct();
+        String[] brands = {"1", "2"};
+        String[] rooms = {"1", "2"};
+        String[] categorys = {"1", "2"};
+        String[] status = {"Active", "Inactive"};
+        String[] price = {};
+        ArrayList<Product> products = pdao.filterProductListMKT(brands, rooms, categorys, status, price);
+        
+        products = pdao.searchProductByName("Giường");
+        for (Product product : products) {
+            System.out.println(product.getName());
+        }
     }
 
 }

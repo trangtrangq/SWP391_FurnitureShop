@@ -274,6 +274,54 @@
         });
     </script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script>
+        $(document).ready(function () {
+            var searchInput = $('#inputSearchAuto');
+            var searchForm = $('#searchForm');
+            var resultsWrapper = $('#ajaxSearchResults');
+            var resultsContent = $('.resultsContent');
+            var typingTimer; // Timer identifier
+            var doneTypingInterval = 500; // Time in ms (500 ms)
+
+            // Function to handle the AJAX request
+            function submitSearch() {
+                var searchData = searchInput.val().trim();
+
+                if (searchData !== '') {
+                    $.ajax({
+                        type: 'POST',
+                        url: searchForm.attr('action'),
+                        data: searchForm.serialize(),
+                        success: function (response) {
+                            resultsWrapper.show(); // Use .show() to display results
+                            resultsContent.html(response);
+                            console.log(response);
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error: " + error);
+                        }
+                    });
+                } else {
+                    resultsWrapper.hide(); // Use .hide() to hide results
+                }
+            }
+
+            // Handle input change event with a delay
+            searchInput.on('input', function () {
+                clearTimeout(typingTimer);
+                typingTimer = setTimeout(submitSearch, doneTypingInterval);
+            });
+
+            // Handle click event on search button
+            $('.btn-search').on('click', function () {
+                resultsWrapper.hide(); // Hide results when search button is clicked
+//                    searchForm.submit();
+            });
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 

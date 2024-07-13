@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Models;
-
+import java.util.Date;
 /**
  *
  * @author HELLO
@@ -20,6 +20,7 @@ public class Product {
     private double price;
     private int quantity;
     private String status;
+    private Date createDate;
 
     public Product() {
     }
@@ -34,7 +35,8 @@ public class Product {
         this.image = image;
         this.price = price;
         this.quantity = quantity;
-        this.status = "Active";
+        this.status = "Inactive";
+        this.createDate = new Date();
     }
 
     public int getId() {
@@ -124,6 +126,13 @@ public class Product {
     public void setStatus(String status) {
         this.status = status;
     }
-    
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
     
 }
