@@ -114,35 +114,20 @@ public class ManageUserServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ManageUserServlet</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet ManageUserServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
+        UserRoleDAO userRoleDAO = new UserRoleDAO();
+        ArrayList<UserRole> userRole = userRoleDAO.getUserRoleList();
+        request.setAttribute("userRole", userRole);
+        request.getRequestDispatcher("Views/UserDetail.jsp").forward(request, response);
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-//        processRequest(request, response);
+        int userID = tryParseInt(request.getParameter("userID"), 0);
+        UserDAO userDAO = new UserDAO();
+        User user = userDAO.getUserByID(userID);
+        request.setAttribute("user", user);
+        processRequest(request, response);
     }
 
     /**
@@ -160,14 +145,16 @@ public class ManageUserServlet extends HttpServlet {
         switch (action) {
             case "editUser":
                 UpdateUser(request, response);
-                response.sendRedirect("UserListServlet");
+                int userID = tryParseInt(request.getParameter("editUserId"), 0);
+                UserDAO userDAO = new UserDAO();
+                User user = userDAO.getUserByID(userID);
+                request.setAttribute("user", user);
+                processRequest(request, response);
                 break;
             case "addNewUser":
                 SignUpUser(request, response);
                 break;
         }
-        
-
     }
 
     /**

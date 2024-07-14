@@ -88,7 +88,11 @@
         <div class="row justify-content-center">
             <div class="col-md-2">
             </div>
-            <div class="col-md-8">
+            <div class="col-md-8" id="order-container">
+                <c:set value="${requestScope.htmlResponse}" var="htmlResponse"/>
+                ${htmlResponse}
+            </div>
+<!--            <div class="col-md-8" id="order-request">
                 <c:forEach items="${orderList}" var="order" >
                     <div class="order-card" style="margin-bottom: 30px">
                         <h3>OrderID: #${order.id}</h3>
@@ -209,7 +213,7 @@
                         </div>
                     </div>
                 </c:forEach>
-            </div>
+            </div>-->
             <div class="col-md-2">
             </div>
         </div>
@@ -218,10 +222,16 @@
         <div id="pagination" class="clearfix">
 
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <c:forEach var="page" items="${pagenumber}">
-                    <a class="page-node" href="MyOrderServlet?page=${page}" aria-label="Trang ${page}">${page}</a>
-                </c:forEach>
-                <span class="page-node ">&hellip;</span>
+                <form id="paginationForm" action="MyOrderServlet" method="post">
+                    <input type="hidden" name="action" value="pagination">
+                    <div id="page-pagination">
+                        <c:forEach var="page" items="${pagenumber}">
+                            <input type="radio" name="page" id="page${page}" value="${page}" style="display: none;">
+                            <label for="page${page}" style="width: 25px; border: groove;" class="page-node" aria-label="Trang ${page}">${page}</label>
+                        </c:forEach>
+                        <span class="page-node">&hellip;</span>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -247,13 +257,39 @@
                         }
                     }
                 };
-                xhr.send("order_id=" + order_id);
+                xhr.send("order_id=" + order_id + "&action=ConfirmOrder");
             } else {
                 // Người dùng chọn No, không làm gì cả
             }
         }
-    </script>
 
+        //Phân trang
+        $(document).ready(function () {
+            $('.page-node').click(function (event) {
+                event.preventDefault(); // Ngăn chặn hành động mặc định của liên kết
+                var pageValue = $(this).text();
+                $("input[name='page'][value='" + pageValue + "']").prop('checked', true);
+                submitFormWithAjax();
+            });
+            function submitFormWithAjax() {
+                var form = $('#paginationForm')[0]; // Lấy form theo id
+                $.ajax({
+                    type: form.getAttribute("method"),
+                    url: form.getAttribute("action"),
+                    data: $(form).serialize(),
+                    success: function (response) {
+                        $("#order-container").html(response); // Cập nhật nội dung sản phẩm
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error: " + error);
+                    }
+                });
+            }
+        });
+
+
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </body>
 
 </html>

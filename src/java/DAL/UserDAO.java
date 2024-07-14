@@ -256,8 +256,8 @@ public class UserDAO extends DBContext {
     }
 
     public User getUserByID(int id) {
-        User user = null;
-        String query = "SELECT * FROM users WHERE id = ?";
+        User user = new User();
+        String query = "SELECT * FROM user WHERE id = ?";
         try (PreparedStatement ps = connect.prepareStatement(query)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
