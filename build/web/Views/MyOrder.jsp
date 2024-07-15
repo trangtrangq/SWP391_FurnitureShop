@@ -9,6 +9,18 @@
     <link rel="preload stylesheet" as="style" fetchpriority="low"
           href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="preload stylesheet" as="style" fetchpriority="low" href="css/style-theme.scss.css">
+    <link rel="preload stylesheet" as="style" fetchpriority="low"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+    <link rel="preload stylesheet" as="style" fetchpriority="low"
+          href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script defer fetchpriority="low" src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"></script>
+
+    <script defer fetchpriority="low" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
     <style>
         body {
             margin-top: 20px;
@@ -46,30 +58,53 @@
 </head>
 
 <body>
-    <div class="container">
+    <%@include file="HomeHeader.jsp" %>
+    <div class="breadcrumb-shop">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 pd5  ">
+                    <ol class="breadcrumb breadcrumb-arrows" itemscope
+                        itemtype="http://schema.org/BreadcrumbList">
+                        <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                            <a href="HomePage" target="_self" itemprop="item" content=""><span
+                                    itemprop="name">Trang chủ</span></a>
+                            <meta itemprop="position" content="1" />
+                        </li>
+
+                        <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                            <a href="MyOrderServlet" target="_self">
+                                <span itemprop="item" content=""><span
+                                        itemprop="name">Đơn hàng của tôi</span></span>
+                            </a>
+                            <meta itemprop="position" content="2" />
+                        </li>
+                    </ol>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="container" style="margin-top: 15px">
         <div class="row justify-content-center">
             <div class="col-md-2">
             </div>
             <div class="col-md-8">
                 <c:forEach items="${orderList}" var="order" >
-                    <div class="order-card">
+                    <div class="order-card" style="margin-bottom: 30px">
                         <h3>OrderID: #${order.id}</h3>
-                        <div class="row mt-3">
-
-                            <div class="col-md-4 text-md-end">
-                                <h6>OrderTime: ${order.orderDate}</h6>
-                            </div>
+                        <div style="display: flex; justify-content: flex-end">
+                            <h6><b>Order Time: ${order.orderDate}</b></h6>
                         </div>
                         <div class="table-responsive">
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>Product</th>
-                                        <th>ProductName</th>
-                                        <th>Color</th>
-                                        <th>Price</th>
-                                        <th>Quantity</th>
-                                        <th>Total</th>
+                                        <th style="color: white;text-align: center">Product</th>
+                                        <th style="color: white;text-align: center">ProductName</th>
+                                        <th style="color: white;text-align: center">Color</th>
+                                        <th style="color: white;text-align: center">Price</th>
+                                        <th style="color: white;text-align: center">Quantity</th>
+                                        <th style="color: white;text-align: center">Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -83,16 +118,16 @@
                                                         <c:if test="${product.id == productDetail.product_id}">
                                                             <tr>
                                                                 <c:if test="${firstProduct}">
-                                                                    <td><img src="image/product/${product.image}" alt="Product" style="width:100px"></td>
-                                                                    <td>${product.name}</td>
+                                                                    <td style="text-align: center"><img src="image/product/${product.image}" alt="Product" style="width:100px"></td>
+                                                                    <td style="text-align: center">${product.name}</td>
                                                                     <c:forEach items="${colorList}" var="color">
                                                                         <c:if test="${productDetail.color_id == color.id}">
-                                                                            <td>${color.colorname}</td>
+                                                                            <td style="text-align: center">${color.colorname}</td>
                                                                         </c:if>
                                                                     </c:forEach>
-                                                                    <td>${orderDetail.price}</td>
-                                                                    <td>${orderDetail.quantity}</td>
-                                                                    <td>${order.totalcost}</td>
+                                                                    <td style="text-align: center">${orderDetail.price}</td>
+                                                                    <td style="text-align: center">${orderDetail.quantity}</td>
+                                                                    <td style="text-align: center">${order.totalcost}</td>
                                                                     <c:set var="firstProduct" value="false"/>
                                                                 </c:if>
                                                                 <c:if test="${!firstProduct}">
@@ -128,19 +163,19 @@
                                 <div></div>
                                 <div><b>Total: </b>${order.totalcost}</div>
                             </div>
-                            <div class="button-order">
+                            <div class="button-order" style="display: flex; justify-content: flex-end; margin-top: 10px">
                                 <c:choose>
                                     <c:when test="${order.status == 'Order'}">
-                                        <button class="btn btn-secondary btn-block" style="margin-left:200px">Order</button>
+                                        <button style="width: 80px; height: 30px" class="btn btn-secondary" >Order</button>
                                     </c:when>
                                     <c:when test="${order.status == 'Cancel'}">
-                                        <button class="btn btn-danger btn-block" style="margin-left:200px">Cancel</button>
+                                        <button style="width: 80px; height: 30px" class="btn btn-danger">Cancel</button>
                                     </c:when>
                                     <c:when test="${order.status == 'Done'}">
-                                        <button class="btn btn-success btn-block" style="margin-left:200px">Done</button>
+                                        <button style="width: 80px; height: 30px" class="btn btn-success">Done</button>
                                     </c:when>
                                     <c:otherwise>
-                                        <button class="btn btn-secondary btn-block" style="margin-left:200px">${order.status}</button>
+                                        <button style="width: 80px; height: 30px" class="btn btn-warning">${order.status}</button>
                                     </c:otherwise>
                                 </c:choose>
                             </div>
@@ -164,6 +199,55 @@
             </div>
         </div>
     </div>
+    <%@include file="HomeFooter.jsp" %>
+    <script>
+        $(document).ready(function () {
+            var searchInput = $('#inputSearchAuto');
+            var searchForm = $('#searchForm');
+            var resultsWrapper = $('#ajaxSearchResults');
+            var resultsContent = $('.resultsContent');
+            var typingTimer; // Timer identifier
+            var doneTypingInterval = 500; // Time in ms (500 ms)
+
+            // Function to handle the AJAX request
+            function submitSearch() {
+                var searchData = searchInput.val().trim();
+
+                if (searchData !== '') {
+                    $.ajax({
+                        type: 'POST',
+                        url: searchForm.attr('action'),
+                        data: searchForm.serialize(),
+                        success: function (response) {
+                            resultsWrapper.show(); // Use .show() to display results
+                            resultsContent.html(response);
+                            console.log(response);
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error: " + error);
+                        }
+                    });
+                } else {
+                    resultsWrapper.hide(); // Use .hide() to hide results
+                }
+            }
+
+            // Handle input change event with a delay
+            searchInput.on('input', function () {
+                clearTimeout(typingTimer);
+                typingTimer = setTimeout(submitSearch, doneTypingInterval);
+            });
+
+            // Handle click event on search button
+            $('.btn-search').on('click', function () {
+                resultsWrapper.hide(); // Hide results when search button is clicked
+//                    searchForm.submit();
+            });
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>
