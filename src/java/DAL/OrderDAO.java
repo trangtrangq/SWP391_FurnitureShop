@@ -5,7 +5,6 @@
 package DAL;
 
 import Models.Order;
-import Models.OrderDetail;
 import java.util.logging.Logger;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,10 +15,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.util.Arrays;
-import javax.lang.model.util.Types;
 
 /**
  *
@@ -61,7 +56,8 @@ public class OrderDAO extends DBContext {
 
     public ArrayList<Order> getOrderList() {
         ArrayList<Order> orderList = new ArrayList<>();
-        String sql = "SELECT * FROM furniture.order";
+        String sql = "SELECT * FROM furniture.order"; // Sửa lại "order" thành "orders"
+
         try (PreparedStatement pstmt = connect.prepareStatement(sql); ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
@@ -71,12 +67,15 @@ public class OrderDAO extends DBContext {
                 od.setSale_id(rs.getInt("sale_id"));
                 od.setAddress_id(rs.getInt("address_id"));
                 od.setTotalcost(rs.getDouble("totalcost"));
+
                 // Chuyển đổi từ Timestamp sang LocalDateTime
                 java.sql.Timestamp timestamp = rs.getTimestamp("orderdate");
                 if (timestamp != null) {
                     od.setOrderDate(timestamp.toLocalDateTime());
                 }
+
                 od.setStatus(rs.getString("status"));
+
                 orderList.add(od);
             }
 
@@ -199,8 +198,8 @@ public class OrderDAO extends DBContext {
                 case "Confirmed":
                     conditions.add("status = 'Confirmed'");
                     break;
-                case "Cancel":
-                    conditions.add("status = 'Cancel'");
+                case "Cancled":
+                    conditions.add("status = 'Cancled'");
                     break;
             }
         }
@@ -381,23 +380,16 @@ public class OrderDAO extends DBContext {
         return orderList;
     }
 
-    public ArrayList<Order> searchOrderById(String search, int sale_id) {
+    public ArrayList<Order> searchOrderById(int search, int sale_id) {
         ArrayList<Order> orderList = new ArrayList<>();
-        String sql = "SELECT `order`.`id`,\n"
-                + "    `order`.`customer_id`,\n"
-                + "    `order`.`sale_id`,\n"
-                + "    `order`.`address_id`,\n"
-                + "    `order`.`totalcost`,\n"
-                + "    `order`.`orderdate`,\n"
-                + "    `order`.`status`\n"
-                + "FROM `furniture`.`order`\n"
+        String sql = "SELECT * FROM furniture.order "
                 + "WHERE id = ? AND sale_id = ?";
         try (PreparedStatement pstmt = connect.prepareStatement(sql)) {
-            pstmt.setString(1, search);
+            pstmt.setInt(1, search);
             pstmt.setInt(2, sale_id);
             try (ResultSet rs = pstmt.executeQuery()) {
-                Order order = new Order();
                 while (rs.next()) {
+                    Order order = new Order(); // Khởi tạo đối tượng Order mới trong vòng lặp
                     order.setId(rs.getInt("id"));
                     order.setCustomer_id(rs.getInt("customer_id"));
                     order.setSale_id(rs.getInt("sale_id"));
@@ -411,9 +403,10 @@ public class OrderDAO extends DBContext {
                     orderList.add(order);
                 }
             } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, "Error processing result set", e);
             }
         } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, "Error retrieving order list", ex);
+            LOGGER.log(Level.SEVERE, "Error preparing statement", ex);
         }
         return orderList;
     }

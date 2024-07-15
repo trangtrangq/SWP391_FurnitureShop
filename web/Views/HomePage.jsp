@@ -170,6 +170,35 @@
                 });
             });
 
+                    // Cập nhật chiều rộng của sao đã đánh giá
+                    var ratingElement = container.querySelector('.rating');
+                    var starPercentage = (ratingValue / 5) * 100;
+                    ratingElement.style.setProperty('--rating-width', starPercentage + '%');
+
+                    // Cập nhật số lượng đánh giá
+                    var numReviewsElement = container.querySelector('.num-reviews');
+                    numReviewsElement.textContent = '(' + numReviews + ')';
+                });
+            });
+
+        </script>
+        <!-- Bootstrap JS and dependencies -->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <style>
+            .rating::after {
+                content: "★★★★★";
+                color: #ffc107;
+                /* Màu của sao được đánh giá */
+                position: absolute;
+                top: 0;
+                left: 0;
+                white-space: nowrap;
+                overflow: hidden;
+                width: var(--rating-width);
+            }
+        </style>
 
         </script>
         <!-- Bootstrap JS and dependencies -->

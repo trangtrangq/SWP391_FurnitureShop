@@ -5,6 +5,11 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Login/Sign Up</title>
+        <!--        <link rel="stylesheet" href="css/style.css">-->
+        <link href="css/style.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     </head>
     <body>
 
@@ -39,7 +44,7 @@
                             </c:if>
                             <c:if test="${not empty requestScope.sucesspass}">
                                 <div class="alert alert-success" role="alert">
-                            <c:out value="${requestScope.sucesspass}" />
+                                    <c:out value="${requestScope.sucesspass}" />
                                 </div>
                             </c:if>
                         </div>
@@ -61,5 +66,6 @@
                 }
             }
         </script>
+
     </body>
 </html>

@@ -17,12 +17,12 @@
         <link rel="preload stylesheet" as="style" fetchpriority="low" href="css/style-theme.scss.css">
         <link rel="stylesheet" href="css/style.css">
         <!--+++++++++++++++++++++++++  JS ++++++++++++++++++++++++-->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-        <script defer fetchpriority="low" src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+            <script defer fetchpriority="low" src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"></script>
 
-        <script defer fetchpriority="low" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+            <script defer fetchpriority="low" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 
 
         <style>
@@ -146,7 +146,7 @@
 
     <body id="nội-thất-moho" class="collection">
         <div class="main-body  layoutProduct_scroll ">
-            <%@include file="HomeHeader.jsp" %>
+            <%@ include file="HomeHeader.jsp" %>
             <style>
                 .dangongu {
                     display: none
@@ -505,7 +505,7 @@
             </main>
         </div>
 
-        <%@include file="HomeFooter.jsp" %>
+        <%@ include file="HomeFooter.jsp" %>
         <div class="addThis_listSharing hidden-xs">
             <ul class="addThis_listing">
             </ul>

@@ -19,6 +19,7 @@ import DAL.SaleOffDAO;
 import DAL.SliderDAO;
 import DAL.UserDAO;
 import Helper.PaginationHelper;
+import Util.Email;
 import Models.Brand;
 import Models.Category;
 import Models.CategoryOfPost;
@@ -40,7 +41,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import Models.User;
 import java.util.ArrayList;
 import java.util.List;
-import Util.Email;
 
 /**
  *
@@ -155,6 +155,7 @@ public class VerifyEmail extends HttpServlet {
             request.getRequestDispatcher("Views/HomePage.jsp").forward(request, response);
 
         }
+        
     }
 
     /**

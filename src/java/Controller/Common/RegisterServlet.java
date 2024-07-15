@@ -17,6 +17,7 @@ import DAL.RoomDAO;
 import DAL.SaleOffDAO;
 import DAL.SliderDAO;
 import DAL.UserDAO;
+import DAL.VerifyAccountDAO;
 import Helper.PaginationHelper;
 import Models.Brand;
 import Models.Category;
@@ -30,6 +31,7 @@ import Models.Product;
 import Models.Room;
 import Models.SaleOff;
 import Models.Slider;
+import Models.User;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -59,39 +61,39 @@ public class RegisterServlet extends HttpServlet {
         SliderDAO sliderDAO = new SliderDAO();
         List<Slider> sliders = sliderDAO.getAllSlidersWith("show");
         request.setAttribute("listslider", sliders);
-        
+
         BrandDAO brandDao = new BrandDAO();
         ArrayList<Brand> brandList = brandDao.getBrandList();
         request.setAttribute("brandList", brandList);
-        
+
         RoomDAO roomDAO = new RoomDAO();
         ArrayList<Room> roomList = roomDAO.getRoomList();
         request.setAttribute("roomList", roomList);
-        
+
         PageDAO pageDAO = new PageDAO();
         ArrayList<Page> pageList = pageDAO.getPageList();
         request.setAttribute("pageList", pageList);
-        
+
         CategoryOfPostDAO categoryOfPostDAO = new CategoryOfPostDAO();
-        List<CategoryOfPost> categoryOfPost =  categoryOfPostDAO.getCategoryOfPostList();
+        List<CategoryOfPost> categoryOfPost = categoryOfPostDAO.getCategoryOfPostList();
         request.setAttribute("categoryOfPostList", categoryOfPost);
-        
+
         PostDAO postDAO = new PostDAO();
         ArrayList<Post> postList = postDAO.getPostList();
         request.setAttribute("postList", postList);
-        
+
         SaleOffDAO saleOffDAO = new SaleOffDAO();
         ArrayList<SaleOff> saleOffList = saleOffDAO.getSaleOffList();
         request.setAttribute("saleOffList", saleOffList);
-        
+
         FeedbackDAO feedbackDAO = new FeedbackDAO();
         ArrayList<Feedback> feedbackList = feedbackDAO.getFeedbackList();
         request.setAttribute("feedbackList", feedbackList);
-        
+
         OrderDetailDAO orderDetailDAO = new OrderDetailDAO();
         ArrayList<OrderDetail> orderDetailList = orderDetailDAO.getOrderDetailsList();
         request.setAttribute("orderDetailList", orderDetailList);
-        
+
         CategoryDAO categoryDAO = new CategoryDAO();
         ArrayList<Category> categoryList = categoryDAO.getCategoryList();
         request.setAttribute("categoryList", categoryList);
@@ -140,7 +142,38 @@ public class RegisterServlet extends HttpServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         String rePass = request.getParameter("pass");
+        int role_id = Integer.parseInt(request.getParameter("role_id"));
+        String status = request.getParameter("status");
         processRequest(request, response);
+        String error = null;
+
+        // Kiểm tra độ dài của các trường
+        if (fullname.length() > 100) {
+            error = "Họ và tên không được vượt quá 100 ký tự.";
+        } else if (gender.length() > 20) {
+            error = "Giới tính không được vượt quá 20 ký tự.";
+        } else if (phone.length() > 11) {
+            error = "Số điện thoại không được vượt quá 11 ký tự.";
+        } else if (address.length() > 100) {
+            error = "Địa chỉ không được vượt quá 255 ký tự.";
+        } else if (email.length() > 100) {
+            error = "Email không được vượt quá 100 ký tự.";
+        } else if (password.length() > 32) {
+            error = "Mật khẩu không được vượt quá 32 ký tự.";
+        }
+
+        if (error != null) {
+            request.setAttribute("fullname", fullname);
+            request.setAttribute("gender", gender);
+            request.setAttribute("phone", phone);
+            request.setAttribute("address", address);
+            request.setAttribute("email", email);
+            request.setAttribute("password", password);
+            request.setAttribute("error", error);
+            request.setAttribute("showregister", "block");
+            request.getRequestDispatcher("Views/HomePage.jsp").forward(request, response);
+            return;
+        }
         UserDAO userDAO = new UserDAO();
         if (userDAO.checkAccount(email) == true) {
             request.setAttribute("fullname", fullname);
@@ -162,7 +195,12 @@ public class RegisterServlet extends HttpServlet {
 
                 Email sendEmail = new Email();
                 sendEmail.sendSignUpEmail(email);
-                userDAO.insertVerifyCustomer(fullname, gender, phone, address, email, password);
+                User user = new User(fullname, gender, phone, email, role_id, status);
+                user.setAddress(address);
+                user.setPassword(password);
+                VerifyAccountDAO verifyAccountDAO = new VerifyAccountDAO();
+                verifyAccountDAO.signUpUser(user);
+
                 request.setAttribute("success", "Đã gửi email. Vui lòng kiểm tra tài khoản email của bạn! ");
                 request.setAttribute("showregister", "block");
                 request.getRequestDispatcher("Views/HomePage.jsp").forward(request, response);

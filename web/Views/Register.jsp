@@ -31,38 +31,54 @@
                             <input type="text" class="form-control" id="fullname" name="fullname" required value="${param.fullname}">
                         </div>
                         <div class="form-group">
+                            <!--                            <label for="gender">Giới tính</label>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio" name="gender" value="Male" id="genderMale" ${param.gender == 'Male' ? 'checked' : ''} required value="${param.gender}">
+                                                            <label class="form-check-label" for="genderMale">Male</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio" name="gender" value="Female" id="genderFemale" ${param.gender == 'Female' ? 'checked' : ''} required value="${param.gender}">
+                                                            <label class="form-check-label" for="genderFemale">Female</label>
+                                                        </div>-->
                             <label for="gender">Giới tính</label>
                             <input type="text" class="form-control" id="gender" name="gender" required value="${param.gender}">
                         </div>
                         <div class="form-group">
-                            <label for="phone">Số điện thoại</label>
-                            <input type="text" class="form-control" id="phone" name="phone" required value="${param.phone}">
+                            <label for="phone">Số điện thoại <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="phone" name="phone" required 
+                                   pattern="0\d{9,}"
+                                   title="Vui lòng nhập số điện thoại có ít nhất 10 số và bắt đầu bằng số 0."
+                                   value="${param.phone}">
                         </div>
                         <div class="form-group">
                             <label for="address">Địa chỉ</label>
                             <input type="text" class="form-control" id="address" name="address" required value="${param.address}">
                         </div>
                         <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" required value="${param.email}">
+                            <label for="email">Email <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="email" name="email" required value="${param.email}"
+                                   pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                                   title="Vui lòng nhập địa chỉ email hợp lệ (ví dụ: example@example.com)">
                         </div>
-                        <div class="form-group">
+                        <div>           
                             <label for="password">Mật khẩu</label>
-                            <input type="password" class="form-control" id="password" name="password" required
+                            <input id="password" type="password" class="form-control password2" name="password" required
                                    pattern="(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}"
                                    title="Mật khẩu phải có ít nhất 8 ký tự, bao gồm ít nhất một chữ hoa, một số và một ký tự đặc biệt."
                                    value="${param.password}">
                         </div>
                         <div class="form-group">
                             <label for="pass">Nhập lại mật khẩu</label>
-                            <input type="password" class="form-control" id="pass" name="pass" required value="${param.pass}">
+                            <input id="rePassword" type="password" class="form-control password2" name="pass" required value="${param.pass}">
                         </div>
+                        <input type="hidden" name="role_id" value="1"/>
+                        <input type="hidden" name="status" value="Inactive"/>
                         <div>
-                            <input type="checkbox" id="togglePasswords" onclick="togglePasswordVisibility()"> Hiển thị mật khẩu
+                            <input type="checkbox" id="togglePasswords" onclick="togglePasswordVisibility2()"> Hiển thị mật khẩu
                         </div>
-                        <button type="submit" class="btn btn-primary">Đăng kí</button>
+                        <button id="submitForm" type="submit" class="btn btn-primary">Đăng kí</button>
                         <p>Bạn có muốn tạo 1 tài khoản? <a href="#" onclick="toggleDiv('box1', 'box2')">Đăng nhập</a></p>
-                        
+
                     </form>
                     <c:if test="${not empty requestScope.error}">
                         <div class="alert alert-danger" role="alert">
@@ -78,13 +94,18 @@
             </div>
         </div>
         <script>
-            function togglePasswordVisibility() {
-                var passwordFields = document.querySelectorAll('input[type="password"]');
+            function togglePasswordVisibility2() {
+                const passwordFields = document.querySelectorAll('.password2'); // Lấy tất cả phần tử input bằng class
+                console.log(passwordFields);
+
                 passwordFields.forEach(function (passwordField) {
+                    console.log(passwordField.type);
                     if (passwordField.type === "password") {
-                        passwordField.type = "text";
+                        passwordField.type = 'text';
+                        console.log(passwordField.type);
                     } else {
-                        passwordField.type = "password";
+                        passwordField.type = 'password';
+                        console.log(passwordField.type);
                     }
                 });
             }

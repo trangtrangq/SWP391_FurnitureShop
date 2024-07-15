@@ -90,7 +90,7 @@ public class MyOrderInformationServlet extends HttpServlet {
 
         OrderDetailDAO orderDetailDAO = new OrderDetailDAO();
         ArrayList<OrderDetail> orderDetailList = orderDetailDAO.MyOrderDetails(order_IDs);
-        
+
         ProductDetailDAO prDetailDAO = new ProductDetailDAO();
         ArrayList<ProductDetail> productDetailList = prDetailDAO.getAllProductDetails();
         ProductDAO prDAO = new ProductDAO();
@@ -107,7 +107,7 @@ public class MyOrderInformationServlet extends HttpServlet {
 
         AddressDAO addressDAO = new AddressDAO();
         List<Address> address = addressDAO.getAllAddresses();
-        
+
         FeedbackDAO feedbackDAO = new FeedbackDAO();
         int[] historyFeedbackOrder = feedbackDAO.getHistory();
 
@@ -120,10 +120,9 @@ public class MyOrderInformationServlet extends HttpServlet {
         request.setAttribute("orderDetailList", orderDetailList);
         request.setAttribute("order", order);
         request.setAttribute("historyFeedbackOrder", historyFeedbackOrder);
-        
+
         request.getRequestDispatcher("Views/MyOrderInformation.jsp").forward(request, response);
     }
-
 
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -151,22 +150,24 @@ public class MyOrderInformationServlet extends HttpServlet {
             // Ví dụ: cập nhật trạng thái đơn hàng trong cơ sở dữ liệu thành "Cancelled"
             OrderDAO orderDAO = new OrderDAO();
             orderDAO.updateOrderStatus(order_id, "Cancled");
-            request.getRequestDispatcher("Views/MyOrderInformation.jsp").forward(request, response);
-        }
 
-        // Chuyển hướng người dùng đến trang xác nhận hoặc trang đơn hàng
-        response.sendRedirect("orderConfirmation.jsp");
+            // Phản hồi về cho client rằng đã hủy đơn hàng thành công
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.getWriter().write("Đã hủy đơn hàng thành công!");
+        } else {
+            // Xử lý khi không có order_id được gửi đến
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write("Lỗi: Không có order_id được gửi đến.");
+        }
     }
 
     // Giả sử bạn có phương thức để cập nhật trạng thái đơn hàng trong cơ sở dữ liệu
-
-
-/**
- * Returns a short description of the servlet.
- *
- * @return a String containing servlet description
- */
-@Override
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
+    @Override
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>

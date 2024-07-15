@@ -105,6 +105,9 @@
                             <label for="email">Nhập lại mật khẩu</label>
                             <input type="password" id="rePass" name="rePass" required>
                         </div>
+                        <div>
+                            <input type="checkbox" id="togglePasswords" onclick="togglePasswordVisibility3()"> Hiển thị mật khẩu
+                        </div>
                         <input type="hidden" id="email" name="email" value="${email}">
                         <button type="submit">Thay đổi</button>
                         <a href="#" onclick="toggleDiv('box1', 'box4')" id="loginLinkForgot">Quay lại đăng nhập</a>
@@ -117,6 +120,17 @@
                 </div>
             </div>
         </div>
-
+        <script>
+            function togglePasswordVisibility3() {
+                var passwordFields = document.querySelectorAll('input[type="password"], input[type="text"]');
+                passwordFields.forEach(function (passwordField) {
+                    if (passwordField.type === "password") {
+                        passwordField.type = "text";
+                    } else {
+                        passwordField.type = "password";
+                    }
+                });
+            }
+        </script>
     </body>
 </html>

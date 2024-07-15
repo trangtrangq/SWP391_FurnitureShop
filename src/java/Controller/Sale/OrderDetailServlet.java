@@ -7,6 +7,7 @@ package Controller.Sale;
 import DAL.AddressDAO;
 import DAL.CategoryDAO;
 import DAL.ColorDAO;
+import DAL.FeedbackDAO;
 import DAL.OrderDAO;
 import DAL.OrderDetailDAO;
 import DAL.ProductDAO;
@@ -106,6 +107,9 @@ public class OrderDetailServlet extends HttpServlet {
 
         AddressDAO addressDAO = new AddressDAO();
         List<Address> address = addressDAO.getAllAddresses();
+        
+        FeedbackDAO feedbackDAO = new FeedbackDAO();
+        int[] historyFeedbackOrder = feedbackDAO.getHistory();
 
         request.setAttribute("address", address);
         request.setAttribute("categoryList", categoryList);
@@ -115,7 +119,8 @@ public class OrderDetailServlet extends HttpServlet {
         request.setAttribute("productList", productList);
         request.setAttribute("orderDetailList", orderDetailList);
         request.setAttribute("order", order);
-
+        request.setAttribute("historyFeedbackOrder", historyFeedbackOrder);
+        
         request.getRequestDispatcher("Views/OrderDetail.jsp").forward(request, response);
     }
 
@@ -146,14 +151,14 @@ public class OrderDetailServlet extends HttpServlet {
             if (action.equals("cancel")) {
                 // Xử lý hủy đơn hàng
                 OrderDAO orderDAO = new OrderDAO();
-                orderDAO.updateOrderStatus(order_id, "Cancelled"); // Cập nhật trạng thái đơn hàng thành "Cancelled"
+                orderDAO.updateOrderStatus(order_id, "Cancled");
 
                 // Chuyển hướng người dùng đến trang thông tin đơn hàng sau khi hủy
                 response.sendRedirect("Views/MyOrderInformation.jsp");
             } else if (action.equals("confirm")) {
-                // Xử lý xác nhận đơn hàng (ví dụ)
+                // Xử lý xác nhận đơn hàng
                 OrderDAO orderDAO = new OrderDAO();
-                orderDAO.updateOrderStatus(order_id, "Confirmed"); // Ví dụ: cập nhật trạng thái đơn hàng thành "Confirmed"
+                orderDAO.updateOrderStatus(order_id, "Confirmed");
 
                 // Chuyển hướng người dùng đến trang xác nhận
                 response.sendRedirect("orderConfirmation.jsp");

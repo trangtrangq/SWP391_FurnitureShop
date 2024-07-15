@@ -4,6 +4,8 @@
  */
 package Controller.Common;
 
+import DAL.UserDAO;
+import Models.User;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -18,8 +20,11 @@ import jakarta.servlet.http.HttpSession;
 public class LogoutServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Invalidating session
+    // Invalidating session
         HttpSession session = request.getSession(false); // không tạo session mới nếu không tồn tại
+        User customer = (User)session.getAttribute("customer");
+        UserDAO userDAO = new UserDAO();
+        userDAO.UpdateUser(customer.getRole_id(), "Inactive", customer.getId());
         if (session != null) {
             session.invalidate(); // Hủy session hiện tại
         }
