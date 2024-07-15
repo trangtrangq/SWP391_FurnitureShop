@@ -48,15 +48,25 @@ public class BlogListServlet extends HttpServlet {
         List<CategoryOfPost> listCategory = cdao.getListCategoryofPost();
         request.setAttribute("listCategory", listCategory);
 
-        //list post
-        List<Post> listPost = pdao.getListPost();
-        request.setAttribute("listPost", listPost);
+        //list new post
+        List<Post> listNewPost = pdao.getNewPostList();
+        request.setAttribute("listNewPost", listNewPost);
 
-        //selected category(select from blogdetail.jsp)
+        //selected category and list post tuong ung
+        List<Post> listPost = null;
         String categoryId = request.getParameter("category");
+        String catname="";
         request.setAttribute("catId", categoryId);
         if (categoryId!=null && !categoryId.equals("0")) {
-            request.setAttribute("catname", cdao.getCategoryOfPostByID(categoryId));
+            catname=cdao.getCategoryOfPostByID(categoryId).getCategory();
+            listPost=pdao.getPostListByCategoryId(categoryId);
+        }else{
+            catname="All";
+            listPost=pdao.getPostList();
+        } 
+        String key = request.getParameter("keyword");
+        if(key!=null){
+            listPost=pdao.getListPostbySearch(key);
         }
         
         HttpSession session = request.getSession(false);

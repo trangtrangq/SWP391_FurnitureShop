@@ -1,5 +1,6 @@
 package Helper;
 
+import DAL.OrderDAO;
 import DAL.ProductDAO;
 import Models.Order;
 import Models.Product;
@@ -12,6 +13,7 @@ import java.util.List;
 
 public class ComparatorHelper {
     private static final List<String> statusOrder = Arrays.asList("Order", "Confirmed", "Done", "Cancel");
+
 
     public static Comparator<Product> sortByPriceAsc() {
         return Comparator.comparingDouble(Product::getPrice);
@@ -141,7 +143,7 @@ public class ComparatorHelper {
             return orderList;
         }
     }
-
+    
     public static void main(String[] args) {
         ProductDAO productDAO = new ProductDAO();
         ArrayList<Product> products = productDAO.getProductList();

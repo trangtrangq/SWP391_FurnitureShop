@@ -14,6 +14,7 @@
                 max-width: 100%;
             }
         </style>
+    </head>
     <body>
         <%@ include file="HomeHeader.jsp" %>
         <div class="container">
@@ -23,9 +24,9 @@
 
                     <!-- search bar -->
                     <div class="row mb-5" id="search">
-                        <form action="BlogListSearchedServlet">
+                        <form action="BlogListServlet">
                             <input type="text" class="col-lg-9" placeholder="Nhập tên tác giả, nội dung..."name="keyword">
-                            <button type="submit" class="col-lg-2 ms-2"><i class=" fas fa-search"></i></button>
+                            <button type="submit" class="col-lg-2 ms-2">🔍</button>
                         </form>
                     </div>
 
@@ -45,12 +46,12 @@
 
 
                     <!-- hien thi new post (dung foreach) -->
-                    <c:forEach items="${listPost}" var="p">
-                        <a href="blogdetail?id=${p.getId()}" class="text-decoration-none text-black">
+                    <c:forEach items="${listNewPost}" var="p">
+                        <a href="BlogDetailServlet?id=${p.getId()}" class="text-decoration-none text-black">
                             <div class="row border p-2">
-                                <div class="col-lg-5 pt-3">
+                                <div class="col-lg-5 pt-3" style="width:100px;height:60px">
                                     <img src="${p.getThumbnail()}"
-                                         alt="anhdep" class="img-fluid">
+                                         alt="anhdep" style="width:100%;height:100%">
                                 </div>
                                 <div class="col-lg-7">  
                                     <c:forEach items="${listCategory}" var="category">
@@ -67,9 +68,9 @@
                 <!-- hien thi Post detail -->         
                 <div class="col-lg-9 mt-5 ps-5">
                     <!-- thumbnail -->
-                    <div class="pb-5">
-                        <img src="${post.getThumbnail()}"
-                             alt="anhdep" class="img-fluid">
+                    <div class="pb-5" style="width:800px;height:500px">
+                        <img src="image/post/${post.getThumbnail()}"
+                             alt="anhdep" style="width:100%;height:100%">
                     </div>
 
                     <!-- Title and sub -->

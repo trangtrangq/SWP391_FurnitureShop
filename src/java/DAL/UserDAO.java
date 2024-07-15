@@ -6,6 +6,7 @@ package DAL;
 
 import Models.CustomerChanges;
 import Models.User;
+import com.mysql.cj.jdbc.StatementImpl;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,7 +22,7 @@ import java.util.logging.Logger;
 public class UserDAO extends DBContext {
 
     private static final Logger LOGGER = Logger.getLogger(UserDAO.class.getName());
-    
+
 //    public static void main(String[] args) {
 //        UserDAO userDAO = new UserDAO();
 //        ArrayList<User> userList = userDAO.getUserList();
@@ -34,9 +35,7 @@ public class UserDAO extends DBContext {
         String sql = "SELECT * FROM User";
 
         try (
-            PreparedStatement statement = connect.prepareStatement(sql);
-            ResultSet rs = statement.executeQuery()
-        ) {
+                PreparedStatement statement = connect.prepareStatement(sql); ResultSet rs = statement.executeQuery()) {
             while (rs.next()) {
                 User u = new User();
                 u.setId(rs.getInt("id"));
@@ -58,7 +57,7 @@ public class UserDAO extends DBContext {
 
         return userList;
     }
-    
+
     public boolean changePass(String uid, String pass) {
         try {
             String sql = "UPDATE `furniture`.`User` SET `password` = ? WHERE `id` = ?";
@@ -228,32 +227,6 @@ public class UserDAO extends DBContext {
         }
     }
 
-    public User getUserByID(int id) {
-        User user = null;
-        String query = "SELECT * FROM users WHERE id = ?";
-        try (PreparedStatement ps = connect.prepareStatement(query)) {
-            ps.setInt(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    user = new User();
-                    user.setId(rs.getInt("id"));
-                    user.setFullname(rs.getString("fullname"));
-                    user.setGender(rs.getString("gender"));
-                    user.setAvatar(rs.getString("avatar"));
-                    user.setPhonenumber(rs.getString("phonenumber"));
-                    user.setAddress(rs.getString("address"));
-                    user.setEmail(rs.getString("email"));
-                    user.setPassword(rs.getString("password"));
-                    user.setRole_id(rs.getInt("role_id"));
-                    user.setStatus(rs.getString("status"));
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return user;
-    }
-
     public String update(String fullname, String gender, String avatar, String phonenumber, String address, int uid) {
         String sql = "UPDATE User SET fullname = ?, gender = ?, avatar = ?, phonenumber = ?, address = ? WHERE id = ?";
         try (PreparedStatement stm = connect.prepareStatement(sql)) {
@@ -272,19 +245,7 @@ public class UserDAO extends DBContext {
         }
     }
 
-    public User getUserById(int uid) {
-        try (PreparedStatement stm = connect.prepareStatement("SELECT * FROM user WHERE id = ?")) {
-            stm.setInt(1, uid);
-            ResultSet rs = stm.executeQuery();
-            if (rs.next()) {
-                return new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getInt(9), rs.getString(10));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
+    //get list of marketing user
     public ArrayList<User> getMarketerList() {
         ArrayList<User> userList = new ArrayList<>();
         String sql = "SELECT * FROM User u, UserRole ur where "

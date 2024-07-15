@@ -48,7 +48,7 @@ public class BlogListSearchedServlet extends HttpServlet {
         request.setAttribute("listCategory", listCategory);
 
         //list post
-        List<Post> listPost = pdao.getListPost();
+        List<Post> listPost = pdao.getPostList();
         request.setAttribute("listPost", listPost);
         
         //list post got by search
