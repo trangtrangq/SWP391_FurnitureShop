@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -225,6 +226,32 @@ public class UserDAO extends DBContext {
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Error inserting customer", e);
         }
+    }
+    
+    public User getUserByID(int id) {
+        User user = new User();
+        String query = "SELECT * FROM user WHERE id = ?";
+        try (PreparedStatement ps = connect.prepareStatement(query)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    user = new User();
+                    user.setId(rs.getInt("id"));
+                    user.setFullname(rs.getString("fullname"));
+                    user.setGender(rs.getString("gender"));
+                    user.setAvatar(rs.getString("avatar"));
+                    user.setPhonenumber(rs.getString("phonenumber"));
+                    user.setAddress(rs.getString("address"));
+                    user.setEmail(rs.getString("email"));
+                    user.setPassword(rs.getString("password"));
+                    user.setRole_id(rs.getInt("role_id"));
+                    user.setStatus(rs.getString("status"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
     }
 
     public String update(String fullname, String gender, String avatar, String phonenumber, String address, int uid) {
@@ -508,6 +535,148 @@ public class UserDAO extends DBContext {
             e.printStackTrace();
         }
         return null;
+    }
+    
+    public boolean UpdateUser( int role_id, String status, int id) {
+        String sql = "UPDATE `furniture`.`user`\n"
+                + "SET\n"                
+                + "`role_id` = ?, "
+                + "`status` = ? "
+                + "WHERE `id` = ? ";
+        try (PreparedStatement preparedStatement = connect.prepareStatement(sql)) {
+            
+            preparedStatement.setInt(1, role_id);
+            preparedStatement.setString(2, status);
+            preparedStatement.setInt(3, id);
+            int affectedRows = preparedStatement.executeUpdate();
+            return affectedRows > 0;
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error updating user", e);
+            return false;
+        }
+    }
+    
+    public ArrayList<User> searchUserList(String search) {
+        ArrayList<User> userList = new ArrayList<>();
+        String mysql = "SELECT `user`.`id`,\n"
+                + "    `user`.`fullname`,\n"
+                + "    `user`.`gender`,\n"
+                + "    `user`.`avatar`,\n"
+                + "    `user`.`phonenumber`,\n"
+                + "    `user`.`address`,\n"
+                + "    `user`.`email`,\n"
+                + "    `user`.`password`,\n"
+                + "    `user`.`role_id`,\n"
+                + "    `user`.`status`\n"
+                + "FROM `furniture`.`user`\n"
+                + "WHERE fullname LIKE ? OR email = ? OR phonenumber = ?";
+        try (PreparedStatement statement = connect.prepareStatement(mysql)) {
+            statement.setString(1, "%" + search + "%");
+            statement.setString(2, search);
+            statement.setString(3, search);
+            try (ResultSet rs = statement.executeQuery()) {
+                
+                while (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getInt("id"));
+                    user.setFullname(rs.getString("fullname"));
+                    user.setGender(rs.getString("gender"));
+                    user.setAvatar(rs.getString("avatar"));
+                    user.setPhonenumber(rs.getString("phonenumber"));
+                    user.setAddress(rs.getString("address"));
+                    user.setEmail(rs.getString("email"));
+                    user.setPassword(rs.getString("password"));
+                    user.setRole_id(rs.getInt("role_id"));
+                    user.setStatus(rs.getString("status"));
+                    userList.add(user);
+
+                }
+
+            } catch (Exception e) {
+            }
+        } catch (Exception e) {
+        }
+        return userList;
+    }
+    
+    private void appendPlaceholders(StringBuilder sql, int count) {
+        for (int i = 0; i < count; i++) {
+            sql.append("?");
+            if (i < count - 1) {
+                sql.append(", ");
+            }
+        }
+    }
+
+    public ArrayList<User> filterUserList(String[] gender, String[] roleID, String[] status) {
+        ArrayList<User> userList = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("""
+        SELECT DISTINCT
+            `user`.`id`,
+            `user`.`fullname`,
+            `user`.`gender`,
+            `user`.`avatar`,
+            `user`.`phonenumber`,
+            `user`.`address`,
+            `user`.`email`,
+            `user`.`password`,
+            `user`.`role_id`,
+            `user`.`status`
+        FROM
+            `furniture`.`user`
+        
+        WHERE 1=1
+    """);
+
+        List<Object> parameters = new ArrayList<>();
+
+        if (gender != null && gender.length > 0) {
+            sql.append(" AND `user`.`gender` IN (");
+            appendPlaceholders(sql, gender.length);
+            sql.append(")");
+            parameters.addAll(Arrays.asList(gender));
+        }
+
+        if (roleID != null && roleID.length > 0) {
+            sql.append(" AND `user`.`role_id` IN (");
+            appendPlaceholders(sql, roleID.length);
+            sql.append(")");
+            parameters.addAll(Arrays.asList(roleID));
+        }
+
+        if (status != null && status.length > 0) {
+            sql.append(" AND `user`.`status` IN (");
+            appendPlaceholders(sql, status.length);
+            sql.append(")");
+            parameters.addAll(Arrays.asList(status));
+        }
+
+        try (PreparedStatement pstmt = connect.prepareStatement(sql.toString())) {
+            for (int i = 0; i < parameters.size(); i++) {
+                pstmt.setObject(i + 1, parameters.get(i));
+            }
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getInt("id"));
+                    user.setFullname(rs.getString("fullname"));
+                    user.setGender(rs.getString("gender"));
+                    user.setAvatar(rs.getString("avatar"));
+                    user.setPhonenumber(rs.getString("phonenumber"));
+                    user.setAddress(rs.getString("address"));
+                    user.setEmail(rs.getString("email"));
+                    user.setPassword(rs.getString("password"));
+                    user.setRole_id(rs.getInt("role_id"));
+                    user.setStatus(rs.getString("status"));
+                    userList.add(user);
+                }
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error retrieving user list.", ex);
+        }
+
+        return userList;
     }
     
     public static void main(String[] args) {

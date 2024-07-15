@@ -26,10 +26,10 @@
             margin-top: 20px;
         }
         .order-card {
-            background-color: rgb(237 237 237);
+            /*background-color: rgb(237 237 237);*/
             color: rgb(0, 0, 0);
             padding: 20px;
-            border-radius: 8px;
+            /*            border-radius: 8px;*/
             border: solid 1px;
             border-color: rgb(0, 0, 0);
         }
@@ -88,23 +88,28 @@
         <div class="row justify-content-center">
             <div class="col-md-2">
             </div>
-            <div class="col-md-8">
+            <div class="col-md-8" id="order-container">
+                <c:set value="${requestScope.htmlResponse}" var="htmlResponse"/>
+                ${htmlResponse}
+            </div>
+<!--            <div class="col-md-8" id="order-request">
                 <c:forEach items="${orderList}" var="order" >
                     <div class="order-card" style="margin-bottom: 30px">
                         <h3>OrderID: #${order.id}</h3>
                         <div style="display: flex; justify-content: flex-end">
-                            <h6><b>Order Time: ${order.orderDate}</b></h6>
+                            <h6><b>Order Time: <u>${order.orderDate}</u></b></h6>
                         </div>
+
                         <div class="table-responsive">
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th style="color: white;text-align: center">Product</th>
-                                        <th style="color: white;text-align: center">ProductName</th>
-                                        <th style="color: white;text-align: center">Color</th>
-                                        <th style="color: white;text-align: center">Price</th>
-                                        <th style="color: white;text-align: center">Quantity</th>
-                                        <th style="color: white;text-align: center">Total</th>
+                                        <th style="background-color: white; text-align: center">Product</th>
+                                        <th style="background-color: white; text-align: center">ProductName</th>
+                                        <th style="background-color: white; text-align: center">Color</th>
+                                        <th style="background-color: white; text-align: center">Price</th>
+                                        <th style="background-color: white; text-align: center">Quantity</th>
+                                        <th style="background-color: white; text-align: center">Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -118,16 +123,16 @@
                                                         <c:if test="${product.id == productDetail.product_id}">
                                                             <tr>
                                                                 <c:if test="${firstProduct}">
-                                                                    <td style="text-align: center"><img src="image/product/${product.image}" alt="Product" style="width:100px"></td>
-                                                                    <td style="text-align: center">${product.name}</td>
+                                                                    <td style="text-align: center; background-color: white;"><img src="image/product/${product.image}" alt="Product" style="width:100px"></td>
+                                                                    <td style="text-align: center; background-color: white;">${product.name}</td>
                                                                     <c:forEach items="${colorList}" var="color">
                                                                         <c:if test="${productDetail.color_id == color.id}">
-                                                                            <td style="text-align: center">${color.colorname}</td>
+                                                                            <td style="text-align: center; background-color: white;">${color.colorname}</td>
                                                                         </c:if>
                                                                     </c:forEach>
-                                                                    <td style="text-align: center">${orderDetail.price}</td>
-                                                                    <td style="text-align: center">${orderDetail.quantity}</td>
-                                                                    <td style="text-align: center">${order.totalcost}</td>
+                                                                    <td style="text-align: center; background-color: white;">${orderDetail.price}</td>
+                                                                    <td style="text-align: center; background-color: white;">${orderDetail.quantity}</td>
+                                                                    <td style="text-align: center; background-color: white;">${order.totalcost}</td>
                                                                     <c:set var="firstProduct" value="false"/>
                                                                 </c:if>
                                                                 <c:if test="${!firstProduct}">
@@ -142,7 +147,7 @@
                                     </c:forEach>
                                     <c:if test="${productCount > 1}">
                                         <tr>
-                                            <td colspan="6" style="text-decoration: none; color: black;">
+                                            <td colspan="6" style="text-decoration: none; color: black;  background-color: white;">
                                                 <a href="MyOrderInformationServlet?id=${order.id}" style="text-decoration: none; color: black;">
                                                     Số sản phẩm khác: ${productCount-1}
                                                 </a>
@@ -150,7 +155,7 @@
                                         </tr>
                                     </c:if>
                                     <tr>
-                                        <td colspan="6" style="text-align: center;">
+                                        <td  colspan="6" style="text-align: center; background-color: white;">
                                             <a href="MyOrderInformationServlet?id=${order.id}" style="text-decoration: none; color: black;">
                                                 Xem chi tiết đơn hàng
                                             </a>
@@ -166,13 +171,37 @@
                             <div class="button-order" style="display: flex; justify-content: flex-end; margin-top: 10px">
                                 <c:choose>
                                     <c:when test="${order.status == 'Order'}">
-                                        <button style="width: 80px; height: 30px" class="btn btn-secondary" >Order</button>
+                                        <button style="width: 80px; height: 30px" class="btn btn-secondary">Đang xử lí</button>
                                     </c:when>
-                                    <c:when test="${order.status == 'Cancel'}">
-                                        <button style="width: 80px; height: 30px" class="btn btn-danger">Cancel</button>
+                                    <c:when test="${order.status == 'Cancled'}">
+                                        <button style="width: 80px; height: 30px" class="btn btn-danger">Đã hủy</button>
+                                    </c:when>
+                                    <c:when test="${order.status == 'Confirmed'}">
+                                        <button style="height: 30px" class="btn btn-info">Đang giao</button>
+                                        <button id="receivedButton" class="btn btn-primary" style="height: 30px; margin-left: 10px" onclick="handleReceivedButtonClick(${order.id})">
+                                            Đã nhận được đơn hàng
+                                        </button>
                                     </c:when>
                                     <c:when test="${order.status == 'Done'}">
-                                        <button style="width: 80px; height: 30px" class="btn btn-success">Done</button>
+                                        <c:set var="hasFeedback" value="false" />
+                                        <c:forEach items="${requestScope.historyFeedbackOrder}" var="history">
+                                            <c:if test="${order.id == history}">
+                                                <c:set var="hasFeedback" value="true" />
+                                            </c:if>
+                                        </c:forEach>
+
+                                        <c:choose>
+                                            <c:when test="${hasFeedback}">
+                                                <button class="btn btn-success" style="height: 30px; margin-right: 10px">
+                                                    Hoàn thành đơn hàng
+                                                </button>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <button class="btn btn-warning" style="height: 30px; margin-right: 10px">
+                                                    Hoàn thành đơn hàng
+                                                </button>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </c:when>
                                     <c:otherwise>
                                         <button style="width: 80px; height: 30px" class="btn btn-warning">${order.status}</button>
@@ -180,10 +209,11 @@
                                 </c:choose>
                             </div>
 
+
                         </div>
                     </div>
                 </c:forEach>
-            </div>
+            </div>-->
             <div class="col-md-2">
             </div>
         </div>
@@ -192,62 +222,74 @@
         <div id="pagination" class="clearfix">
 
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <c:forEach var="page" items="${pagenumber}">
-                    <a class="page-node" href="MyOrderServlet?page=${page}" aria-label="Trang ${page}">${page}</a>
-                </c:forEach>
-                <span class="page-node ">&hellip;</span>
+                <form id="paginationForm" action="MyOrderServlet" method="post">
+                    <input type="hidden" name="action" value="pagination">
+                    <div id="page-pagination">
+                        <c:forEach var="page" items="${pagenumber}">
+                            <input type="radio" name="page" id="page${page}" value="${page}" style="display: none;">
+                            <label for="page${page}" style="width: 25px; border: groove;" class="page-node" aria-label="Trang ${page}">${page}</label>
+                        </c:forEach>
+                        <span class="page-node">&hellip;</span>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
     <%@include file="HomeFooter.jsp" %>
     <script>
-        $(document).ready(function () {
-            var searchInput = $('#inputSearchAuto');
-            var searchForm = $('#searchForm');
-            var resultsWrapper = $('#ajaxSearchResults');
-            var resultsContent = $('.resultsContent');
-            var typingTimer; // Timer identifier
-            var doneTypingInterval = 500; // Time in ms (500 ms)
-
-            // Function to handle the AJAX request
-            function submitSearch() {
-                var searchData = searchInput.val().trim();
-
-                if (searchData !== '') {
-                    $.ajax({
-                        type: 'POST',
-                        url: searchForm.attr('action'),
-                        data: searchForm.serialize(),
-                        success: function (response) {
-                            resultsWrapper.show(); // Use .show() to display results
-                            resultsContent.html(response);
-                            console.log(response);
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("Error: " + error);
+        function handleReceivedButtonClick(order_id) {
+            // Gửi yêu cầu AJAX để cập nhật trạng thái đơn hàng trên máy chủ
+            var confirmDone = confirm("Bạn đã nhận được đơn hàng?");
+            if (confirmDone) {
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "MyOrderServlet", true);
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
+                            // Xử lý phản hồi thành công (nếu cần)
+                            alert("Đã nhận đơn hàng thành công!");
+                            // Reload trang sau khi xác nhận hủy đơn hàng thành công
+                            window.location.reload();
+                        } else {
+                            // Xử lý lỗi nếu cần
+                            alert("Có lỗi xảy ra khi nhận đơn hàng.");
                         }
-                    });
-                } else {
-                    resultsWrapper.hide(); // Use .hide() to hide results
-                }
+                    }
+                };
+                xhr.send("order_id=" + order_id + "&action=ConfirmOrder");
+            } else {
+                // Người dùng chọn No, không làm gì cả
             }
+        }
 
-            // Handle input change event with a delay
-            searchInput.on('input', function () {
-                clearTimeout(typingTimer);
-                typingTimer = setTimeout(submitSearch, doneTypingInterval);
+        //Phân trang
+        $(document).ready(function () {
+            $('.page-node').click(function (event) {
+                event.preventDefault(); // Ngăn chặn hành động mặc định của liên kết
+                var pageValue = $(this).text();
+                $("input[name='page'][value='" + pageValue + "']").prop('checked', true);
+                submitFormWithAjax();
             });
-
-            // Handle click event on search button
-            $('.btn-search').on('click', function () {
-                resultsWrapper.hide(); // Hide results when search button is clicked
-//                    searchForm.submit();
-            });
+            function submitFormWithAjax() {
+                var form = $('#paginationForm')[0]; // Lấy form theo id
+                $.ajax({
+                    type: form.getAttribute("method"),
+                    url: form.getAttribute("action"),
+                    data: $(form).serialize(),
+                    success: function (response) {
+                        $("#order-container").html(response); // Cập nhật nội dung sản phẩm
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error: " + error);
+                    }
+                });
+            }
         });
+
+
     </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>

@@ -155,6 +155,7 @@ public class VerifyEmail extends HttpServlet {
             request.getRequestDispatcher("Views/HomePage.jsp").forward(request, response);
 
         }
+        
     }
 
     /**

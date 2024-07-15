@@ -51,7 +51,7 @@ public class LoginServlet extends HttpServlet {
         SliderDAO sliderDAO = new SliderDAO();
         List<Slider> sliders = sliderDAO.getAllSlidersWith("show");
         request.setAttribute("listslider", sliders);
-        
+
         BrandDAO brandDAO = new BrandDAO();
         ArrayList<Brand> brandList = brandDAO.getBrandList();
         request.setAttribute("brandList", brandList);
@@ -64,7 +64,6 @@ public class LoginServlet extends HttpServlet {
         ArrayList<Page> pageList = pageDAO.getPageList();
         request.setAttribute("pageList", pageList);
 
-        
         CategoryOfPostDAO categoryOfPostDAO = new CategoryOfPostDAO();
         List<CategoryOfPost> categoryOfPost = categoryOfPostDAO.getCategoryOfPostList();
         request.setAttribute("categoryOfPostList", categoryOfPost);
@@ -92,10 +91,14 @@ public class LoginServlet extends HttpServlet {
         ColorDAO colorDAO = new ColorDAO();
         ArrayList<Color> colorList = colorDAO.getColorList();
         request.setAttribute("colorList", colorList);
-        
+
         ProductDAO productDAO = new ProductDAO();
         ArrayList<Product> productList = productDAO.getProductList();
         request.setAttribute("productList", productList);
+
+        UserDAO userDAO = new UserDAO();
+        ArrayList<User> userList = userDAO.getUserList();
+        request.setAttribute("userList", userList);
     }
 
     @Override
@@ -109,14 +112,21 @@ public class LoginServlet extends HttpServlet {
             throws ServletException, IOException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-        
         UserDAO userDAO = new UserDAO();
         User customer = userDAO.login(email, password);
-        if (customer != null) {
+        if (customer != null && !("Block".equals(customer.getStatus()))) {
             HttpSession session = request.getSession();
             session.setAttribute("customer", customer);
+            request.setAttribute("email", email);
+            request.setAttribute("password", password);
+            userDAO.UpdateUser(customer.getRole_id(), "Active", customer.getId());
             response.sendRedirect("HomePage");
-        } else {
+        }else if(customer != null && "Block".equals(customer.getStatus())){
+            processRequest(request, response);
+            request.setAttribute("showlogin", "block");
+            request.setAttribute("errorlogin", "Tài khoản đang bị khóa.");
+            request.getRequestDispatcher("Views/HomePage.jsp").forward(request, response);
+        }else {
             processRequest(request, response);
             request.setAttribute("showlogin", "block");
             request.setAttribute("errorlogin", "Tài khoản hoặc mật khẩu không đúng.");
