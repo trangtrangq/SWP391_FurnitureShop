@@ -144,4 +144,10 @@ this.role_id = role_id;
         this.status = status;
     }
 
+    @Override
+    public String toString() {
+        return "User{" + "id=" + id + ", fullname=" + fullname + ", gender=" + gender + ", avatar=" + avatar + ", phonenumber=" + phonenumber + ", address=" + address + ", email=" + email + ", password=" + password + ", role_id=" + role_id + ", status=" + status + '}';
+    }
+    
+
 }

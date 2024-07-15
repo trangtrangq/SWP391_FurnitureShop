@@ -50,9 +50,9 @@ public class BlogDetailServlet extends HttpServlet {
         List<CategoryOfPost> listCategory = categoryOfPostDAO.getListCategoryofPost();
         request.setAttribute("listCategory", listCategory);
 
-        //list new post
-        List<Post> listNewPost = pdao.getNewPostList();
-        request.setAttribute("listNewPost", listNewPost);
+        //list post
+        List<Post> listPost = pdao.getListPost();
+        request.setAttribute("listPost", listPost);
         
         //post detail
         String id = request.getParameter("id");

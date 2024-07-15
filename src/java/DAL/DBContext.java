@@ -33,9 +33,5 @@ public class DBContext {
             LOGGER.log(Level.SEVERE, "Can't not connect to database", ex);
         }
         
-    }
-    public static void main(String[] args) {
-        DBContext dbc = new DBContext();
-        System.out.println(dbc.connect);
-    }
+    }     
 }

@@ -6,7 +6,6 @@ package DAL;
 
 import Models.CustomerChanges;
 import Models.User;
-import com.mysql.cj.jdbc.StatementImpl;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -215,14 +214,42 @@ public class UserDAO extends DBContext {
     }
 
     public void insertCustomer(String email) {
-        String mysql = "INSERT INTO `furniture`.`user` "
-                + "(fullname, gender, phonenumber, address, email, password, role_id, status) "
-                + "SELECT fullname, gender, phonenumber, address, email, password , 1, 'active' "
-                + "FROM `furniture`.`verifyaccount` "
+        String selectSql = "SELECT fullname, gender, phonenumber, address, email, password, role_id, status "
+                + "FROM verifyaccount "
                 + "WHERE email = ?";
-        try (PreparedStatement statement = connect.prepareStatement(mysql)) {
-            statement.setString(1, email);
-            statement.executeUpdate();
+        String insertSql = "INSERT INTO `furniture`.`user` "
+                + "(fullname, gender, phonenumber, address, email, password, role_id, status) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement selectStatement = connect.prepareStatement(selectSql); PreparedStatement insertStatement = connect.prepareStatement(insertSql)) {
+
+            selectStatement.setString(1, email);
+            ResultSet rs = selectStatement.executeQuery();
+
+            if (rs.next()) {
+                // Lấy dữ liệu từ ResultSet
+                String fullname = rs.getString("fullname");
+                String gender = rs.getString("gender");
+                String phonenumber = rs.getString("phonenumber");
+                String address = rs.getString("address");
+                String password = rs.getString("password");
+                int roleId = rs.getInt("role_id");
+                String status = rs.getString("status");
+
+                // Set các giá trị cho câu lệnh insert
+                insertStatement.setString(1, fullname);
+                insertStatement.setString(2, gender);
+                insertStatement.setString(3, phonenumber);
+                insertStatement.setString(4, address);
+                insertStatement.setString(5, email);
+                insertStatement.setString(6, password);
+                insertStatement.setInt(7, roleId);
+                insertStatement.setString(8, status);
+
+                // Thực thi insert
+                insertStatement.executeUpdate();
+            }
+
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Error inserting customer", e);
         }
@@ -254,6 +281,7 @@ public class UserDAO extends DBContext {
         return user;
     }
 
+   
     public String update(String fullname, String gender, String avatar, String phonenumber, String address, int uid) {
         String sql = "UPDATE User SET fullname = ?, gender = ?, avatar = ?, phonenumber = ?, address = ? WHERE id = ?";
         try (PreparedStatement stm = connect.prepareStatement(sql)) {
@@ -272,7 +300,19 @@ public class UserDAO extends DBContext {
         }
     }
 
-    //get list of marketing user
+    public User getUserById(int uid) {
+        try (PreparedStatement stm = connect.prepareStatement("SELECT * FROM user WHERE id = ?")) {
+            stm.setInt(1, uid);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                return new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getInt(9), rs.getString(10));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public ArrayList<User> getMarketerList() {
         ArrayList<User> userList = new ArrayList<>();
         String sql = "SELECT * FROM User u, UserRole ur where "
@@ -448,9 +488,10 @@ public class UserDAO extends DBContext {
         }
         return list;
     }
+
     //lay ra danh sach customerchanges by customerid
-    public List<CustomerChanges> getListCustomerChangesbyId(String id){
-        String sql= "select * from customerchanges where customer_id=?";
+    public List<CustomerChanges> getListCustomerChangesbyId(String id) {
+        String sql = "select * from customerchanges where customer_id=?";
         List<CustomerChanges> list = new ArrayList<>();
         try {
             PreparedStatement statement = connect.prepareStatement(sql);
@@ -471,9 +512,8 @@ public class UserDAO extends DBContext {
             Logger.getLogger(DBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
         return list;
-        
+
     }
-    
 
     //cap nhat vao bang customerchanges sau khi update
     public void addToCustomerChanges(CustomerChanges cc) {
@@ -493,7 +533,7 @@ public class UserDAO extends DBContext {
                 + "?,\n"
                 + "?,\n"
                 + "?);";
-        
+
         try (PreparedStatement statement = connect.prepareStatement(sql)) {
             statement.setString(1, cc.getEmail());
             statement.setString(2, cc.getFullname());

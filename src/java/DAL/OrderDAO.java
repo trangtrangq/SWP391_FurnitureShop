@@ -5,7 +5,6 @@
 package DAL;
 
 import Models.Order;
-import Models.OrderDetail;
 import java.util.logging.Logger;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,10 +15,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.util.Arrays;
-import javax.lang.model.util.Types;
 
 /**
  *
@@ -61,7 +56,8 @@ public class OrderDAO extends DBContext {
 
     public ArrayList<Order> getOrderList() {
         ArrayList<Order> orderList = new ArrayList<>();
-        String sql = "SELECT * FROM furniture.order";
+        String sql = "SELECT * FROM furniture.order"; // Sửa lại "order" thành "orders"
+
         try (PreparedStatement pstmt = connect.prepareStatement(sql); ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
@@ -71,12 +67,15 @@ public class OrderDAO extends DBContext {
                 od.setSale_id(rs.getInt("sale_id"));
                 od.setAddress_id(rs.getInt("address_id"));
                 od.setTotalcost(rs.getDouble("totalcost"));
+
                 // Chuyển đổi từ Timestamp sang LocalDateTime
                 java.sql.Timestamp timestamp = rs.getTimestamp("orderdate");
                 if (timestamp != null) {
                     od.setOrderDate(timestamp.toLocalDateTime());
                 }
+
                 od.setStatus(rs.getString("status"));
+
                 orderList.add(od);
             }
 
@@ -199,8 +198,8 @@ public class OrderDAO extends DBContext {
                 case "Confirmed":
                     conditions.add("status = 'Confirmed'");
                     break;
-                case "Cancel":
-                    conditions.add("status = 'Cancel'");
+                case "Cancled":
+                    conditions.add("status = 'Cancled'");
                     break;
             }
         }
