@@ -119,42 +119,42 @@
                                                         <c:if test="${product.id == productDetail.product_id}">
                                                             <c:forEach var="user" items="${userList}"> 
                                                             </c:forEach> 
-                                                            <input type="hidden" id="id" name="id" value="${productDetail.id}">
-                                                            <tr>
-                                                                <td>
-                                                                    <div class="d-flex mb-2">
-                                                                        <div class="flex-shrink-0">
-                                                                            <img src="image/product/${product.image}"
-                                                                                 alt="" width="35" class="img-fluid">
-                                                                        </div>
-                                                                        <div class="flex-lg-grow-1 ms-3">
-                                                                            <h6 class="small mb-0">${product.name}</h6>
-                                                                            <c:forEach var="color" items="${colorList}">
-                                                                                <c:if test="${productDetail.color_id == color.id}">
-                                                                                    <span class="small">${color.colorname}</span>
-                                                                                </c:if>
-                                                                            </c:forEach>
-                                                                            <c:forEach var="category" items="${categoryList}">
-                                                                                <c:if test="${product.category_id == category.id}">
-                                                                                    <span class="small">(Phân loại: ${category.category})</span> <!-- Thêm dấu ngoặc đơn ở đây -->
-                                                                                </c:if>
-                                                                            </c:forEach>
-                                                                        </div>
+                                                        <input type="hidden" id="id" name="id" value="${productDetail.id}">
+                                                        <tr>
+                                                            <td>
+                                                                <div class="d-flex mb-2">
+                                                                    <div class="flex-shrink-0">
+                                                                        <img src="image/product/${product.image}"
+                                                                             alt="" width="35" class="img-fluid">
                                                                     </div>
-                                                                </td>
-                                                                <td>${orderDetail.quantity}</td>
-                                                                <td class="text-end" style="text-decoration: line-through;">${product.price} </td>
-                                                                <td class="text-end">${orderDetail.price}</td>
-                                                            <div style="display: none">
-                                                                <input type="hidden" id="priceunit" name="priceunit" value="${orderDetail.price}">
-                                                            </div>
-                                                            </tr>
-                                                        </c:if>
-                                                    </c:forEach>
-                                                </c:if>
-                                            </c:forEach>
-                                        </c:if>
-                                    </c:forEach>
+                                                                    <div class="flex-lg-grow-1 ms-3">
+                                                                        <h6 class="small mb-0">${product.name}</h6>
+                                                                        <c:forEach var="color" items="${colorList}">
+                                                                            <c:if test="${productDetail.color_id == color.id}">
+                                                                                <span class="small">${color.colorname}</span>
+                                                                            </c:if>
+                                                                        </c:forEach>
+                                                                        <c:forEach var="category" items="${categoryList}">
+                                                                            <c:if test="${product.category_id == category.id}">
+                                                                                <span class="small">(Phân loại: ${category.category})</span> <!-- Thêm dấu ngoặc đơn ở đây -->
+                                                                            </c:if>
+                                                                        </c:forEach>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td>${orderDetail.quantity}</td>
+                                                            <td class="text-end" style="text-decoration: line-through;">${product.price} </td>
+                                                            <td class="text-end">${orderDetail.price}</td>
+                                                        <div style="display: none">
+                                                            <input type="hidden" id="priceunit" name="priceunit" value="${orderDetail.price}">
+                                                        </div>
+                                                        </tr>
+                                                    </c:if>
+                                                </c:forEach>
+                                            </c:if>
+                                        </c:forEach>
+                                    </c:if>
+                                </c:forEach>
                                 </tbody>
                                 <tfoot>
                                     <tr class="fw-bold">
@@ -188,25 +188,36 @@
                                                 <div style="display: flex; justify-content: center">
                                                     <c:choose>
                                                         <c:when test="${order.status == 'Order'}">
-                                                            <button class="btn btn-secondary" style="width: 80px; height: 30px; margin-right: 20px">${order.status}</button>
-
-                                                            <button id="buy_now"class="btn btn-primary" style="width: 80px; height: 30px;margin-top: 0;"> Update Order</a></button>
-                                                            <button class="btn btn-danger" onclick="confirmCancelOrder()" style="width: 80px; height: 30px; margin-left: 20px">Cancel Order</button>
+                                                            <button class="btn btn-secondary" style="width: 80px; height: 30px; margin-right: 20px">Đang xử lí</button>
+                                                            <button id="buy_now" class="btn btn-primary" style="height: 30px; margin-top: 0;">Cập nhật đơn hàng</button>
+                                                            <button class="btn btn-danger" onclick="confirmCancelOrder(${order.id})" style="width: 80px; height: 30px; margin-left: 20px">Hủy đơn hàng</button>
                                                         </c:when>
-                                                        <c:when test="${order.status == 'Cancel'}">
-                                                            <button class="btn btn-danger" style="width: 80px; height: 30px;">${order.status}</button>
+                                                        <c:when test="${order.status == 'Cancled'}">
+                                                            <button class="btn btn-danger" style="width: 80px; height: 30px;">Đã hủy</button>
                                                         </c:when>
+                                                        <c:when test="${order.status == 'Confirmed'}">
+                                                            <button style=" height: 30px" class="btn btn-info">Đang xử lí</button>
+                                                        </c:when> 
                                                         <c:when test="${order.status == 'Done'}">
-                                                            <button class="btn btn-success" style="width: 80px; height: 30px; margin-right: 10px"><a href="link-to-your-page" >${order.status}</a></button>
-                                                                <c:set var="hasFeedback" value="false" />
-                                                                <c:forEach items="${requestScope.historyFeedbackOrder}" var="history">
-                                                                    <c:if test="${order.id == history}">
-                                                                        <c:set var="hasFeedback" value="true" />
-                                                                    </c:if>
-                                                                </c:forEach>
-                                                                <c:if test="${!hasFeedback}">
-                                                                <button class="btn btn-primary" style="width: 80px; height: 30px; margin-left: 10px">
-                                                                    <a href="FeedbackServlet?order_id=${order.id}" style="color: white; text-decoration: none;">Feedback</a>
+                                                            <c:set var="hasFeedback" value="false" />
+                                                            <c:forEach items="${requestScope.historyFeedbackOrder}" var="history">
+                                                                <c:if test="${order.id == history}">
+                                                                    <c:set var="hasFeedback" value="true" />
+                                                                </c:if>
+                                                            </c:forEach>
+
+                                                            <c:choose>
+                                                                <c:when test="${hasFeedback}">
+                                                                    <button class="btn btn-success" style="margin-right: 10px">Hoàn thành đơn hàng</button>
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    <button class="btn btn-warning" style="margin-right: 10px">Hoàn thành đơn hàng</button>
+                                                                </c:otherwise>
+                                                            </c:choose>
+
+                                                            <c:if test="${!hasFeedback}">
+                                                                <button class="btn btn-primary" style=" height: 30px; margin-left: 10px">
+                                                                    <a href="FeedbackServlet?order_id=${order.id}" style="color: white; text-decoration: none;">Đánh giá</a>
                                                                 </button>
                                                             </c:if>
                                                         </c:when>
@@ -214,6 +225,7 @@
                                                             <button class="btn btn-warning" style="width: 80px; height: 30px;">${order.status}</button>
                                                         </c:otherwise>
                                                     </c:choose>
+
                                                 </div>
                                             </c:if>
                                         </c:forEach>
@@ -235,10 +247,9 @@
     </form>
     <%@include file="HomeFooter.jsp" %>
     <script>
-        function confirmCancelOrder() {
+        function confirmCancelOrder(order_id) {
             var confirmCancel = confirm("Bạn có muốn hủy đơn hàng của mình không?");
             if (confirmCancel) {
-                var order_id = ${order.id}; // Lấy orderId từ biến JSP
                 var xhr = new XMLHttpRequest();
                 xhr.open("POST", "MyOrderInformationServlet", true);
                 xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -247,7 +258,8 @@
                         if (xhr.status === 200) {
                             // Xử lý phản hồi thành công (nếu cần)
                             alert("Đã hủy đơn hàng thành công!");
-                            // Có thể làm gì đó sau khi hủy đơn hàng thành công
+                            // Reload trang sau khi xác nhận hủy đơn hàng thành công
+                            window.location.reload();
                         } else {
                             // Xử lý lỗi nếu cần
                             alert("Có lỗi xảy ra khi hủy đơn hàng.");
@@ -259,8 +271,10 @@
                 // Người dùng chọn No, không làm gì cả
             }
         }
+
+
         document.getElementById('buy_now').addEventListener('click', function () {
-            
+
             var productDetailId = document.getElementById('id').value;
             var quantity = 1;
             var price = document.getElementById('priceunit').value;
@@ -274,54 +288,9 @@
         });
     </script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-        <script>
-        $(document).ready(function () {
-            var searchInput = $('#inputSearchAuto');
-            var searchForm = $('#searchForm');
-            var resultsWrapper = $('#ajaxSearchResults');
-            var resultsContent = $('.resultsContent');
-            var typingTimer; // Timer identifier
-            var doneTypingInterval = 500; // Time in ms (500 ms)
-
-            // Function to handle the AJAX request
-            function submitSearch() {
-                var searchData = searchInput.val().trim();
-
-                if (searchData !== '') {
-                    $.ajax({
-                        type: 'POST',
-                        url: searchForm.attr('action'),
-                        data: searchForm.serialize(),
-                        success: function (response) {
-                            resultsWrapper.show(); // Use .show() to display results
-                            resultsContent.html(response);
-                            console.log(response);
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("Error: " + error);
-                        }
-                    });
-                } else {
-                    resultsWrapper.hide(); // Use .hide() to hide results
-                }
-            }
-
-            // Handle input change event with a delay
-            searchInput.on('input', function () {
-                clearTimeout(typingTimer);
-                typingTimer = setTimeout(submitSearch, doneTypingInterval);
-            });
-
-            // Handle click event on search button
-            $('.btn-search').on('click', function () {
-                resultsWrapper.hide(); // Hide results when search button is clicked
-//                    searchForm.submit();
-            });
-        });
-    </script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
+
+
 
 </html>
