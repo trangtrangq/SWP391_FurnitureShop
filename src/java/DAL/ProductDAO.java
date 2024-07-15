@@ -417,20 +417,60 @@ public class ProductDAO extends DBContext {
             e.printStackTrace(); // In ra lỗi nếu có
         }
     }
+    public Product getLastProduct() {
+        Product product = new Product();
+        String query = "SELECT * FROM product ORDER BY id DESC LIMIT 1";
 
+        try (PreparedStatement preparedStatement = connect.prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+            if (resultSet.next()) {
+                product = new Product();
+                product.setId(resultSet.getInt("id"));
+                product.setCategory_id(resultSet.getInt("category_id"));
+                product.setBrand_id(resultSet.getInt("brand_id"));
+                product.setRoom_id(resultSet.getInt("room_id"));
+                product.setName(resultSet.getString("name"));
+                product.setDescription(resultSet.getString("description"));
+                product.setStaravg(resultSet.getDouble("staravg"));
+                product.setImage(resultSet.getString("image"));
+                product.setPrice(resultSet.getDouble("price"));
+                product.setQuantity(resultSet.getInt("quantity"));
+                product.setStatus(resultSet.getString("status"));
+                product.setCreateDate(resultSet.getDate("createdate"));
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error retrieving product", e);
+        }
+        return product;
+    }
+
+    public void deleteLastProduct(int productId) {
+        String sql = "DELETE FROM product WHERE id = ?";
+        try (PreparedStatement preparedStatement = connect.prepareStatement(sql)) {
+            preparedStatement.setInt(1, productId);
+            preparedStatement.executeUpdate();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error deleting product", e);
+        }
+    }
+    
     public static void main(String[] args) {
         ProductDAO pdao = new ProductDAO();
-        String[] brands = {"1", "2"};
-        String[] rooms = {"1", "2"};
-        String[] categorys = {"1", "2"};
-        String[] status = {"Active", "Inactive"};
-        String[] price = {};
-        ArrayList<Product> products = pdao.filterProductListMKT(brands, rooms, categorys, status, price);
-        
-        products = pdao.searchProductByName("Giường");
-        for (Product product : products) {
-            System.out.println(product.getName());
-        }
+//        String[] brands = {"1", "2"};
+//        String[] rooms = {"1", "2"};
+//        String[] categorys = {"1", "2"};
+//        String[] status = {"Active", "Inactive"};
+//        String[] price = {};
+//        ArrayList<Product> products = pdao.filterProductListMKT(brands, rooms, categorys, status, price);
+//
+//        products = pdao.searchProductByName("Giường");
+//        for (Product product : products) {
+//            System.out.println(product.getName());
+//        }
+//
+        Product p = pdao.getLastProduct();
+        System.out.println(p.getName());
+        pdao.deleteLastProduct(p.getId());
     }
 
 }

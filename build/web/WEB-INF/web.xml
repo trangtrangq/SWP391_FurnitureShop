@@ -184,6 +184,10 @@
         <servlet-name>ProductSearchServlet</servlet-name>
         <servlet-class>Controller.Public.ProductSearchServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AddProductServlet</servlet-name>
+        <servlet-class>Controller.Marketing.AddProductServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>HomePage</servlet-name>
         <url-pattern>/HomePage</url-pattern>
@@ -367,6 +371,10 @@
     <servlet-mapping>
         <servlet-name>ProductSearchServlet</servlet-name>
         <url-pattern>/ProductSearchServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddProductServlet</servlet-name>
+        <url-pattern>/AddProductServlet</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>
