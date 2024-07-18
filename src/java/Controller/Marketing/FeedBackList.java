@@ -22,32 +22,7 @@ import java.util.List;
  */
 public class FeedBackList extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet FeedBackList</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet FeedBackList at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    }
-
+    
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -63,6 +38,8 @@ public class FeedBackList extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String index_str = request.getParameter("index") == null ? "" : request.getParameter("index");
+        String sort = request.getParameter("sort") == null ? "" : request.getParameter("sort");
+        request.setAttribute("sort", sort);
         String status = request.getParameter("status") == null || request.getParameter("status").equals("all") ? "" : request.getParameter("status");
         request.setAttribute("status", status);
         String productname = request.getParameter("productname") == null ? "" : request.getParameter("productname");
@@ -86,9 +63,9 @@ public class FeedBackList extends HttpServlet {
         String description = request.getParameter("description") == (null) ? "" : request.getParameter("description");
         request.setAttribute("description", description);
         FeedbackDAO fd = new FeedbackDAO();
-        List<Feedback> list = fd.searchFeedbacks(rate, status, customername, productname, description, (index-1)*PageSize, PageSize);
+        List<Feedback> list = fd.searchFeedbacks(rate, status, customername, productname, description, (index-1)*PageSize, PageSize,sort);
         int total = fd.countFeedbacks(rate, status, customername, productname, description);
-        int number_page = (int) Math.ceil((double) total / PageSize);
+        int number_page = total%PageSize==0?total/PageSize:(int)(total/PageSize)+1;
         if (index > number_page) {
             index = number_page;
         }
@@ -100,36 +77,17 @@ public class FeedBackList extends HttpServlet {
         request.setAttribute("numberpage", number_page);
         request.setAttribute("fl", list);
         PrintWriter out = response.getWriter();
-        out.print(list.size());
-        out.print(fd.s);
-        out.print(number_page);
-        out.print("sang:  "+index+":");
-        out.print(total);
+        out.print(list.size()+"\n");
+        out.print(number_page+"\n");
+        out.print(status+"\n");
+        out.print(fd.counts+"\n");
+        out.print(total+"\n");
         request.getRequestDispatcher("./Views/FeedBacksList.jsp").forward(request, response);
     }
-
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
+    public static void main(String[] args) {
+        List<Feedback> feedbacks= new FeedbackDAO().searchFeedbacks(0, "", "", "", "", 1, 5, null);
+        for (Feedback feedback : feedbacks) {
+            System.out.println(feedback.getId());
+        }
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
 }

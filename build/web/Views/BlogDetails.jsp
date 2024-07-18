@@ -41,7 +41,6 @@
                 height:auto;
             }
         </style>
-    </head>
     <body>
         <div class="d-flex justify-content-center">
             <%@include file="HomeHeader.jsp" %>
