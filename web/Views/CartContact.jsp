@@ -225,7 +225,7 @@
                                     <div class="modal-body">
                                         <form id="EditAddress" action="${pageContext.request.contextPath}/UpdateAddress" method="post">
                                             <input type="hidden" id="shouldEditModal" name="shouldOpenModal" value="${shouldEditModal}">
-                                            <input type="hidden" id="id" name="id" value="${address.id}">
+                                            <input type="hidden" id="addressid" name="id" value="${address.id}">
                                             <div class="form-group">
                                                 <label for="fullName" class="form-label">Họ và tên</label>
                                                 <c:choose>
@@ -293,7 +293,7 @@
                 <div style="padding-left: 2%">
                     <c:choose>
                         <c:when test="${addressupdate!=null}">
-
+                            <input type="hidden" id="addressid" name="addressid" value="${addressupdate.id}">
                             <p class="mb-1">
 
                                 <c:choose >
@@ -309,7 +309,8 @@
                         </c:when>
                         <c:otherwise>
                             <c:forEach items="${addresslist}" var="address">
-
+                                <input type="hidden" id="addressid" name="addressid" value="${address.id}">
+                                <strong>${address.id}</strong>
                                 <c:set var="status" value="default" ></c:set>
                                 <c:if test="${address.status eq status }">
                                     <p class="mb-1">
@@ -355,72 +356,72 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                 <c:if test="${empty listcartdetail}">
-                                 <h3 class="d-flex justify-content-center">Chưa có sản phẩm vui lòng trở lại <a href="${pageContext.request.contextPath}/CartDetail" style="color: orange" >Giỏ Hàng</a></h3>
-                                    </c:if>
-                                <c:forEach items="${listcartdetail}" var="cartdetail" varStatus="status">
-                                   
-                                    <tr>
-                                        <td class="align-middle">
+                                <c:if test="${empty listcartdetail}">
+                                <h3 class="d-flex justify-content-center">Chưa có sản phẩm vui lòng trở lại <a href="${pageContext.request.contextPath}/CartDetail" style="color: orange" >Giỏ Hàng</a></h3>
+                            </c:if>
+                            <c:forEach items="${listcartdetail}" var="cartdetail" varStatus="status">
 
-                                            <a href="${pageContext.request.contextPath}/MoreProduct?brand= ${cartdetail.brand.id}&&brandname=${cartdetail.brand.brandname}"
-                                               class="ms-2 text-decoration-none text-dark d-flex align-items-center">
-                                                <span>Shop:</span>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                     fill="currentColor" class="bi bi-shop ml-1" viewBox="0 0 16 16">
-                                                <path
-                                                    d="M2.97 1.35A1 1 0 0 1 3.73 1h8.54a1 1 0 0 1 .76.35l2.609 3.044A1.5 1.5 0 0 1 16 5.37v.255a2.375 2.375 0 0 1-4.25 1.458A2.37 2.37 0 0 1 9.875 8 2.37 2.37 0 0 1 8 7.083 2.37 2.37 0 0 1 6.125 8a2.37 2.37 0 0 1-1.875-.917A2.375 2.375 0 0 1 0 5.625V5.37a1.5 1.5 0 0 1 .361-.976zm1.78 4.275a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 1 0 2.75 0V5.37a.5.5 0 0 0-.12-.325L12.27 2H3.73L1.12 5.045A.5.5 0 0 0 1 5.37v.255a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0M1.5 8.5A.5.5 0 0 1 2 9v6h1v-5a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v5h6V9a.5.5 0 0 1 1 0v6h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1V9a.5.5 0 0 1 .5-.5M4 15h3v-5H4zm5-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1zm3 0h-2v3h2z" />
-                                                </svg>
-                                                ${cartdetail.brand.brandname}
-                                            </a>
-                                        </td>
-                                        <td class="align-middle">
-                                            <a href="${pageContext.request.contextPath}/MoreProduct?category=${cartdetail.category.id}&&categoryname=${cartdetail.category.category}"
-                                               class="ms-2 text-decoration-none text-dark d-flex align-items-center">
-                                                <span>Category:</span>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                     fill="currentColor" class="bi bi-bookmarks ml-1" viewBox="0 0 16 16">
-                                                <path
-                                                    d="M2 4a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v11.5a.5.5 0 0 1-.777.416L7 13.101l-4.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v10.566l3.723-2.482a.5.5 0 0 1 .554 0L11 14.566V4a1 1 0 0 0-1-1z" />
-                                                <path
-                                                    d="M4.268 1H12a1 1 0 0 1 1 1v11.768l.223.148A.5.5 0 0 0 14 13.5V2a2 2 0 0 0-2-2H6a2 2 0 0 0-1.732 1" />
-                                                </svg>
-                                                ${cartdetail.category.category}
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
+                                <tr>
+                                    <td class="align-middle">
+
+                                        <a href="${pageContext.request.contextPath}/MoreProduct?brand= ${cartdetail.brand.id}&&brandname=${cartdetail.brand.brandname}"
+                                           class="ms-2 text-decoration-none text-dark d-flex align-items-center">
+                                            <span>Shop:</span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                 fill="currentColor" class="bi bi-shop ml-1" viewBox="0 0 16 16">
+                                            <path
+                                                d="M2.97 1.35A1 1 0 0 1 3.73 1h8.54a1 1 0 0 1 .76.35l2.609 3.044A1.5 1.5 0 0 1 16 5.37v.255a2.375 2.375 0 0 1-4.25 1.458A2.37 2.37 0 0 1 9.875 8 2.37 2.37 0 0 1 8 7.083 2.37 2.37 0 0 1 6.125 8a2.37 2.37 0 0 1-1.875-.917A2.375 2.375 0 0 1 0 5.625V5.37a1.5 1.5 0 0 1 .361-.976zm1.78 4.275a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 1 0 2.75 0V5.37a.5.5 0 0 0-.12-.325L12.27 2H3.73L1.12 5.045A.5.5 0 0 0 1 5.37v.255a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0M1.5 8.5A.5.5 0 0 1 2 9v6h1v-5a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v5h6V9a.5.5 0 0 1 1 0v6h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1V9a.5.5 0 0 1 .5-.5M4 15h3v-5H4zm5-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1zm3 0h-2v3h2z" />
+                                            </svg>
+                                            ${cartdetail.brand.brandname}
+                                        </a>
+                                    </td>
+                                    <td class="align-middle">
+                                        <a href="${pageContext.request.contextPath}/MoreProduct?category=${cartdetail.category.id}&&categoryname=${cartdetail.category.category}"
+                                           class="ms-2 text-decoration-none text-dark d-flex align-items-center">
+                                            <span>Category:</span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                 fill="currentColor" class="bi bi-bookmarks ml-1" viewBox="0 0 16 16">
+                                            <path
+                                                d="M2 4a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v11.5a.5.5 0 0 1-.777.416L7 13.101l-4.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v10.566l3.723-2.482a.5.5 0 0 1 .554 0L11 14.566V4a1 1 0 0 0-1-1z" />
+                                            <path
+                                                d="M4.268 1H12a1 1 0 0 1 1 1v11.768l.223.148A.5.5 0 0 0 14 13.5V2a2 2 0 0 0-2-2H6a2 2 0 0 0-1.732 1" />
+                                            </svg>
+                                            ${cartdetail.category.category}
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
 
 
-                                        <td class="align-middle">
-                                            <div class="d-flex align-items-center">
-                                                <img class="mr-2" alt="product image"
-                                                     src="image/product/${cartdetail.product.image}"
-                                                     width="40" height="40">
-                                                <span>${cartdetail.product.name}</span>
-                                            </div>
+                                    <td class="align-middle">
+                                        <div class="d-flex align-items-center">
+                                            <img class="mr-2" alt="product image"
+                                                 src="image/product/${cartdetail.product.image}"
+                                                 width="40" height="40">
+                                            <span>${cartdetail.product.name}</span>
+                                        </div>
 
-                                            <div>${cartdetail.color.colorname}</div>
-                                        </td>
-                                        <td class="align-middle">
-                                            ${cartdetail.cartItem.totalcost/cartdetail.cartItem.quantity}
+                                        <div>${cartdetail.color.colorname}</div>
+                                    </td>
+                                    <td class="align-middle">
+                                        ${cartdetail.cartItem.totalcost/cartdetail.cartItem.quantity}
 
-                                        </td>
-                                        <td class="align-middle">${cartdetail.cartItem.quantity}</td>
-                                        <td class="align-middle">${cartdetail.cartItem.totalcost}</td>
-                                        <td class="align-middle">
-                                            <div class="form-group">
-                                                <label for="message">Lời nhắn:</label>
-                                                <input type="text" class="form-control" id="message"
-                                                       placeholder="Lưu ý cho Người bán...">
-                                            </div>
-                                            <div >
-                                                <h3 class="h6">Tổng số tiền (1 sản phẩm):</h3>
-                                                <div>${cartdetail.cartItem.totalcost}</div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </c:forEach>
+                                    </td>
+                                    <td class="align-middle">${cartdetail.cartItem.quantity}</td>
+                                    <td class="align-middle">${cartdetail.cartItem.totalcost}</td>
+                                    <td class="align-middle">
+                                        <div class="form-group">
+                                            <label for="message">Lời nhắn:</label>
+                                            <input type="text" class="form-control" id="message"
+                                                   placeholder="Lưu ý cho Người bán...">
+                                        </div>
+                                        <div >
+                                            <h3 class="h6">Tổng số tiền (1 sản phẩm):</h3>
+                                            <div>${cartdetail.cartItem.totalcost}</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </c:forEach>
                             </tbody>
                         </table>
                     </div>
@@ -437,19 +438,29 @@
                         <!-- Sử dụng radio button để chọn phương thức thanh toán -->
                         <c:forEach items="${paymentmethodList}" var="method" varStatus="loop">
                             <label class="btn btn-outline-secondary">
-                                <input type="radio" name="payment" class="payment-radio" onclick="togglePaymentDetails(${loop.index})"> ${method.name}
+
+                                <input type="radio" name="payment" class="payment-radio" checked data-id="${method.id}" > ${method.name}
                             </label>
                         </c:forEach>
                     </div>
 
                     <!-- Chi tiết phương thức thanh toán -->
-                    <c:forEach items="${paymentmethodList}" var="method" varStatus="loop">
-                        <div class="payment-details d-none" id="payment-details-${loop.index}">
-                            <!-- Sử dụng mã JSTL để hiển thị hình ảnh và mô tả của từng phương thức thanh toán -->
-                            <div class="d-flex justify-content-center"><img src="image/${method.image}" alt="alt" style="width: 50%;height: 50%"></div>
-                            <div>${method.description}</div>
+
+                    <div >
+                        <h4>Chọn phương thức thanh toán</h4>
+                        <div class="form-group">
+
+
+
+                            <input type="radio" id="bankCode" name="bankCode" value="VNBANK" checked>
+                            <label for="bankCode">Thanh toán qua thẻ ATM/Tài khoản nội địa</label><br>
+
+                            <input type="radio" id="bankCode" name="bankCode" value="INTCARD">
+                            <label for="bankCode">Thanh toán qua thẻ quốc tế</label><br>
+
                         </div>
-                    </c:forEach>
+                    </div>
+
                 </div>
             </div>
             <div class="card mb-3">
@@ -472,13 +483,13 @@
                             href="https://help.shopee.vn/portal/article/77242" target="_blank"
                             rel="noopener noreferrer">Điều khoản Furniture</a>
                     </div>
-                    <button class="btn btn-primary btn-block">Đặt hàng</button>
-                    <a href="${pageContext.request.contextPath}/CartDetail" class="btn btn-primary btn-block">Back To CartDetail</a>
+                    <button id="order" class="btn btn-primary btn-block">Đặt hàng</button>
+                    <a href="${pageContext.request.contextPath}/CartDetail" class="btn btn-primary btn-block">Trở Lại</a>
                 </div>
             </div>
         </div>
 
-                <footer class="mainFooter mainfooter-toolbar" style="background-color: #f2f2f2;" >
+        <footer class="mainFooter mainfooter-toolbar" style="background-color: #f2f2f2;" >
 
             <div class="footer-container">
                 <div class="container">
@@ -566,165 +577,290 @@
                 </div>
             </div>
         </footer>
+        <form id="orderForm" action="${pageContext.request.contextPath}/AddToOrder" method="post" style="display: none">
+            <input type="hidden" id="addressIdInput" name="addressId" value="">
+            <input type="hidden" id="paymentIdInput" name="paymentId" value="">
+            <input type="hidden" id="totalcost" name="totalcost" value="${sumtotalprice}">
+            <input type="hidden" id="bankCodeserver" name="bankCode" value="">
+            <!-- Add hidden inputs for each cart detail -->
+            <c:forEach items="${listcartdetail}" var="cartdetail" varStatus="status">
+                <input type="hidden" name="cartIds" value="${cartdetail.cartItem.id}">
+                <input type="hidden" name="cartDetailIds" value="${cartdetail.cartItem.product_id}">
+                <input type="hidden" name="cartDetailTotalcosts" value="${cartdetail.cartItem.totalcost}">
+                <input type="hidden" name="cartDetailQuantitys" value="${cartdetail.cartItem.quantity}">
+            </c:forEach>
+                
+                
+        </form>
 
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
         <script>
-                                    $(document).ready(function () {
-                                        $('#province').change(function () {
-                                            var province = $(this).val();
-                                            if (province) {
-                                                // Enable district dropdown and load options based on province
-                                                $('#district').prop('disabled', false);
-                                                $('#district').html('<option value="">Chọn Quận/Huyện</option>');
-                                                // Add district options dynamically based on selected province
-                                                if (province == 'Hà Nội') {
-                                                    $('#district').append('<option value="Cầu Giấy">Cầu Giấy</option>');
-                                                    $('#district').append('<option value="Đống Đa">Đống Đa</option>');
-                                                } else if (province == 'TP. Hồ Chí Minh') {
-                                                    $('#district').append('<option value="Minh Khai">Minh Khai</option>');
-                                                    $('#district').append('<option value="Bình Tân">Bình Tân</option>');
-                                                }
-                                            } else {
-                                                $('#district').prop('disabled', true);
-                                                $('#district').html('<option value="">Chọn Quận/Huyện</option>');
-                                                $('#ward').prop('disabled', true);
-                                                $('#ward').html('<option value="">Chọn Phường/Xã</option>');
-                                            }
-                                        });
+            document.addEventListener('DOMContentLoaded', function () {
+                document.getElementById('order').addEventListener('click', function (e) {
+                    e.preventDefault(); // Prevent the default form submission
 
-                                        $('#district').change(function () {
-                                            var district = $(this).val();
-                                            if (district) {
-                                                // Enable ward dropdown and load options based on district
-                                                $('#ward').prop('disabled', false);
-                                                $('#ward').html('<option value="">Chọn Phường/Xã</option>');
-                                                // Add ward options dynamically based on selected district
-                                                if (district == 'Cầu Giấy') {
-                                                    $('#ward').append('<option value="Yên Hòa">Yên Hòa</option>');
-                                                    $('#ward').append('<option value="Dịch Vọng">Dịch Vọng</option>');
-                                                } else if (district == 'Đống Đa') {
-                                                    $('#ward').append('<option value="Khâm Thiên">Khâm Thiên</option>');
-                                                    $('#ward').append('<option value="Quang Trung">Quang Trung</option>');
-                                                }
-                                            } else {
-                                                $('#ward').prop('disabled', true);
-                                                $('#ward').html('<option value="">Chọn Phường/Xã</option>');
-                                            }
-                                        });
-                                    });
-                                    $(document).ready(function () {
-                                        $('#province1').change(function () {
-                                            var province = $(this).val();
-                                            if (province) {
-                                                // Enable district dropdown and load options based on province
-                                                $('#district1').prop('disabled', false);
-                                                $('#district1').html('<option value="">Chọn Quận/Huyện</option>');
-                                                // Add district options dynamically based on selected province
-                                                if (province == 'Hà Nội') {
-                                                    $('#district1').append('<option value="Cầu Giấy">Cầu Giấy</option>');
-                                                    $('#district1').append('<option value="Đống Đa">Đống Đa</option>');
-                                                } else if (province == 'TP. Hồ Chí Minh') {
-                                                    $('#district1').append('<option value="Minh Khai">Minh Khai</option>');
-                                                    $('#district1').append('<option value="Bình Tân">Bình Tân</option>');
-                                                }
-                                            } else {
-                                                $('#district1').prop('disabled', true);
-                                                $('#district1').html('<option value="">Chọn Quận/Huyện</option>');
-                                                $('#ward1').prop('disabled', true);
-                                                $('#ward1').html('<option value="">Chọn Phường/Xã</option>');
-                                            }
-                                        });
+                    // Lấy giá trị index của radio button được chọn
+                    var selectedRadio = document.querySelector('input[name="payment"]:checked');
+                    document.getElementById("bankCodeserver").value=document.querySelector('input[name="bankCode"]:checked').value;
+                    if (selectedRadio) {
+                        var paymentIdvalue = selectedRadio.getAttribute('data-id');
+                        console.log(paymentIdvalue);
 
-                                        $('#district1').change(function () {
-                                            var district = $(this).val();
-                                            if (district) {
-                                                // Enable ward dropdown and load options based on district
-                                                $('#ward1').prop('disabled', false);
-                                                $('#ward1').html('<option value="">Chọn Phường/Xã</option>');
-                                                // Add ward options dynamically based on selected district
-                                                if (district == 'Cầu Giấy') {
-                                                    $('#ward1').append('<option value="Yên Hòa">Yên Hòa</option>');
-                                                    $('#ward1').append('<option value="Dịch Vọng">Dịch Vọng</option>');
-                                                } else if (district == 'Đống Đa') {
-                                                    $('#ward1').append('<option value="Khâm Thiên">Khâm Thiên</option>');
-                                                    $('#ward1').append('<option value="Quang Trung">Quang Trung</option>');
-                                                }
-                                            } else {
-                                                $('#ward1').prop('disabled', true);
-                                                $('#ward1').html('<option value="">Chọn Phường/Xã</option>');
-                                            }
-                                        });
-                                    });
-                                    
-                                    // Handle closing modals with jQuery
-                                    $('#closeAddressModal, #cancelAddressModal').click(function () {
-                                        $('#addressModal').modal('hide');
-                                    });
+                        // Lấy giá trị id từ input ẩn
 
-                                    $('#closeNewAddressModal, #backNewAddressModal').click(function () {
-                                        $('#newAddressModal').modal('hide');
-                                    });
+                        if (paymentIdvalue) {
+                            var paymentId = paymentIdvalue;
+                        } else {
+                            alert("Payment ID input not found");
+                            return;
+                        }
 
-                                    $(document).ready(function () {
-                                        // Kiểm tra nếu cần mở modal
-                                        if ($('#shouldOpenModal').val() === 'true') {
-                                            $('#addressModal').modal('show');
+                        var addressHiddenInput = document.querySelector('input[name="addressid"]');
+//                        if (addressHiddenInput) {
+//                            var addressId = addressHiddenInput.value;
+//                            console.log(addressId);
+//                            return ;
+//                        } else {
+//                            alert("Address ID input not found");
+//                            return;
+//                        }
+                        var addressId = addressHiddenInput.value;
+                        console.log(addressId);
+
+                        // Gán giá trị vào các input ẩn trong form
+                        var addressIdInput = document.getElementById('addressIdInput');
+                        if (addressIdInput) {
+                            addressIdInput.value = addressId;
+
+
+                        } else {
+                            alert("Address ID form input not found");
+                            return;
+                        }
+
+                        var paymentIdInput = document.getElementById('paymentIdInput');
+                        if (paymentIdInput) {
+                            paymentIdInput.value = paymentId;
+                        } else {
+                            alert("Payment ID form input not found");
+                            return;
+                        }
+                        var postData = $("#orderForm").serialize();
+                        var submitUrl = $("#orderForm").attr("action");
+                        // Send AJAX request
+                        fetch(submitUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: postData
+                        })
+                                .then(response => response.json())
+                                .then(x => {
+                                    if (x.code === '00') {
+                                        if (window.vnpay) {
+                                            vnpay.open({width: 768, height: 600, url: x.data});
+                                        } else {
+                                            window.location.href = x.data;
                                         }
-                                    });
-                                    $(document).ready(function () {
-                                        $('#backEditAddressModal').click(function () {
-                                            $('#editAddressModal').modal('hide');
-                                            $('#addressModal').modal('show');
-                                        });
-                                    });
-                                    $(document).ready(function () {
-                                        // Kiểm tra nếu cần mở modal
-                                        if ($('#shouldEditModal').val() === 'true') {
-                                            $('#editAddressModal').modal('show');
-                                        }
-                                    });
-                                    function validatePhoneNumber() {
-                                        var phoneNumber = document.getElementById('editPhoneNumber').value;
-                                        var phoneRegex = /^(0|\+84)[3|5|7|8|9]\d{8}$/;
-
-                                        if (!phoneRegex.test(phoneNumber)) {
-                                            document.getElementById('editPhoneNumber').classList.add('is-invalid');
-                                            document.getElementById('phoneError2').style.display = 'block';
-                                            return false;
-                                        }
-
-                                        document.getElementById('editPhoneNumber').classList.remove('is-invalid');
-                                        document.getElementById('phoneError2').style.display = 'none';
-                                        return true;
+                                    } else {
+                                        alert(x.Message);
                                     }
-                                    function validatePhoneNumber() {
-                                        var phoneNumber = document.getElementById('addPhoneNumber').value;
-                                        var phoneRegex = /^(0|\+84)[3|5|7|8|9]\d{8}$/;
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    document.getElementById("orderForm").submit();
+                                });
+//                        // Gửi form
+//                        var form = document.getElementById("orderForm");
+//                        if (form) {
+//                            form.submit();
+//                        } else {
+//                            alert("Order form not found");
+//                        }
+                    } else {
+                        alert("Please select a payment method.");
+                    }
+                });
+            });
+            $(document).ready(function () {
+                $('#province').change(function () {
+                    var province = $(this).val();
+                    if (province) {
+                        // Enable district dropdown and load options based on province
+                        $('#district').prop('disabled', false);
+                        $('#district').html('<option value="">Chọn Quận/Huyện</option>');
+                        // Add district options dynamically based on selected province
+                        if (province == 'Hà Nội') {
+                            $('#district').append('<option value="Cầu Giấy">Cầu Giấy</option>');
+                            $('#district').append('<option value="Đống Đa">Đống Đa</option>');
+                        } else if (province == 'TP. Hồ Chí Minh') {
+                            $('#district').append('<option value="Minh Khai">Minh Khai</option>');
+                            $('#district').append('<option value="Bình Tân">Bình Tân</option>');
+                        }
+                    } else {
+                        $('#district').prop('disabled', true);
+                        $('#district').html('<option value="">Chọn Quận/Huyện</option>');
+                        $('#ward').prop('disabled', true);
+                        $('#ward').html('<option value="">Chọn Phường/Xã</option>');
+                    }
+                });
 
-                                        if (!phoneRegex.test(phoneNumber)) {
-                                            document.getElementById('addPhoneNumber').classList.add('is-invalid');
-                                            document.getElementById('phoneError1').style.display = 'block';
-                                            return false;
-                                        }
+                $('#district').change(function () {
+                    var district = $(this).val();
+                    if (district) {
+                        // Enable ward dropdown and load options based on district
+                        $('#ward').prop('disabled', false);
+                        $('#ward').html('<option value="">Chọn Phường/Xã</option>');
+                        // Add ward options dynamically based on selected district
+                        if (district == 'Cầu Giấy') {
+                            $('#ward').append('<option value="Yên Hòa">Yên Hòa</option>');
+                            $('#ward').append('<option value="Dịch Vọng">Dịch Vọng</option>');
+                        } else if (district == 'Đống Đa') {
+                            $('#ward').append('<option value="Khâm Thiên">Khâm Thiên</option>');
+                            $('#ward').append('<option value="Quang Trung">Quang Trung</option>');
+                        }
+                    } else {
+                        $('#ward').prop('disabled', true);
+                        $('#ward').html('<option value="">Chọn Phường/Xã</option>');
+                    }
+                });
+            });
+            $(document).ready(function () {
+                $('#province1').change(function () {
+                    var province = $(this).val();
+                    if (province) {
+                        // Enable district dropdown and load options based on province
+                        $('#district1').prop('disabled', false);
+                        $('#district1').html('<option value="">Chọn Quận/Huyện</option>');
+                        // Add district options dynamically based on selected province
+                        if (province == 'Hà Nội') {
+                            $('#district1').append('<option value="Cầu Giấy">Cầu Giấy</option>');
+                            $('#district1').append('<option value="Đống Đa">Đống Đa</option>');
+                        } else if (province == 'TP. Hồ Chí Minh') {
+                            $('#district1').append('<option value="Minh Khai">Minh Khai</option>');
+                            $('#district1').append('<option value="Bình Tân">Bình Tân</option>');
+                        }
+                    } else {
+                        $('#district1').prop('disabled', true);
+                        $('#district1').html('<option value="">Chọn Quận/Huyện</option>');
+                        $('#ward1').prop('disabled', true);
+                        $('#ward1').html('<option value="">Chọn Phường/Xã</option>');
+                    }
+                });
 
-                                        document.getElementById('addPhoneNumber').classList.remove('is-invalid');
-                                        document.getElementById('phoneError1').style.display = 'none';
-                                        return true;
-                                    }
-                                    function togglePaymentDetails(index) {
-                                        // Ẩn tất cả các payment-details trước khi hiển thị
-                                        $(".payment-details").removeClass("d-block").addClass("d-none");
+                $('#district1').change(function () {
+                    var district = $(this).val();
+                    if (district) {
+                        // Enable ward dropdown and load options based on district
+                        $('#ward1').prop('disabled', false);
+                        $('#ward1').html('<option value="">Chọn Phường/Xã</option>');
+                        // Add ward options dynamically based on selected district
+                        if (district == 'Cầu Giấy') {
+                            $('#ward1').append('<option value="Yên Hòa">Yên Hòa</option>');
+                            $('#ward1').append('<option value="Dịch Vọng">Dịch Vọng</option>');
+                        } else if (district == 'Đống Đa') {
+                            $('#ward1').append('<option value="Khâm Thiên">Khâm Thiên</option>');
+                            $('#ward1').append('<option value="Quang Trung">Quang Trung</option>');
+                        }
+                    } else {
+                        $('#ward1').prop('disabled', true);
+                        $('#ward1').html('<option value="">Chọn Phường/Xã</option>');
+                    }
+                });
+            });
 
-                                        // Hiển thị payment-details tương ứng với index được truyền vào
-                                        $("#payment-details-" + index).removeClass("d-none").addClass("d-block");
-                                    }
+            // Handle closing modals with jQuery
+            $('#closeAddressModal, #cancelAddressModal').click(function () {
+                $('#addressModal').modal('hide');
+            });
 
+            $('#closeNewAddressModal, #backNewAddressModal').click(function () {
+                $('#newAddressModal').modal('hide');
+            });
+
+            $(document).ready(function () {
+                // Kiểm tra nếu cần mở modal
+                if ($('#shouldOpenModal').val() === 'true') {
+                    $('#addressModal').modal('show');
+                }
+            });
+            $(document).ready(function () {
+                $('#backEditAddressModal').click(function () {
+                    $('#editAddressModal').modal('hide');
+                    $('#addressModal').modal('show');
+                });
+            });
+            $(document).ready(function () {
+                // Kiểm tra nếu cần mở modal
+                if ($('#shouldEditModal').val() === 'true') {
+                    $('#editAddressModal').modal('show');
+                }
+            });
+            function validatePhoneNumber() {
+                var phoneNumber = document.getElementById('editPhoneNumber').value;
+                var phoneRegex = /^(0|\+84)[3|5|7|8|9]\d{8}$/;
+
+                if (!phoneRegex.test(phoneNumber)) {
+                    document.getElementById('editPhoneNumber').classList.add('is-invalid');
+                    document.getElementById('phoneError2').style.display = 'block';
+                    return false;
+                }
+
+                document.getElementById('editPhoneNumber').classList.remove('is-invalid');
+                document.getElementById('phoneError2').style.display = 'none';
+                return true;
+            }
+            function validatePhoneNumber() {
+                var phoneNumber = document.getElementById('addPhoneNumber').value;
+                var phoneRegex = /^(0|\+84)[3|5|7|8|9]\d{8}$/;
+
+                if (!phoneRegex.test(phoneNumber)) {
+                    document.getElementById('addPhoneNumber').classList.add('is-invalid');
+                    document.getElementById('phoneError1').style.display = 'block';
+                    return false;
+                }
+
+                document.getElementById('addPhoneNumber').classList.remove('is-invalid');
+                document.getElementById('phoneError1').style.display = 'none';
+                return true;
+            }
+            function togglePaymentDetails(index) {
+                // Ẩn tất cả các payment-details trước khi hiển thị
+                $(".payment-details").removeClass("d-block").addClass("d-none");
+
+                // Hiển thị payment-details tương ứng với index được truyền vào
+                $("#payment-details-" + index).removeClass("d-none").addClass("d-block");
+            }
+            $("#orderForm").submit(function () {
+                var postData = $("#orderForm").serialize();
+                var submitUrl = $("#orderForm").attr("action");
+                $.ajax({
+                    type: "POST",
+                    url: submitUrl,
+                    data: postData,
+                    dataType: 'JSON',
+                    success: function (x) {
+                        if (x.code === '00') {
+                            if (window.vnpay) {
+                                vnpay.open({width: 768, height: 600, url: x.data});
+                            } else {
+                                location.href = x.data;
+                            }
+                            return false;
+                        } else {
+                            alert(x.Message);
+                        }
+                    }
+                });
+                return false;
+            });
+            
 
         </script>
     </body>
 
 </html>
-
