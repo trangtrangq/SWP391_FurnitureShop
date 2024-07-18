@@ -477,7 +477,7 @@
                                     </li>
 
                                     <li class="has-submenu  levl-1">
-                                        <a href="${pageContext.request.contextPath}/BlogListServlet?category" title="Tin tức">
+                                        <a href="${pageContext.request.contextPath}/BlogListServlet" title="Tin tức">
                                             Tin tức
 
 
@@ -489,7 +489,7 @@
 
                                             <c:forEach items="${categoryOfPostList}" var="categoryOfPost">
                                                 <li class="">
-                                                    <a href="${pageContext.request.contextPath}/BlogListServlet?category=${categoryOfPost.category}">
+                                                    <a href="${pageContext.request.contextPath}/BlogListServlet?category=${categoryOfPost.getId()}">
                                                         ${categoryOfPost.category}
                                                     </a>
                                                 </li>

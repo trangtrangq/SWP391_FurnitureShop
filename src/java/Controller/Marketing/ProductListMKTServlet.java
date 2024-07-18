@@ -306,7 +306,7 @@ public class ProductListMKTServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         ProductDAO productDAO = new ProductDAO();
-        ArrayList<Product> productList = productDAO.getProductList();
+        ArrayList<Product> productList = productDAO.getProductListByMarketing();
         
         String action = request.getParameter("action");
         if ("search".equals(action)) {
@@ -338,7 +338,7 @@ public class ProductListMKTServlet extends HttpServlet {
         String action = request.getParameter("action");
         ProductDAO productDAO = new ProductDAO();
         HttpSession session = request.getSession();
-        ArrayList<Product> productList = productDAO.getProductList();
+        ArrayList<Product> productList = productDAO.getProductListByMarketing();
 
         if ("sort".equals(action)) {
             productList = (ArrayList<Product>) session.getAttribute("productList");

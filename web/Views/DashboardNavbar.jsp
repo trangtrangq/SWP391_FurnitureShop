@@ -59,8 +59,9 @@
                             <i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Dashboards</span>
                         </a>
                         <ul id="dashboards" class="sidebar-dropdown list-unstyled collapse show" data-bs-parent="#sidebar">
-                            <li class="sidebar-item active"><a class="sidebar-link" href="AdminDashboard.jsp">Admin</a></li>
-                            <li class="sidebar-item"><a class="sidebar-link" href="SaleAndWarehouseDashboard.jsp">Sale & Warehouse</a></li>
+                            <li class="sidebar-item active"><a class="sidebar-link" href="AdminDashboard">Admin Dashboard</a></li>
+                            <li class="sidebar-item active"><a class="sidebar-link" href="MarketingDashboard">Marketing Dashboard</a></li>
+                            <li class="sidebar-item active"><a class="sidebar-link" href="SaleDashboard">Sale Dashboard</a></li>
                         </ul>
                     </li>
 

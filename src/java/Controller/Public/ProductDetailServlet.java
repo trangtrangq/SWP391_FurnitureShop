@@ -246,8 +246,6 @@ public class ProductDetailServlet extends HttpServlet {
         if (action.equals("deleteFeedback")) {
             int deleteFeedbackId = tryParseInt(request.getParameter("deleteFeedbackId"), 0);
             feedbackDAO.deleteFeedback(deleteFeedbackId);
-        } else if (action.equals("editFeedback")) {
-
         }
         processRequest(request, response);
     }

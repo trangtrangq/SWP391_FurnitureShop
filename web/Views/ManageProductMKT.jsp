@@ -53,7 +53,7 @@
                                 </div>
                             </div>
                             <hr/>
-
+                            <c:set value="${requestScope.product}" var="product"/>
                             <div id="edit-container" style="display: none">
                                 <div class="edit-header">
                                     <h3 class="edit-title" id="editProductModalLabel">Edit Product</h3>
@@ -233,7 +233,7 @@
 
                             <div id="product-container" style="display: block">
                                 <div class="row" style="margin-left: 0px">
-                                    <c:set value="${requestScope.product}" var="product"/>
+                                    
                                     <div class="col-md-6 row">
                                         <div class="col-md-6" style="border: groove; padding: 0">
                                             <img src="image/product/${product.image}" alt="" style="max-width: 100%">
@@ -318,7 +318,7 @@
                             <input type="hidden" name="deleteProductId" id="deleteProductId" value="${product.id}">
                             <div class="d-flex justify-content-center">
                                 <button type="submit" class="btn btn-danger mx-2" style="width: 70px;">Yes</button>
-                                <button type="button" class="btn btn-secondary mx-2" data-bs-dismiss="modal" style="width: 70px;">No</button>
+                                <button type="button" class="btn btn-secondary mx-2" data-dismiss="modal" style="width: 70px;">No</button>
                             </div>
                         </form>
                     </div>

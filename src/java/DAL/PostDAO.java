@@ -21,17 +21,9 @@ public class PostDAO extends DBContext {
 
     private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(PostDAO.class.getName());
 
-//    public static void main(String[] args) {
-//        PostDAO postDAO = new PostDAO();
-//        ArrayList<Post> list = postDAO.getNewPostList();
-//        for (Post post : list) {
-//            System.out.println(post.getTitle());
-//        }
-//    }
-    //get list of all posts
 
-    public ArrayList<Post> getNewPostList() {
-        String sql = "SELECT * FROM Post ORDER BY updatedtime DESC";
+    public ArrayList<Post> getFeaturedPostList() {
+        String sql = "SELECT * FROM Post where status = 'featured'";
         ArrayList<Post> list = new ArrayList<>();
 
         try (PreparedStatement statement = connect.prepareStatement(sql); ResultSet rs = statement.executeQuery()) {
@@ -55,36 +47,10 @@ public class PostDAO extends DBContext {
         return list;
     }
 
-    public ArrayList<Post> getPostListByFilter(int categoryOfPost_id) {
-        String sql = "SELECT * FROM Post WHERE category_id = ?";
-        ArrayList<Post> list = new ArrayList<>();
-
-        try (PreparedStatement statement = connect.prepareStatement(sql)) {
-            statement.setInt(1, categoryOfPost_id);
-            try (ResultSet rs = statement.executeQuery()) {
-                while (rs.next()) {
-                    Post p = new Post();
-                    p.setId(rs.getInt("id"));
-                    p.setCategory_id(rs.getInt("category_id"));
-                    p.setMkt_id(rs.getInt("mkt_id"));
-                    p.setTitle(rs.getString("title"));
-                    p.setSubtitle(rs.getString("subtitle"));
-                    p.setThumbnail(rs.getString("thumbnail"));
-                    p.setContent(rs.getString("content"));
-                    p.setUpdatedtime(rs.getString("updatedtime"));
-                    p.setStatus(rs.getString("status"));
-                    list.add(p);
-                }
-            }
-        } catch (SQLException ex) {
-            LOGGER.log(Level.SEVERE, "Error retrieving post list by filter", ex);
-        }
-
-        return list;
-    }
+    
 
     public ArrayList<Post> getPostList() {
-            String sql = "SELECT * FROM Post";
+            String sql = "SELECT * FROM Post where status != 'hide'";
         ArrayList<Post> list = new ArrayList<>();
 
         try (PreparedStatement statement = connect.prepareStatement(sql); ResultSet rs = statement.executeQuery()) {
@@ -109,13 +75,13 @@ public class PostDAO extends DBContext {
         return list;
     }
 
-    //get list of post by keyword searched
+     //get list of post by keyword searched
     public ArrayList<Post> getListPostbySearch(String keyword) {
         String sql = "SELECT p.*, c.category, u.fullname\n"
                 + "FROM Post p\n"
                 + "JOIN CategoryOfPost c ON p.category_id = c.id\n"
                 + "JOIN User u ON p.mkt_id = u.id\n"
-                + "where CONCAT(title, fullname, content, Subtitle) LIKE ?";
+                + "where CONCAT(title, fullname, content, Subtitle) LIKE ? and p.status != 'hide'";
         ArrayList<Post> list = new ArrayList<>();
         try {
             PreparedStatement statement = connect.prepareStatement(sql);
@@ -140,9 +106,9 @@ public class PostDAO extends DBContext {
         return list;
     }
     
-    //get list of all posts
+     //get list of all posts
     public List<Post> getListPost() {
-        String sql = "SELECT * from Post";
+        String sql = "SELECT * from Post where status != 'hide'";
         List<Post> list = new ArrayList<>();
         try {
             PreparedStatement statement = connect.prepareStatement(sql);
@@ -240,23 +206,6 @@ public class PostDAO extends DBContext {
         return list;
     }
 
-    /// lay danh sach status
-    public List<String> getListStatus() {
-        String sql = "select distinct status from post";
-        ArrayList<String> list = new ArrayList<>();
-        try {
-            PreparedStatement statement = connect.prepareStatement(sql);
-            ResultSet rs = statement.executeQuery();
-            while (rs.next()) {
-                String s = "";
-                s = rs.getString("status");
-                list.add(s);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(DBContext.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return list;
-    }
 
     ///update status ở trang posts list
     public void updateStatus(String status, String id) {
@@ -340,11 +289,10 @@ public class PostDAO extends DBContext {
             return false;
         }
     }
-   public ArrayList<Post> getPostListByCategoryId(String categoryOfPost_id) {
-        String sql = "SELECT * FROM Post WHERE category_id = ?";
+    public ArrayList<Post> getPostListByCategoryId(String categoryOfPost_id) {
+        String sql = "SELECT * FROM Post WHERE category_id = ? and status != 'hide'";
         ArrayList<Post> list = new ArrayList<>();
-
-        try (PreparedStatement statement = connect.prepareStatement(sql)) {
+            try (PreparedStatement statement = connect.prepareStatement(sql)) {
             statement.setString(1, categoryOfPost_id);
             try (ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
@@ -367,4 +315,25 @@ public class PostDAO extends DBContext {
 
         return list;
     } 
+   
+   //đếm số lượng post trong khoảng thời gian 
+    public int getPostCounts(java.sql.Date startDate, java.sql.Date endDate) {
+        String sql = "select count(*) from post where CreateDate \n"
+                + "between ? and ?";
+        int count=0;
+        try {
+            PreparedStatement statement = connect.prepareStatement(sql);
+            statement.setDate(1, startDate);
+            statement.setDate(2, endDate);
+
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                count=rs.getInt("count(*)");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return count;
+    }
 }
