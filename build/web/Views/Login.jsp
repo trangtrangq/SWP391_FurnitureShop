@@ -24,11 +24,11 @@
                             <form action="${pageContext.request.contextPath}/LoginServlet" method="post" id="loginForm">
                                 <div class="form-group">
                                     <label for="email">Email</label>
-                                    <input type="text" class="form-control" id="email" name="email" required value="${param.email}">
+                                    <input type="text" class="form-control" id="email" name="email" required >
                                 </div>
                                 <div class="form-group">
                                     <label for="password">Mật khẩu</label>
-                                    <input type="password" class="form-control" id="password1" name="password" required value="${param.password}">
+                                    <input type="password" class="form-control" id="password1" name="password" required >
                                 </div>
                                 <div>
                                     <input type="checkbox" id="togglePasswords" onclick="togglePasswordVisibility1()"> Hiển thị mật khẩu

@@ -82,6 +82,35 @@ public class ProductDAO extends DBContext {
 
     public ArrayList<Product> getProductList() {
         ArrayList<Product> productList = new ArrayList<>();
+        String query = "SELECT * FROM product WHERE status = 'Active'";
+        try (PreparedStatement preparedStatement = connect.prepareStatement(query); ResultSet resultSet = preparedStatement.executeQuery();) {
+
+            while (resultSet.next()) {
+                Product product = new Product();
+                product.setId(resultSet.getInt("id"));
+                product.setCategory_id(resultSet.getInt("category_id"));
+                product.setBrand_id(resultSet.getInt("brand_id"));
+                product.setRoom_id(resultSet.getInt("room_id"));
+                product.setName(resultSet.getString("name"));
+                product.setDescription(resultSet.getString("description"));
+                product.setStaravg(resultSet.getDouble("staravg"));
+                product.setImage(resultSet.getString("image"));
+                product.setPrice(resultSet.getDouble("price"));
+                product.setQuantity(resultSet.getInt("quantity"));
+                product.setStatus(resultSet.getString("status"));
+                product.setCreateDate(resultSet.getDate("createdate"));
+                
+                productList.add(product);
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error retrieving product list", e);
+        }
+
+        return productList;
+    }
+    
+    public ArrayList<Product> getProductListByMarketing() {
+        ArrayList<Product> productList = new ArrayList<>();
         String query = "SELECT * FROM product";
         try (PreparedStatement preparedStatement = connect.prepareStatement(query); ResultSet resultSet = preparedStatement.executeQuery();) {
 
@@ -417,60 +446,89 @@ public class ProductDAO extends DBContext {
             e.printStackTrace(); // In ra lỗi nếu có
         }
     }
-    public Product getLastProduct() {
-        Product product = new Product();
-        String query = "SELECT * FROM product ORDER BY id DESC LIMIT 1";
-
-        try (PreparedStatement preparedStatement = connect.prepareStatement(query);
-             ResultSet resultSet = preparedStatement.executeQuery()) {
-            if (resultSet.next()) {
-                product = new Product();
-                product.setId(resultSet.getInt("id"));
-                product.setCategory_id(resultSet.getInt("category_id"));
-                product.setBrand_id(resultSet.getInt("brand_id"));
-                product.setRoom_id(resultSet.getInt("room_id"));
-                product.setName(resultSet.getString("name"));
-                product.setDescription(resultSet.getString("description"));
-                product.setStaravg(resultSet.getDouble("staravg"));
-                product.setImage(resultSet.getString("image"));
-                product.setPrice(resultSet.getDouble("price"));
-                product.setQuantity(resultSet.getInt("quantity"));
-                product.setStatus(resultSet.getString("status"));
-                product.setCreateDate(resultSet.getDate("createdate"));
-            }
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error retrieving product", e);
-        }
-        return product;
-    }
-
-    public void deleteLastProduct(int productId) {
-        String sql = "DELETE FROM product WHERE id = ?";
+    
+    public void updateProductQuantity(int productId) {
+        String sql = "SELECT SUM(quantity) AS totalQuantity FROM ProductDetail WHERE product_id = ?";
         try (PreparedStatement preparedStatement = connect.prepareStatement(sql)) {
             preparedStatement.setInt(1, productId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    int totalQuantity = resultSet.getInt("totalQuantity");
+                    updateProductQuantityInProductTable(productId, totalQuantity);
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error calculating total quantity", e);
+        }
+    }
+
+    private void updateProductQuantityInProductTable(int productId, int totalQuantity) {
+        String sql = "UPDATE Product SET quantity = ? WHERE id = ?";
+        try (PreparedStatement preparedStatement = connect.prepareStatement(sql)) {
+            preparedStatement.setInt(1, totalQuantity);
+            preparedStatement.setInt(2, productId);
             preparedStatement.executeUpdate();
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error deleting product", e);
+            LOGGER.log(Level.SEVERE, "Error updating product quantity", e);
         }
     }
     
-    public static void main(String[] args) {
-        ProductDAO pdao = new ProductDAO();
-//        String[] brands = {"1", "2"};
-//        String[] rooms = {"1", "2"};
-//        String[] categorys = {"1", "2"};
-//        String[] status = {"Active", "Inactive"};
-//        String[] price = {};
-//        ArrayList<Product> products = pdao.filterProductListMKT(brands, rooms, categorys, status, price);
-//
-//        products = pdao.searchProductByName("Giường");
-//        for (Product product : products) {
-//            System.out.println(product.getName());
-//        }
-//
-        Product p = pdao.getLastProduct();
-        System.out.println(p.getName());
-        pdao.deleteLastProduct(p.getId());
+     //đếm số lượng product trong khoảng thời gian 
+    public int getProductCounts(java.sql.Date startDate, java.sql.Date endDate) {
+        String sql = "select count(*) from product where CreateDate \n"
+                + "between ? and ?";
+        int count=0;
+        try {
+            PreparedStatement statement = connect.prepareStatement(sql);
+            statement.setDate(1, startDate);
+            statement.setDate(2, endDate);
+
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                count=rs.getInt("count(*)");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return count;
     }
+//    public Product getLastProduct() {
+//        Product product = new Product();
+//        String query = "SELECT * FROM product ORDER BY id DESC LIMIT 1";
+//
+//        try (PreparedStatement preparedStatement = connect.prepareStatement(query);
+//             ResultSet resultSet = preparedStatement.executeQuery()) {
+//            if (resultSet.next()) {
+//                product = new Product();
+//                product.setId(resultSet.getInt("id"));
+//                product.setCategory_id(resultSet.getInt("category_id"));
+//                product.setBrand_id(resultSet.getInt("brand_id"));
+//                product.setRoom_id(resultSet.getInt("room_id"));
+//                product.setName(resultSet.getString("name"));
+//                product.setDescription(resultSet.getString("description"));
+//                product.setStaravg(resultSet.getDouble("staravg"));
+//                product.setImage(resultSet.getString("image"));
+//                product.setPrice(resultSet.getDouble("price"));
+//                product.setQuantity(resultSet.getInt("quantity"));
+//                product.setStatus(resultSet.getString("status"));
+//                product.setCreateDate(resultSet.getDate("createdate"));
+//            }
+//        } catch (SQLException e) {
+//            LOGGER.log(Level.SEVERE, "Error retrieving product", e);
+//        }
+//        return product;
+//    }
+//
+//    public void deleteLastProduct(int productId) {
+//        String sql = "DELETE FROM product WHERE id = ?";
+//        try (PreparedStatement preparedStatement = connect.prepareStatement(sql)) {
+//            preparedStatement.setInt(1, productId);
+//            preparedStatement.executeUpdate();
+//        } catch (Exception e) {
+//            LOGGER.log(Level.SEVERE, "Error deleting product", e);
+//        }
+//    }
+    
 
 }

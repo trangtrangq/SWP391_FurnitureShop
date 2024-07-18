@@ -5,7 +5,7 @@
 --%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="vi">
 
@@ -19,26 +19,36 @@
         <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9W9gE97nN9gqTckvYy7OfFs63QF7zCSQwwDWW" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.all.min.js"></script>
+        <style>
+            .dataTable th::before,
+            .dataTable th::after {
+                content: none !important;
+                display: none !important;
+            }
+        </style>
     </head>
 
     <body>
-        <div class="wrapper">
-            <c:import url="DashboardNavbar.jsp"/>
-
+        <div class="wrapper"> 
+            <%@include file="DashboardNavbar.jsp" %>
             <div class="main">
-                <c:import url="DashboardHeader.jsp"/>
-                <div class="container" style="margin-top: 20px">
+                <%@include file="DashboardHeader.jsp" %>
+                <div class="container">
                     <h1>Customers List</h1>
                     <form action="CustomersList">                
                         Trạng thái:
-                        <select name="status" style="height: 25px;">
+                        <select name="status" >
                             <option value="All">All</option>
-                            <c:forEach items="${listStatus}" var = "s">
-                                <option value="${s}"
-                                        <c:if test="${s eq param.status}">selected
-                                        </c:if>>${s}
-                                </option>
-                            </c:forEach>
+                            <option value="Active"
+                                    <c:if test="${'Active' eq param.status}">selected
+                                    </c:if>>Active
+                            </option>
+                            <option value="Inactive"
+                                    <c:if test="${'Inactive' eq param.status}">selected
+                                    </c:if>>Inactive
+                            </option>
                         </select>
                         <button type="submit">Lọc</button>
                     </form>
@@ -74,7 +84,7 @@
                         Tạo tài khoản khách
                     </button>
 
-                    <!-- The Modal -->
+                    <!-- The Modal to create new account-->
                     <div class="modal" id="createAccountModal">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -95,7 +105,17 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="gender">Giới tính:</label>
-                                            <input type="text" class="form-control" id="gender" name="gender" required>
+                                            <select name="gender" id="gender" class="form-select">
+                                                <option value="Nam">
+                                                    Nam
+                                                </option>
+                                                <option value="Nữ">
+                                                    Nữ
+                                                </option>
+                                                <option value="Khác">
+                                                    Khác
+                                                </option>
+                                            </select>
 
                                         </div>
                                         <div class="form-group">
@@ -121,9 +141,9 @@
                                 </div>
 
                                 <!-- Modal Footer -->
-                                <div class="modal-footer" style="display: flex; justify-content: center">
-                                    <button style="margin-right: 20px" type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
-                                    <button style="margin-left: 20px" id="createAccountButton" type="submit" class="btn btn-success" form="createAccountForm">Tạo tài khoản</button>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
+                                    <button id="createAccountButton" type="submit" class="btn btn-success" form="createAccountForm">Tạo tài khoản</button>
                                 </div>
 
                             </div>
@@ -132,8 +152,26 @@
                 </div>
             </div>
         </div>
-
+        <%@include file="DashboardFooter.jsp" %>
         <script>
+            $(document).ready(function () {
+                var result = '${result}';
+                if (result === 'success') {
+                    Swal.fire({
+                        title: 'Tạo thành công',
+                        icon: 'success',
+                        confirmButtonText: 'Đóng'
+                    });
+                } else if (result === 'failure') {
+                    Swal.fire({
+                        title: 'Tạo thất bại',
+                        text: '${error}',
+                        icon: 'error',
+                        confirmButtonText: 'Đóng'
+                    });
+                }
+            });
+            
             $(document).ready(function () {
                 if (${msg!=null}) {
                     $('#createAccountModal').modal('show');

@@ -17,13 +17,23 @@
         <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
         <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
+        <style>
+            .dataTable th::before,
+            .dataTable th::after {
+                content: none !important;
+                display: none !important;
+            }
+        </style>
     </head>
 
     <body>
         <div class="wrapper">
             <%@include file="DashboardNavbar.jsp" %>
             <div class="main">
-                <%@include file="DashboardHeader.jsp" %>
+                <div>
+                    <%@include file="DashboardHeader.jsp" %>
+                </div>
                 <div class="container" style="margin-top: 20px; margin-bottom: 20px">
                     <h1>Posts List</h1>
                     <form action="PostsList">
@@ -46,12 +56,15 @@
                         Trạng thái:
                         <select name="status" >
                             <option value="">All</option>
-                            <c:forEach items="${listStatus}" var = "s">
-                                <option value="${s}"
-                                        <c:if test="${s eq param.status}">selected
-                                        </c:if>>${s}
-                                </option>
-                            </c:forEach>
+                            <option value="show" <c:if test="${'show' eq p.getStatus()}">selected
+                                    </c:if> >Hiển thị
+                            </option>
+                            <option value="hide" <c:if test="${'hide' eq p.getStatus()}">selected
+                                    </c:if> >Ẩn
+                            </option>
+                            <option value="featured" <c:if test="${'featured' eq p.getStatus()}">selected
+                                    </c:if> >Nổi bật
+                            </option>
                         </select>
                         <button type="submit">Lọc</button>
                     </form>
@@ -90,12 +103,15 @@
                                         <form action="PostsList" method="post">
                                             <input type="hidden" name="id" value="${p.getId()}">
                                             <select name="newstatus" onchange="this.form.submit()">
-                                                <c:forEach items="${listStatus}" var = "s">
-                                                    <option value="${s}"
-                                                            <c:if test="${s eq p.getStatus()}">selected
-                                                            </c:if>>${s}
-                                                    </option>
-                                                </c:forEach>
+                                                <option value="show" <c:if test="${'show' eq p.getStatus()}">selected
+                                                        </c:if> >Hiển thị
+                                                </option>
+                                                <option value="hide" <c:if test="${'hide' eq p.getStatus()}">selected
+                                                        </c:if> >Ẩn
+                                                </option>
+                                                <option value="featured" <c:if test="${'featured' eq p.getStatus()}">selected
+                                                        </c:if> >Nổi bật
+                                                </option>
                                             </select>
                                         </form>
                                     </td>
@@ -110,7 +126,6 @@
                 </div>
             </div>
         </div>
-        <%@include file="DashboardFooter.jsp" %>
 
         <script>
             $(document).ready(function () {
@@ -121,7 +136,7 @@
                 var table = $('#table').DataTable({
                     "columnDefs": [
                         {"targets": [0, 1, 3, 4, 5], "searchable": false}, // tắt tính năng tìm kiếm cho các cột khác
-                        {"orderable": false, "targets": [0, 1, 6]} // Vô hiệu hóa sắp xếp cho các cột
+                        {"orderable": false, "targets": [0, 1, 5, 6]} // Vô hiệu hóa sắp xếp cho các cột
                     ],
                     "language": {
                         "search": "Tìm kiếm theo tiêu đề:"
@@ -139,7 +154,7 @@
 
             });
         </script>
-
+        <%@include file="DashboardFooter.jsp" %>
     </body>
 
 </html>

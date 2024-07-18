@@ -145,35 +145,7 @@ public class RegisterServlet extends HttpServlet {
         int role_id = Integer.parseInt(request.getParameter("role_id"));
         String status = request.getParameter("status");
         processRequest(request, response);
-        String error = null;
-
-        // Kiểm tra độ dài của các trường
-        if (fullname.length() > 100) {
-            error = "Họ và tên không được vượt quá 100 ký tự.";
-        } else if (gender.length() > 20) {
-            error = "Giới tính không được vượt quá 20 ký tự.";
-        } else if (phone.length() > 11) {
-            error = "Số điện thoại không được vượt quá 11 ký tự.";
-        } else if (address.length() > 100) {
-            error = "Địa chỉ không được vượt quá 255 ký tự.";
-        } else if (email.length() > 100) {
-            error = "Email không được vượt quá 100 ký tự.";
-        } else if (password.length() > 32) {
-            error = "Mật khẩu không được vượt quá 32 ký tự.";
-        }
-
-        if (error != null) {
-            request.setAttribute("fullname", fullname);
-            request.setAttribute("gender", gender);
-            request.setAttribute("phone", phone);
-            request.setAttribute("address", address);
-            request.setAttribute("email", email);
-            request.setAttribute("password", password);
-            request.setAttribute("error", error);
-            request.setAttribute("showregister", "block");
-            request.getRequestDispatcher("Views/HomePage.jsp").forward(request, response);
-            return;
-        }
+        
         UserDAO userDAO = new UserDAO();
         if (userDAO.checkAccount(email) == true) {
             request.setAttribute("fullname", fullname);
@@ -182,6 +154,7 @@ public class RegisterServlet extends HttpServlet {
             request.setAttribute("address", address);
             request.setAttribute("email", email);
             request.setAttribute("password", password);
+            request.setAttribute("pass", rePass);
             request.setAttribute("error", "Tài khoản đã tồn tại.");
             request.setAttribute("showregister", "block");
             request.getRequestDispatcher("Views/HomePage.jsp").forward(request, response);

@@ -17,12 +17,12 @@
         <link rel="preload stylesheet" as="style" fetchpriority="low" href="css/style-theme.scss.css">
         <link rel="stylesheet" href="css/style.css">
         <!--+++++++++++++++++++++++++  JS ++++++++++++++++++++++++-->
-            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 
-            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-            <script defer fetchpriority="low" src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script defer fetchpriority="low" src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"></script>
 
-            <script defer fetchpriority="low" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+        <script defer fetchpriority="low" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 
 
         <style>
@@ -200,9 +200,7 @@
                             <img loading="eager" fetchpriority="high" decoding="sync" width="1920" height="450"
                                  srcset="//file.hstatic.net/200000065946/collection/banner_web_1920x450-0410__1__6f2_c39476d703c04384bf6b292d1aef8d19_large.jpg 480w, //file.hstatic.net/200000065946/collection/banner_web_1920x450-0410__1__6f2_c39476d703c04384bf6b292d1aef8d19_2048x2048.jpg"
                                  alt="Tất cả sản phẩm MOHO" />
-
                         </div>
-
                         <div class="container">
                             <div class="row">
                                 <div id="collection-body" class="wrap-collection-body clearfix">
@@ -488,7 +486,7 @@
                                                     <div id="page-pagination">
                                                         <c:forEach var="page" items="${pagenumber}">
                                                             <input type="radio" name="page" id="page${page}" value="${page}" style="display: none;">
-                                                            <label for="page${page}" style="width: 25px; border: groove;" class="page-node" aria-label="Trang ${page}">${page}</label>
+                                                            <label for="page${page}" style="width: 25px; border: groove;" class="page-node" aria-label="Trang ${page}" onclick="submitFormWithPage(${page})">${page}</label>
                                                         </c:forEach>
                                                         <span class="page-node">&hellip;</span>
                                                     </div>
@@ -755,15 +753,40 @@
                 updateTags('input[name="color-filter"]', 'color-tag', 'color-filter');
             });
 
+//            $(document).ready(function () {
+//                $('.page-node').click(function (event) {
+//                    event.preventDefault(); // Ngăn chặn hành động mặc định của liên kết
+//
+//                    var pageValue = $(this).text();
+//                    $("input[name='page'][value='" + pageValue + "']").prop('checked', true);
+//
+//                    submitFormWithAjax();
+//                });
+//
+//                function submitFormWithAjax() {
+//                    var form = $('#paginationForm')[0]; // Lấy form theo id
+//
+//                    $.ajax({
+//                        type: form.getAttribute("method"),
+//                        url: form.getAttribute("action"),
+//                        data: $(form).serialize(),
+//                        success: function (response) {
+//                            $("#product-container").html(response); // Cập nhật nội dung sản phẩm
+//                        },
+//                        error: function (xhr, status, error) {
+//                            console.error("Error: " + error);
+//                        }
+//                    });
+//                }
+//            });
+
             $(document).ready(function () {
-                $('.page-node').click(function (event) {
-                    event.preventDefault(); // Ngăn chặn hành động mặc định của liên kết
-
-                    var pageValue = $(this).text();
+                // Hàm để xử lý sự kiện onclick và gửi yêu cầu AJAX
+                window.submitFormWithPage = function (pageValue) {
                     $("input[name='page'][value='" + pageValue + "']").prop('checked', true);
-
+                    console.log(pageValue);
                     submitFormWithAjax();
-                });
+                }
 
                 function submitFormWithAjax() {
                     var form = $('#paginationForm')[0]; // Lấy form theo id
@@ -781,7 +804,7 @@
                     });
                 }
             });
-            
+
             $(document).ready(function () {
                 var searchInput = $('#inputSearchAuto');
                 var searchForm = $('#searchForm');

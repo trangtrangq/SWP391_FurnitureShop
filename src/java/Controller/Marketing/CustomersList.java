@@ -88,10 +88,61 @@ public class CustomersList extends HttpServlet {
         String email = request.getParameter("email");
         String pass = request.getParameter("password");
 
+        //validate
+        String error = "";
+        // Kiểm tra tên không được để trống
+        if (fullname.isBlank()) {
+            error = "Tên không để trống!";
+        }
+        
+        if(!fullname.matches("^[\\p{L}\\s]+$")){
+            error = "Tên không chứa kí tự đặc biệt!";
+        }
+
+        // Kiểm tra độ dài của địa chỉ (từ 20 đến 320 ký tự)
+        if (add.isBlank()) {
+            error = "Địa chỉ không được để trống!";
+        }
+
+        // Kiểm tra định dạng email
+
+        // Kiểm tra sự hiện diện của ký tự '@'
+        if (!email.contains("@")) {
+            error = "Email không hợp lệ!";
+        }
+
+        // Kiểm tra sự hiện diện của local part và domain part
+        String[] parts = email.split("@");
+        if (parts.length != 2 || parts[0].isEmpty() || parts[1].isEmpty()) {
+            error = "Email không hợp lệ!";
+        }
+
+        // Kiểm tra xem domain có chứa ít nhất một dấu chấm không
+        if (!parts[1].contains(".")) {
+            error = "Email không hợp lệ!";
+        }
+
+        // Kiểm tra xem domain không bắt đầu hoặc kết thúc bằng dấu gạch ngang
+        if (parts[1].startsWith("-") || parts[1].endsWith("-")) {
+            error = "Email không hợp lệ!";
+        }
+
+        // Kiểm tra xem domain không bắt đầu hoặc kết thúc bằng dấu chấm
+        if (parts[1].startsWith(".") || parts[1].endsWith(".")) {
+            error = "Email không hợp lệ!";
+        }
+        
+        // Kiểm tra định dạng số điện thoại (bắt đầu bằng 0 và gồm chính xác 10 ký tự)
+        String phoneRegex = "^0\\d{9}$";
+        if (!phone.matches(phoneRegex)) {
+            error = "Số điện thoại không hợp lệ!";
+        }
+        
         if (udao.createAcc(fullname, gender, phone, add, email, pass)) {
-            request.setAttribute("msg", "Tạo thành công");
+            request.setAttribute("result", "success");
         } else {
-            request.setAttribute("msg", "Tạo thất bại");
+            request.setAttribute("error", error);
+            request.setAttribute("result", "failure");
         }
 
         processRequest(request, response);

@@ -31,17 +31,15 @@
                             <input type="text" class="form-control" id="fullname" name="fullname" required value="${param.fullname}">
                         </div>
                         <div class="form-group">
-                            <!--                            <label for="gender">Giới tính</label>
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input" type="radio" name="gender" value="Male" id="genderMale" ${param.gender == 'Male' ? 'checked' : ''} required value="${param.gender}">
-                                                            <label class="form-check-label" for="genderMale">Male</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input" type="radio" name="gender" value="Female" id="genderFemale" ${param.gender == 'Female' ? 'checked' : ''} required value="${param.gender}">
-                                                            <label class="form-check-label" for="genderFemale">Female</label>
-                                                        </div>-->
                             <label for="gender">Giới tính</label>
-                            <input type="text" class="form-control" id="gender" name="gender" required value="${param.gender}">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="gender" value="Male" id="genderMale" ${param.gender == 'Male' ? 'checked' : ''} required value="${param.gender}">
+                                <label class="form-check-label" for="genderMale">Male</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="gender" value="Female" id="genderFemale" ${param.gender == 'Female' ? 'checked' : ''} required value="${param.gender}">
+                                <label class="form-check-label" for="genderFemale">Female</label>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="phone">Số điện thoại <span class="text-danger">*</span></label>
@@ -52,11 +50,11 @@
                         </div>
                         <div class="form-group">
                             <label for="address">Địa chỉ</label>
-                            <input type="text" class="form-control" id="address" name="address" required value="${param.address}">
+                            <input type="text" class="form-control" id="address" name="address" required value="${address}">
                         </div>
                         <div class="form-group">
                             <label for="email">Email <span class="text-danger">*</span></label>
-                            <input type="email" class="form-control" id="email" name="email" required value="${param.email}"
+                            <input type="email" class="form-control" id="email" name="email" required value="${email}"
                                    pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
                                    title="Vui lòng nhập địa chỉ email hợp lệ (ví dụ: example@example.com)">
                         </div>
@@ -65,11 +63,11 @@
                             <input id="password" type="password" class="form-control password2" name="password" required
                                    pattern="(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}"
                                    title="Mật khẩu phải có ít nhất 8 ký tự, bao gồm ít nhất một chữ hoa, một số và một ký tự đặc biệt."
-                                   value="${param.password}">
+                                   value="${password}">
                         </div>
                         <div class="form-group">
                             <label for="pass">Nhập lại mật khẩu</label>
-                            <input id="rePassword" type="password" class="form-control password2" name="pass" required value="${param.pass}">
+                            <input id="rePassword" type="password" class="form-control password2" name="pass" required value="${pass}">
                         </div>
                         <input type="hidden" name="role_id" value="1"/>
                         <input type="hidden" name="status" value="Inactive"/>

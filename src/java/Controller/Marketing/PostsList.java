@@ -44,9 +44,6 @@ public class PostsList extends HttpServlet {
         List<User> listMkt = udao.getMarketerList();
         request.setAttribute("listMkt", listMkt);
         
-        //lay ra list status
-        List<String> listStatus = pdao.getListStatus();
-        request.setAttribute("listStatus",listStatus);
         
         //get list post theo filter
         String category = request.getParameter("category");

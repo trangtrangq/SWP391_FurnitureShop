@@ -110,6 +110,7 @@ public class ManageProductServlet extends HttpServlet {
             editProductDetail.setStatus(statusProductDetail);
 
             ProductDetailDAO productDetailDAO = new ProductDetailDAO();
+            productDetailDAO.updateProductDetail(editProductDetail);
 
             int start = (count - 1) * 4 + 1;
             int end = start + 3;
@@ -295,6 +296,7 @@ public class ManageProductServlet extends HttpServlet {
                 UpdateProduct(request, response);
                 int productID = Integer.parseInt(request.getParameter("editProductId"));
                 ProductDAO productDAO = new ProductDAO();
+                productDAO.updateProductQuantity(productID);
                 Product product = productDAO.getProductByID(productID);
                 request.setAttribute("product", product);
                 processRequest(request, response);
@@ -302,8 +304,7 @@ public class ManageProductServlet extends HttpServlet {
                 break;
             case "deleteProduct":
                 DeleteProduct(request, response);
-                session.removeAttribute("productList");
-//                response.sendRedirect("ProductListMKTServlet");
+                response.sendRedirect("ProductListMKTServlet");
                 break;
         }
 
