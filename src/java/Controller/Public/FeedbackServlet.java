@@ -132,7 +132,7 @@ public class FeedbackServlet extends HttpServlet {
 
                 for (String fileName : fileNames) {
                     ImageFeedback imageFeedback = new ImageFeedback(feedbackId, fileName);
-                    feedbackDAO.insertImageFb(feedbackId, fileName);
+                    feedbackDAO.insertImageFb(feedbackId + 1, fileName);
                 }
                 
             }
