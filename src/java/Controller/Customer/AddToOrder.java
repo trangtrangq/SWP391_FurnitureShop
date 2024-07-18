@@ -48,11 +48,7 @@ import java.util.logging.Logger;
  */
 public class AddToOrder extends HttpServlet {
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
-    }
+    
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -73,9 +69,9 @@ public class AddToOrder extends HttpServlet {
         order.setCustomer_id(customer.getId());
         order.setAddress_id(addressId);
         order.setPaymentMethod_id(paymentId);
-        order.setSale_id(0);
+        
         order.setTotalcost(totalcost);
-        order.setStatus("");
+        order.setStatus("Wait");
 
         int orderId = 0;
         try {
@@ -100,11 +96,7 @@ public class AddToOrder extends HttpServlet {
             Product product= productDAO.getProductByID(productDetail.getProduct_id());
             product.setQuantity(product.getQuantity()-Integer.parseInt(quantitys[i]));
             productDAO.updateProduct(product);
-            try {
-                new CartItemDAO().deleteCartItem(Integer.parseInt(cartIds[i]));
-            } catch (SQLException ex) {
-                Logger.getLogger(AddToOrder.class.getName()).log(Level.SEVERE, null, ex);
-            }
+           
 
         }
 
@@ -116,6 +108,7 @@ public class AddToOrder extends HttpServlet {
         String bankCode = request.getParameter("bankCode");
         
         String vnp_TxnRef = String.valueOf(orderId);
+        
         String vnp_IpAddr = Config.getIpAddress(request);
 
         String vnp_TmnCode = Config.vnp_TmnCode;
@@ -140,7 +133,11 @@ public class AddToOrder extends HttpServlet {
         } else {
             vnp_Params.put("vnp_Locale", "vn");
         }
-        vnp_Params.put("vnp_ReturnUrl", Config.vnp_ReturnUrl+"?sessionid="+customer.getId());
+        String returnUrl=Config.vnp_ReturnUrl+"?sessionid="+customer.getId();
+        for(int i=0; i< cartIds.length; i++){
+            returnUrl+="&cartId="+cartIds[i];
+        }
+        vnp_Params.put("vnp_ReturnUrl",returnUrl );
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
@@ -187,5 +184,6 @@ public class AddToOrder extends HttpServlet {
         response.getWriter().write(gson.toJson(job));
         }
     }
+    
 
 }

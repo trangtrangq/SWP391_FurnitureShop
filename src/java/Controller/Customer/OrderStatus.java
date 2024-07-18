@@ -4,6 +4,7 @@
  */
 package Controller.Customer;
 
+import DAL.CartItemDAO;
 import DAL.OrderDAO;
 import DAL.UserDAO;
 import Models.Order;
@@ -15,6 +16,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -34,48 +38,42 @@ public class OrderStatus extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String sessionid= request.getParameter("sessionid");
+        String sessionid = request.getParameter("sessionid");
         String vnp_TxnRef = request.getParameter("vnp_TxnRef");
         String vnp_Amount = request.getParameter("vnp_Amount");
         String vnp_OrderInfo = request.getParameter("vnp_OrderInfo");
-        String vnp_ResponseCode =request.getParameter("vnp_ResponseCode");
-        String vnp_TransactionNo =request.getParameter("vnp_TransactionNo");
-        String vnp_BankCode=request.getParameter("vnp_BankCode");
-        String vnp_PayDate =request.getParameter("vnp_PayDate");
-        String vnp_TransactionStatus=request.getParameter("vnp_TransactionStatus");
-        if("00".equals(vnp_TransactionStatus)){
+        String vnp_ResponseCode = request.getParameter("vnp_ResponseCode");
+        String vnp_TransactionNo = request.getParameter("vnp_TransactionNo");
+        String vnp_BankCode = request.getParameter("vnp_BankCode");
+        String vnp_PayDate = request.getParameter("vnp_PayDate");
+        String vnp_TransactionStatus = request.getParameter("vnp_TransactionStatus");
+        String[] cartIds = request.getParameterValues("cartId");
+        if ("00".equals(vnp_TransactionStatus)) {
             request.setAttribute("vnp_TransactionStatus", "Thành Công");
-            Order order = new OrderDAO().getMyOrder(Integer.parseInt(vnp_Amount));
-            order.setStatus("Order");
-        }else{
+            for (int i = 0; i < cartIds.length; i++) {
+                try {
+                    new CartItemDAO().deleteCartItem(Integer.parseInt(cartIds[i]));
+                } catch (SQLException ex) {
+                    Logger.getLogger(AddToOrder.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            new OrderDAO().updateOrderStatus(Integer.parseInt(vnp_TxnRef), "Order");
+        } else {
             request.setAttribute("vnp_TransactionStatus", "Thất Bại");
-            Order order = new OrderDAO().getMyOrder(Integer.parseInt(vnp_Amount));
-            order.setStatus("Wait");
+            new OrderDAO().updateOrderStatus(Integer.parseInt(vnp_TxnRef), "Wait");
+            
         }
         request.setAttribute("vnp_TxnRef", vnp_TxnRef);
         request.setAttribute("vnp_PayDate", vnp_PayDate);
         request.setAttribute("vnp_OrderInfo", vnp_OrderInfo);
         request.setAttribute("vnp_Amount", vnp_Amount);
-       
+
         UserDAO userDAO = new UserDAO();
         User customer = userDAO.getUserByID(Integer.parseInt(sessionid));
         HttpSession session = request.getSession();
         session.setAttribute("customer", customer);
         request.getRequestDispatcher("Views/OrderStatusPayment.jsp").forward(request, response);
-    }
-
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
     }
 
 }
