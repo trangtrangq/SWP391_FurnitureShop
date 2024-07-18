@@ -9,7 +9,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Feedback-list</title>
-                <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
         <style>
             html,
             body {
@@ -17,9 +17,9 @@
                 font-family: Arial, Helvetica, sans-serif;
             }
 
-/*            .full-height {
-                height: 100vh;
-            }*/
+            /*            .full-height {
+                            height: 100vh;
+                        }*/
             .table-container {
                 width: 80%;
                 margin: 10px ;
@@ -109,10 +109,19 @@
                                 <p style="margin-left: 10px;">Description:</p><input type="text" name="description" value="${description}"
                                                                                      style="width: 150px; height: 17px; margin-top: 13px; margin-left: 10px;">
                                 <button
-                                    style="border-radius: 10px ;width: 70px; height: 23px; margin-top: 13px; margin-left: 10px; border: 0px; background-color: #425164; color: aliceblue;">Search</button>
+                                    style="border-radius: 10px ;width: 70px; height: 23px; margin-top: 13px; margin-left: 10px; border: 0px; background-color: #425164; color: aliceblue;">Search
+                                </button>
+                                <select style="width: 140px; height: 30px; margin-top: 13px; margin-left: 10px; margin-right: 10px;" name="sort" class="form-select" onchange="this.form.submit()"> 
+                                    <option> Sắp xếp </option>
+                                    <option value="all" ${sort == 'all' ? 'selected' : ''} >Unsorted list</option>
+                                    <option value="rate" ${sort == 'rate' ? 'selected' : ''} >Sort By Rated Ascending</option>
+                                    <option value="rate_desc" ${sort == 'rate_desc' ? 'selected' : ''} >Sort By Rated Descending</option>
+
+
+                                </select>
                             </form>
                         </div>
-                                                                                     
+
                         <div style="">
                             <table class="table-container">
                                 <thead>
