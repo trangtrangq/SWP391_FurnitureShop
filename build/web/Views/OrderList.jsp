@@ -443,16 +443,19 @@
                                 </div>
                                 <ul class="dropdown-content">
                                     <li>
-                                        <input type="checkbox" name="status-filter" data-status="Order" value="Order" style="display: inline-block" /> Order
+                                        <input type="checkbox" name="status-filter" data-status="Order" value="Order" style="display: inline-block" /> Đơn hàng được đặt
                                     </li>
                                     <li>
-                                        <input type="checkbox" name="status-filter" data-status="Done" value="Done" style="display: inline-block" /> Done
+                                        <input type="checkbox" name="status-filter" data-status="Done" value="Done" style="display: inline-block" /> Đơn hàng hoàn thành
                                     </li>
                                     <li>
-                                        <input type="checkbox" name="status-filter" data-status="Confirmed" value="Confirmed" style="display: inline-block" /> Confirmed
+                                        <input type="checkbox" name="status-filter" data-status="Confirmed" value="Confirmed" style="display: inline-block" /> Đơn hàng xác nhận
                                     </li>
                                     <li>
-                                        <input type="checkbox" name="status-filter" data-status="Canceled" value="Canceled" style="display: inline-block" /> Canceled
+                                        <input type="checkbox" name="status-filter" data-status="Canceled" value="Canceled" style="display: inline-block" /> Đơn hàng bị hủy
+                                    </li>
+                                    <li>
+                                        <input type="checkbox" name="status-filter" data-status="Wait" value="Wait" style="display: inline-block" /> Đơn hàng chưa thanh toán
                                     </li>
                                 </ul>
                             </div>

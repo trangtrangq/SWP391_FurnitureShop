@@ -100,7 +100,7 @@ public class OrderListServlet extends HttpServlet {
         String fromDate = request.getParameter("fromDate");
         String toDate = request.getParameter("toDate");
         OrderDAO orderDAO = new OrderDAO();
-        ArrayList<Order> orderList = orderDAO.filterOrderList(fromDate, toDate, statusIDStr, 2);
+        ArrayList<Order> orderList = orderDAO.filterOrderList(fromDate, toDate, statusIDStr, customer.getId());
         return orderList;
     }
 

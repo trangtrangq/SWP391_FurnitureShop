@@ -253,7 +253,7 @@
                             <a href="OrderListServlet" class="btn btn-primary" style="margin-bottom: 15px"> < Back to list</a>
                         </c:otherwise>
                     </c:choose>
-                    
+
                     <div class="row">
                         <div class="col-md-8">
                             <!-- Details -->
@@ -344,9 +344,8 @@
                                                         <div style="display: flex; justify-content: center">
                                                             <c:choose>
                                                                 <c:when test="${order.status == 'Order'}">
-                                                                    <button class="btn btn-secondary">Đã đặt hàng</button>
-                                                                    <button class="btn btn-info" style="margin-left: 10px" onclick="confirmConfirmedOrder(${order.id})">Xác nhận đơn hàng</button>
-                                                                    <button class="btn btn-danger" style="margin-left: 10px" onclick="confirmCancelOrder(${order.id})">Hủy đơn hàng</button>
+                                                                    <button class="btn btn-secondary">Đã đặt hàng</button>                                                                   
+                                                                    <button class="btn btn-danger" onclick="confirmCancelOrder(${order.id})" style="height: 30px; margin-left: 20px">Hủy đơn hàng</button>
                                                                 </c:when>
                                                                 <c:when test="${order.status == 'Canceled'}">
                                                                     <button class="btn btn-danger">Đã hủy</button>
@@ -398,43 +397,28 @@
     <%@include file="DashboardFooter.jsp" %>
 
     <script>
-        function confirmConfirmedOrder(orderId) {
-            var confirmUpdate = confirm("Bạn có muốn xác nhận đơn hàng của mình?");
-            if (confirmUpdate) {
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "OrderDetailServlet", true);
-                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === XMLHttpRequest.DONE) {
-                        if (xhr.status === 200) {
-                            alert("Đã xác nhận đơn hàng thành công!");
-                            location.reload(); // Load lại trang sau khi xác nhận thành công
-                        } else {
-                            alert("Có lỗi xảy ra khi xác nhận đơn hàng.");
-                        }
-                    }
-                };
-                xhr.send("order_id=" + orderId + "&action=confirm");
-            }
-        }
-
-        function confirmCancelOrder(orderId) {
+        function confirmCancelOrder(order_id) {
             var confirmCancel = confirm("Bạn có muốn hủy đơn hàng của mình không?");
             if (confirmCancel) {
                 var xhr = new XMLHttpRequest();
-                xhr.open("POST", "OrderDetailServlet", true);
+                xhr.open("POST", "MyOrderInformationServlet", true);
                 xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState === XMLHttpRequest.DONE) {
                         if (xhr.status === 200) {
+                            // Xử lý phản hồi thành công (nếu cần)
                             alert("Đã hủy đơn hàng thành công!");
-                            location.reload(); // Load lại trang sau khi hủy thành công
+                            // Reload trang sau khi xác nhận hủy đơn hàng thành công
+                            window.location.reload();
                         } else {
+                            // Xử lý lỗi nếu cần
                             alert("Có lỗi xảy ra khi hủy đơn hàng.");
                         }
                     }
                 };
-                xhr.send("order_id=" + orderId + "&action=cancel");
+                xhr.send("order_id=" + order_id);
+            } else {
+                // Người dùng chọn No, không làm gì cả
             }
         }
     </script>
