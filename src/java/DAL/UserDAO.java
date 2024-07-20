@@ -6,6 +6,8 @@ package DAL;
 
 import Models.CustomerChanges;
 import Models.User;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.mail.Flags;
 
 /**
  *
@@ -1003,11 +1006,42 @@ public class UserDAO extends DBContext {
         }
         return list;
     }
+    
+    public String hashPassword(String password) {
+        try {
+            // Tạo đối tượng MessageDigest với thuật toán SHA-256
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            
+            // Băm mật khẩu và chuyển đổi thành mảng byte
+            byte[] hashBytes = digest.digest(password.getBytes());
+            
+            // Chuyển đổi mảng byte thành chuỗi mã hóa Hex
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hashBytes) {
+                // Chuyển đổi mỗi byte thành chuỗi Hex và thêm vào StringBuilder
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) {
+                    hexString.append('0');
+                }
+                hexString.append(hex);
+            }
+            
+            // Trả về chuỗi mã hóa Hex
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            // Xử lý lỗi khi thuật toán không tồn tại
+            throw new RuntimeException("Error hashing password", e);
+        }
+    }
 
     
     public static void main(String[] args) {
         UserDAO u = new UserDAO();
-        CustomerChanges cc = new CustomerChanges("123", "123", "123", "123", "123", 1, 9);
-        u.addToCustomerChanges(cc);
+        
+        
+        String pass = "trangtrang12102003@gmail.com";
+        String hasspass = u.hashPassword(pass);
+        System.out.println(hasspass);
+        
     }
 }
