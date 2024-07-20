@@ -944,6 +944,59 @@ public class UserDAO extends DBContext {
 
         return count;
     }
+    public List<User> getListSale() {
+        String sql = "SELECT * from User where role_id= 2 AND status= 'Active'";
+        List<User> list = new ArrayList<>();
+        try {
+            PreparedStatement statement = connect.prepareStatement(sql);
+
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                User u = new User();
+                u.setId(rs.getInt("id"));
+                u.setFullname(rs.getString("fullname"));
+                u.setGender(rs.getString("gender"));
+                u.setAvatar(rs.getString("avatar"));
+                u.setPhonenumber(rs.getString("phonenumber"));
+                u.setAddress(rs.getString("address"));
+                u.setEmail(rs.getString("email"));
+                u.setPassword(rs.getString("password"));
+                u.setRole_id(rs.getInt("role_id"));
+                u.setStatus(rs.getString("status"));
+                list.add(u);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+
+    public List<User> getListSale(String apartofname) {
+        String sql = "SELECT * from User where role_id= 2 AND status= 'Active' AND fullname LIKE ?";
+        List<User> list = new ArrayList<>();
+        try {
+            PreparedStatement statement = connect.prepareStatement(sql);
+            statement.setString(1, "%" + apartofname + "%");
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                User u = new User();
+                u.setId(rs.getInt("id"));
+                u.setFullname(rs.getString("fullname"));
+                u.setGender(rs.getString("gender"));
+                u.setAvatar(rs.getString("avatar"));
+                u.setPhonenumber(rs.getString("phonenumber"));
+                u.setAddress(rs.getString("address"));
+                u.setEmail(rs.getString("email"));
+                u.setPassword(rs.getString("password"));
+                u.setRole_id(rs.getInt("role_id"));
+                u.setStatus(rs.getString("status"));
+                list.add(u);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
 
     
     public static void main(String[] args) {

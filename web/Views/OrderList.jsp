@@ -452,7 +452,7 @@
                                         <input type="checkbox" name="status-filter" data-status="Confirmed" value="Confirmed" style="display: inline-block" /> Confirmed
                                     </li>
                                     <li>
-                                        <input type="checkbox" name="status-filter" data-status="Cancled" value="Cancled" style="display: inline-block" /> Cancled
+                                        <input type="checkbox" name="status-filter" data-status="Canceled" value="Canceled" style="display: inline-block" /> Canceled
                                     </li>
                                 </ul>
                             </div>
@@ -558,7 +558,7 @@
                                 <c:when test="${order.status == 'Order'}">
                                     <button style="width: 80px; height: 30px" class="btn btn-secondary" >Đã đặt hàng</button>
                                 </c:when>
-                                <c:when test="${order.status == 'Cancled'}">
+                                <c:when test="${order.status == 'Canceled'}">
                                     <button style="width: 80px; height: 30px" class="btn btn-danger">Đã hủy</button>
                                 </c:when>
                                 <c:when test="${order.status == 'Confirmed'}">

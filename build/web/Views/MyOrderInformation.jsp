@@ -192,7 +192,7 @@
                                                             <button id="buy_now" class="btn btn-primary" style="height: 30px; margin-top: 0;">Cập nhật đơn hàng</button>
                                                             <button class="btn btn-danger" onclick="confirmCancelOrder(${order.id})" style="width: 80px; height: 30px; margin-left: 20px">Hủy đơn hàng</button>
                                                         </c:when>
-                                                        <c:when test="${order.status == 'Cancled'}">
+                                                        <c:when test="${order.status == 'Canceled'}">
                                                             <button class="btn btn-danger" style="width: 80px; height: 30px;">Đã hủy</button>
                                                         </c:when>
                                                         <c:when test="${order.status == 'Confirmed'}">

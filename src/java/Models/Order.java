@@ -15,11 +15,24 @@ public class Order {
     private int customer_id;
     private int sale_id;
     private int address_id;
+
+    private int paymentMethod_id;
     private double totalcost;
     private LocalDateTime orderDate;
     private String status;
 
     public Order() {
+    }
+
+    public Order(int id, int customer_id, int sale_id, int address_id, int paymentMethod_id, double totalcost, LocalDateTime orderDate, String status) {
+        this.id = id;
+        this.customer_id = customer_id;
+        this.sale_id = sale_id;
+        this.address_id = address_id;
+        this.paymentMethod_id = paymentMethod_id;
+        this.totalcost = totalcost;
+        this.orderDate = orderDate;
+        this.status = status;
     }
 
     public Order(int customer_id, int sale_id, int address_id, double totalcost, LocalDateTime orderDate) {
@@ -61,6 +74,14 @@ public class Order {
 
     public void setAddress_id(int address_id) {
         this.address_id = address_id;
+    }
+
+    public int getPaymentMethod_id() {
+        return paymentMethod_id;
+    }
+
+    public void setPaymentMethod_id(int paymentMethod_id) {
+        this.paymentMethod_id = paymentMethod_id;
     }
 
     public double getTotalcost() {

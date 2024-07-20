@@ -245,7 +245,15 @@
             <%@include file="DashboardHeader.jsp" %>
             <div class="container-fluid" style="margin-top: 15px">
                 <div class="container">
-                    <a href="OrderListServlet" class="btn btn-primary" style="margin-bottom: 15px"> < Back to list</a>
+                    <c:choose>
+                        <c:when test="${customer.role_id==3}">
+                            <a href="AssignToSale" class="btn btn-primary" style="margin-bottom: 15px"> < Back to list</a>
+                        </c:when>
+                        <c:otherwise>
+                            <a href="OrderListServlet" class="btn btn-primary" style="margin-bottom: 15px"> < Back to list</a>
+                        </c:otherwise>
+                    </c:choose>
+                    
                     <div class="row">
                         <div class="col-md-8">
                             <!-- Details -->
@@ -340,7 +348,7 @@
                                                                     <button class="btn btn-info" style="margin-left: 10px" onclick="confirmConfirmedOrder(${order.id})">Xác nhận đơn hàng</button>
                                                                     <button class="btn btn-danger" style="margin-left: 10px" onclick="confirmCancelOrder(${order.id})">Hủy đơn hàng</button>
                                                                 </c:when>
-                                                                <c:when test="${order.status == 'Cancled'}">
+                                                                <c:when test="${order.status == 'Canceled'}">
                                                                     <button class="btn btn-danger">Đã hủy</button>
                                                                 </c:when>
                                                                 <c:when test="${order.status == 'Done'}">

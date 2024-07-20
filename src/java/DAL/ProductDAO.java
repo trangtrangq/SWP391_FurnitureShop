@@ -82,7 +82,7 @@ public class ProductDAO extends DBContext {
 
     public ArrayList<Product> getProductList() {
         ArrayList<Product> productList = new ArrayList<>();
-        String query = "SELECT * FROM product WHERE status = 'Active'";
+        String query = "SELECT * FROM product WHERE status = 'Active' AND quantity > 0";
         try (PreparedStatement preparedStatement = connect.prepareStatement(query); ResultSet resultSet = preparedStatement.executeQuery();) {
 
             while (resultSet.next()) {

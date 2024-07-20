@@ -126,7 +126,7 @@ public class UserAuthorization implements Filter {
         //SettingDetailsServlet
         System.out.println(role);
 
-        if (uri.endsWith(".css") || uri.endsWith(".js") || uri.endsWith(".jpg") || uri.endsWith(".png") || uri.endsWith(".gif")) {
+        if (uri.endsWith(".css") || uri.endsWith(".js") || uri.endsWith(".jpg") || uri.endsWith(".png") || uri.endsWith(".gif") || uri.endsWith(".webp")) {
             chain.doFilter(request, response);
             return;
         }
@@ -134,7 +134,8 @@ public class UserAuthorization implements Filter {
             if (uri1.equals("HomePage") || uri1.equals("BlogListServlet")
                     || uri1.equals("BlogDetailServlet") || uri1.equals("ProductServlet")
                     || uri1.equals("ProductSearchServlet") || uri1.equals("RegisterServlet")
-                    || uri1.equals("ProductDetailServlet") || uri1.equals("LoginServlet")) {
+                    || uri1.equals("ProductDetailServlet") || uri1.equals("LoginServlet")|| uri1.equals("OrderStatus")
+                   || uri1.equals("CartContact")  || uri1.equals("MyOrderInformationServlet")) {
             } else {
                 httpServletResponse.sendRedirect("HomePage");
             }
@@ -163,7 +164,7 @@ public class UserAuthorization implements Filter {
         } else if (role == 2) {
             if (uri1.equals("HomePage") || uri1.equals("BlogListServlet")
                     || uri1.equals("BlogDetailServlet") || uri1.equals("ProductServlet")
-                    || uri1.equals("ProductDetailServlet") || uri1.equals("SaleDashboardServlet")
+                    || uri1.equals("ProductDetailServlet") || uri1.equals("SaleDashboard")
                     || uri1.equals("OrderListServlet") || uri1.equals("OrderDetailServlet")
                     || uri1.equals("LoginServlet") || uri1.equals("LogoutServlet")
                     || uri1.equals("ChangePassword") || uri1.equals("ResetPasswordServlet")
@@ -177,7 +178,7 @@ public class UserAuthorization implements Filter {
             }
         } else if (role == 3) {
             if (uri1.equals("HomePage") 
-                    || uri1.equals("SaleDashboardServlet")
+                    || uri1.equals("SaleDashboard")
                     || uri1.equals("OrderListServlet") || uri1.equals("OrderDetailServlet")
                     || uri1.equals("AssignToSale") || uri1.equals("SaleAssignOrder")
                     || uri1.equals("SaleListServlet") || uri1.equals("LoginServlet") || uri1.equals("LogoutServlet")

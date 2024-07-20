@@ -5,9 +5,12 @@
 package DAL;
 
 import Models.Order;
+import Models.OrderSaleManager;
 import java.util.logging.Logger;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -643,4 +646,173 @@ public class OrderDAO extends DBContext {
 
         return orderStats;
     }
+    
+    public List<OrderSaleManager> getFilteredOrders(String saleId, String searchValue, String sortBy, String fromDate, String toDate, String[] statusFilters) {
+        List<OrderSaleManager> orderList = new ArrayList<>();
+
+        String sql = "SELECT u.fullname, o.id, o.totalcost, o.orderdate, o.status ,s.fullname AS salename\n"
+                + "                 FROM user AS u \n"
+                + "                JOIN `order` AS o ON u.id = o.customer_id LEFT JOIN user AS s ON s.id=o.sale_id WHERE 1=1 ";
+        if (saleId != null && saleId.matches("\\d+")) {
+            sql += "AND o.sale_id IS NULL ";
+        } else if (saleId != null && !saleId.isEmpty()) { // Nếu searchValue không phải là số
+            sql += " AND o.sale_id > 0";
+        }
+        if (searchValue != null && searchValue.matches("\\d+")) { // Kiểm tra nếu searchValue là số
+            sql += " AND o.id = ?";
+        } else if (searchValue != null && !searchValue.isEmpty()) { // Nếu searchValue không phải là số
+            sql += " AND u.fullname LIKE ?";
+        }
+
+        // Thêm điều kiện lọc theo ngày
+        if (fromDate != null && !fromDate.isEmpty()) {
+            sql += " AND o.orderdate >= ?";
+        }
+        if (toDate != null && !toDate.isEmpty()) {
+            sql += " AND o.orderdate <= ?";
+        }
+
+        // Thêm điều kiện lọc theo trạng thái nếu mảng statusFilters có giá trị hợp lệ
+        if (statusFilters != null && statusFilters.length > 0) {
+            List<String> validStatusFilters = new ArrayList<>();
+            for (String status : statusFilters) {
+                if (status != null && !status.isEmpty()) {
+                    validStatusFilters.add(status);
+                }
+            }
+            if (!validStatusFilters.isEmpty()) {
+                sql += " AND o.status IN (";
+                for (int i = 0; i < validStatusFilters.size(); i++) {
+                    sql += "?";
+                    if (i < validStatusFilters.size() - 1) {
+                        sql += ", ";
+                    }
+                }
+                sql += ")";
+            }
+        }
+
+        // Thêm điều kiện sắp xếp
+        if (sortBy != null && !sortBy.isEmpty()) {
+            switch (sortBy) {
+                case "dateAsc":
+                    sql += " ORDER BY o.orderdate ASC";
+                    break;
+                case "dateDesc":
+                    sql += " ORDER BY o.orderdate DESC";
+                    break;
+                case "nameAsc":
+                    sql += " ORDER BY u.fullname ASC";
+                    break;
+                case "nameDesc":
+                    sql += " ORDER BY u.fullname DESC";
+                    break;
+                case "totalCostAsc":
+                    sql += " ORDER BY o.totalcost ASC";
+                    break;
+                case "totalCostDesc":
+                    sql += " ORDER BY o.totalcost DESC";
+                    break;
+                case "statusAsc":
+                    sql += " ORDER BY o.status ASC";
+                    break;
+                case "statusDesc":
+                    sql += " ORDER BY o.status DESC";
+                    break;
+                default:
+                    sql += " ORDER BY o.id ASC";
+            }
+        } else {
+            sql += " ORDER BY o.id ASC"; // Điều kiện mặc định nếu sortBy rỗng
+        }
+
+        try {
+            PreparedStatement ps = connect.prepareStatement(sql);
+            int paramIndex = 1;
+            
+
+            if (searchValue != null && searchValue.matches("\\d+")) { // Kiểm tra nếu searchValue là số
+                ps.setString(paramIndex++, searchValue);
+            } else if (searchValue != null && !searchValue.isEmpty()) { // Nếu searchValue không phải là số
+                ps.setString(paramIndex++, "%" + searchValue + "%");
+            }
+
+            // Thiết lập tham số cho lọc theo ngày
+            if (fromDate != null && !fromDate.isEmpty()) {
+                ps.setDate(paramIndex++, java.sql.Date.valueOf(LocalDate.parse(fromDate)));
+            }
+            if (toDate != null && !toDate.isEmpty()) {
+                ps.setDate(paramIndex++, java.sql.Date.valueOf(LocalDate.parse(toDate)));
+            }
+
+            // Thiết lập tham số cho lọc theo trạng thái
+            if (statusFilters != null && statusFilters.length > 0) {
+                List<String> validStatusFilters = new ArrayList<>();
+                for (String status : statusFilters) {
+                    if (status != null && !status.isEmpty()) {
+                        validStatusFilters.add(status);
+                    }
+                }
+                for (String status : validStatusFilters) {
+                    ps.setString(paramIndex++, status);
+                }
+            }
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                OrderSaleManager od = new OrderSaleManager();
+                od.setId(rs.getInt("id"));
+                od.setCustomer(rs.getString("fullname"));
+                od.setTotalcost(rs.getDouble("totalcost"));
+                java.sql.Timestamp timestamp = rs.getTimestamp("orderdate");
+                if (timestamp != null) {
+                    od.setOrderDate(timestamp.toLocalDateTime());
+                }
+                od.setStatus(rs.getString("status"));
+                od.setSalename(rs.getString("salename"));
+                orderList.add(od);
+            }
+            ps.close();
+            connect.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return orderList;
+    }
+    
+    public int createOrder(Order order) throws SQLException {
+        String sql = "INSERT INTO `order` (customer_id , address_id,paymentmethod_id,orderdate, totalcost,status) VALUES (?,?,? , NOW(), ?,?)";
+        try (PreparedStatement stmt = connect.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setInt(1, order.getCustomer_id());
+            stmt.setInt(2, order.getAddress_id());
+            stmt.setInt(3, order.getPaymentMethod_id());
+            stmt.setDouble(4, order.getTotalcost());
+            stmt.setString(5, order.getStatus());
+            
+            stmt.executeUpdate();
+
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1);
+                } else {
+                    throw new SQLException("Creating order failed, no ID obtained.");
+                }
+            }
+        }
+    }
+      public void updateOrderSale(int orderId, int sale_id) {
+        String sql = "UPDATE `furniture`.`order`\n"
+                + "SET\n"
+                + "`sale_id` = ?\n"
+                + "WHERE `id` = ?;";
+        try (PreparedStatement statement = connect.prepareStatement(sql)) {
+            statement.setInt(1, sale_id);
+            statement.setInt(2, orderId);
+            statement.executeUpdate();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error retrieving order.", e);
+        }
+    }//tạo order
+
 }

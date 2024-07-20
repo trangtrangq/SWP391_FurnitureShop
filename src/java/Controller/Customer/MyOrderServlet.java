@@ -177,7 +177,7 @@ public class MyOrderServlet extends HttpServlet {
                     case "Order":
                         htmlResponse.append("                <button style=\"width: 80px; height: 30px\" class=\"btn btn-secondary\">Đang xử lí</button>\n");
                         break;
-                    case "Cancled":
+                    case "Canceled":
                         htmlResponse.append("                <button style=\"width: 80px; height: 30px\" class=\"btn btn-danger\">Đã hủy</button>\n");
                         break;
                     case "Confirmed":

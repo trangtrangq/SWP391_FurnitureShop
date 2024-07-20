@@ -264,7 +264,19 @@
                                                         <li><a class="dropdown-item" href="${pageContext.request.contextPath}/UserProfile">Tài khoản của bạn</a></li>
                                                         <li><a class="dropdown-item" href="${pageContext.request.contextPath}/MyOrderServlet">Đơn hàng của tôi</a></li>
                                                         <li><a class="dropdown-item" href="${pageContext.request.contextPath}/ChangePassword">Thay đổi mật khẩu </a></li>
-                                                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/OrderListServlet">Dashboard</a></li>
+                                                        <c:set value="${sessionScope.customer}" var="customer"/>
+                                                        <c:if test="${customer.id == 2}">
+                                                            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/SaleDashboard">Sale Dashboard</a></li>
+                                                        </c:if>
+                                                        <c:if test="${customer.id == 3}">
+                                                            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/SaleDashboard">Sale Dashboard</a></li>
+                                                        </c:if>
+                                                            <c:if test="${customer.id == 4}">
+                                                            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/MarketingDashboard">Marketing Dashboard</a></li>
+                                                        </c:if>
+                                                        <c:if test="${customer.id == 5}">
+                                                            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/AdminDashboard">Admin Dashboard</a></li>
+                                                        </c:if>
                                                         <li><a class="dropdown-item" href="${pageContext.request.contextPath}/LogoutServlet">Đăng xuất</a></li>
                                                     </ul>
                                                 </div>

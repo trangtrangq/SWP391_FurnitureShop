@@ -149,7 +149,7 @@ public class MyOrderInformationServlet extends HttpServlet {
 
             // Ví dụ: cập nhật trạng thái đơn hàng trong cơ sở dữ liệu thành "Cancelled"
             OrderDAO orderDAO = new OrderDAO();
-            orderDAO.updateOrderStatus(order_id, "Cancled");
+            orderDAO.updateOrderStatus(order_id, "Canceled");
 
             // Phản hồi về cho client rằng đã hủy đơn hàng thành công
             response.setStatus(HttpServletResponse.SC_OK);

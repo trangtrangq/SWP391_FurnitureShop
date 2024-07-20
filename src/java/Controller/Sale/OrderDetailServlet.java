@@ -151,7 +151,7 @@ public class OrderDetailServlet extends HttpServlet {
             if (action.equals("cancel")) {
                 // Xử lý hủy đơn hàng
                 OrderDAO orderDAO = new OrderDAO();
-                orderDAO.updateOrderStatus(order_id, "Cancled");
+                orderDAO.updateOrderStatus(order_id, "Canceled");
 
                 // Chuyển hướng người dùng đến trang thông tin đơn hàng sau khi hủy
                 response.sendRedirect("Views/MyOrderInformation.jsp");

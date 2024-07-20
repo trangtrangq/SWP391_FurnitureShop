@@ -73,9 +73,18 @@
                             <li class="sidebar-item"><a class="sidebar-link" href="CustomersList">Customer List</a></li>
                             <li class="sidebar-item"><a class="sidebar-link" href="PostsList">Post List</a></li>
                             <li class="sidebar-item"><a class="sidebar-link" href="ProductListMKTServlet">Product List</a></li>
-                            <li class="sidebar-item"><a class="sidebar-link" href="OrderListServlet">Order List</a></li>
+                            <c:choose >
+                                <c:when test="${sessionScope.customer.role_id==3}">
+                                    <li class="sidebar-item"><a class="sidebar-link" href="AssignToSale">Order List</a></li>
+                                </c:when>
+                                <c:otherwise>
+                                    <li class="sidebar-item"><a class="sidebar-link" href="OrderListServlet">Order List</a></li>
+                                </c:otherwise>
+                            </c:choose>
                             <li class="sidebar-item"><a class="sidebar-link" href="FeedBackList">Feedback List</a></li>
                             <li class="sidebar-item"><a class="sidebar-link" href="SliderList">Slider List</a></li>
+                            <li class="sidebar-item"><a class="sidebar-link" href="UserListServlet">User List</a></li>
+                            <li class="sidebar-item"><a class="sidebar-link" href="SettingServlet">Setting List</a></li>
                         </ul>
                     </li>
                 </ul>

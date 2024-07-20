@@ -33,5 +33,7 @@ public class DBContext {
             LOGGER.log(Level.SEVERE, "Can't not connect to database", ex);
         }
         
-    }     
+    }
+    
+    
 }

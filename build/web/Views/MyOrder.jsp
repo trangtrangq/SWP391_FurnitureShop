@@ -173,7 +173,7 @@
                                     <c:when test="${order.status == 'Order'}">
                                         <button style="width: 80px; height: 30px" class="btn btn-secondary">Đang xử lí</button>
                                     </c:when>
-                                    <c:when test="${order.status == 'Cancled'}">
+                                    <c:when test="${order.status == 'Canceled'}">
                                         <button style="width: 80px; height: 30px" class="btn btn-danger">Đã hủy</button>
                                     </c:when>
                                     <c:when test="${order.status == 'Confirmed'}">

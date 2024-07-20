@@ -100,7 +100,7 @@ public class AddToOrder extends HttpServlet {
 
         }
 
-        if (paymentId == 2) {
+        if (paymentId == 1) {
              String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String orderType = "other";
@@ -183,6 +183,16 @@ public class AddToOrder extends HttpServlet {
         Gson gson = new Gson();
         response.getWriter().write(gson.toJson(job));
         }
+    }
+    public static void main(String[] args) throws SQLException {
+        Order order = new Order();
+        order.setCustomer_id(1);
+        order.setAddress_id(1);
+        order.setPaymentMethod_id(1);
+        
+        order.setTotalcost(111111111);
+        order.setStatus("Wait");
+        new OrderDAO().createOrder(order);
     }
     
 

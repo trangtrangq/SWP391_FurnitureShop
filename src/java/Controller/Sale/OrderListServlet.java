@@ -249,7 +249,7 @@ public class OrderListServlet extends HttpServlet {
                     case "Order":
                         statusButton = "<button style=\"width: 80px; height: 30px\" class=\"btn btn-secondary\">Đã đặt hàng</button>";
                         break;
-                    case "Cancled":
+                    case "Canceled":
                         statusButton = "<button style=\"width: 80px; height: 30px\" class=\"btn btn-danger\">Đã hủy</button>";
                         break;
                     case "Confirmed":
