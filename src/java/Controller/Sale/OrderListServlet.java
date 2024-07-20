@@ -269,6 +269,9 @@ public class OrderListServlet extends HttpServlet {
                             statusButton = "<button class=\"btn btn-warning\" style=\"height: 30px;\">Hoàn thành đơn hàng</button>";
                         }
                         break;
+                    case "Wait":
+                        htmlResponse.append("                <a href=\"#\" class=\"btn btn-light\" style=\"height: 30px; background-color: pink\">Chưa thanh toán</a>\n");
+                        break;
                     default:
                         statusButton = "<button style=\"width: 80px; height: 30px\" class=\"btn btn-warning\">" + order.getStatus() + "</button>";
                         break;

@@ -351,6 +351,9 @@
                                                                 <c:when test="${order.status == 'Canceled'}">
                                                                     <button class="btn btn-danger">Đã hủy</button>
                                                                 </c:when>
+                                                                <c:when test="${order.status == 'Wait'}">
+                                                                    <button class="btn btn-light" style="background-color: pink">Chưa thanh toán</button>
+                                                                </c:when>
                                                                 <c:when test="${order.status == 'Done'}">
                                                                     <c:set var="hasFeedback" value="false" />
                                                                     <c:forEach items="${requestScope.historyFeedbackOrder}" var="history">

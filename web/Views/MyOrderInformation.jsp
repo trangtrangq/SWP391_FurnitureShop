@@ -198,6 +198,13 @@
                                                         <c:when test="${order.status == 'Confirmed'}">
                                                             <button style=" height: 30px" class="btn btn-info">Đang xử lí</button>
                                                         </c:when> 
+                                                        <c:when test="${order.status == 'Wait'}">
+                                                            <button class ="btn btn-light" style=" height: 30px; margin-left: 10px; background-color: pink">
+                                                                <a href="#" style="text-decoration: none">Thanh toán ngay</a>
+                                                            </button>
+                                                            <button class="btn btn-danger" onclick="confirmCancelOrder(${order.id})" style="width: 80px; height: 30px; margin-left: 20px">Hủy đơn hàng</button>
+                                                        </c:when>    
+
                                                         <c:when test="${order.status == 'Done'}">
                                                             <c:set var="hasFeedback" value="false" />
                                                             <c:forEach items="${requestScope.historyFeedbackOrder}" var="history">
