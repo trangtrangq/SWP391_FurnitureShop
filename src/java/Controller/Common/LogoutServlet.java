@@ -24,7 +24,7 @@ public class LogoutServlet extends HttpServlet {
         HttpSession session = request.getSession(false); // không tạo session mới nếu không tồn tại
         User customer = (User)session.getAttribute("customer");
         UserDAO userDAO = new UserDAO();
-        userDAO.UpdateUser(customer.getRole_id(), "Inactive", customer.getId());
+        userDAO.UpdateUser(customer.getRole_id(), "Offline", customer.getId());
         if (session != null) {
             session.invalidate(); // Hủy session hiện tại
         }

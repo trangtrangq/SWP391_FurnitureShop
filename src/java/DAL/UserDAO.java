@@ -32,6 +32,8 @@ public class UserDAO extends DBContext {
 //            System.out.println(user.getFullname());
 //        }
 //    }
+    
+    
     public ArrayList<User> getUserList() {
         ArrayList<User> userList = new ArrayList<>();
         String sql = "SELECT * FROM User";
@@ -674,6 +676,10 @@ public class UserDAO extends DBContext {
     }
     
     public boolean UpdateUser( int role_id, String status, int id) {
+        if (role_id == 5) {
+        System.out.println("Update not allowed for role_id 5");
+        return false;
+    }
         String sql = "UPDATE `furniture`.`user`\n"
                 + "SET\n"                
                 + "`role_id` = ?, "

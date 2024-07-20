@@ -151,7 +151,7 @@ public class MyOrderServlet extends HttpServlet {
                     htmlResponse.append("                <tr>\n")
                             .append("                    <td colspan=\"6\" style=\"text-decoration: none; color: black;  background-color: white;\">\n")
                             .append("                        <a href=\"MyOrderInformationServlet?id=").append(order.getId())
-                            .append("\" style=\"text-decoration: none; color: black;\">Số sản phẩm khác: ").append(productCount )
+                            .append("\" style=\"text-decoration: none; color: black;\">Số sản phẩm khác: ").append(productCount)
                             .append("</a>\n")
                             .append("                    </td>\n")
                             .append("                </tr>\n");
@@ -199,6 +199,9 @@ public class MyOrderServlet extends HttpServlet {
                         } else {
                             htmlResponse.append("                <button class=\"btn btn-warning\" style=\"height: 30px; margin-right: 10px\">Hoàn thành đơn hàng</button>\n");
                         }
+                        break;
+                    case "Wait":
+                        htmlResponse.append("                <a href=\"#\" class=\"btn btn-light\" style=\"height: 30px; background-color: pink\">Thanh toán ngay</a>\n");
                         break;
                     default:
                         htmlResponse.append("                <button style=\"width: 80px; height: 30px\" class=\"btn btn-warning\">")

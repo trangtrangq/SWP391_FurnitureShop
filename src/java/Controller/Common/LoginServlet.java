@@ -120,7 +120,7 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("customer", customer);
             request.setAttribute("email", email);
             request.setAttribute("password", password);
-            userDAO.UpdateUser(customer.getRole_id(), "Active", customer.getId());
+            userDAO.UpdateUser(customer.getRole_id(), "Online", customer.getId());
             response.sendRedirect("HomePage");
         }else if(customer != null && "Block".equals(customer.getStatus())){
             processRequest(request, response);

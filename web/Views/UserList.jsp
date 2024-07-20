@@ -215,6 +215,14 @@
                 display: flex;
                 align-items: center;
             }
+            .text-gray {
+                color: gray;
+            }
+
+            .text-green {
+                color: green;
+            }
+
         </style>
     </head>
 
@@ -333,7 +341,9 @@
                                             <input type="hidden" name="action" value="addNewUser">
                                             <div class="form-group">
                                                 <label for="fullname">Họ và tên</label>
-                                                <input type="text" class="form-control" id="fullname" name="fullname" required value="${param.fullname}">
+                                                <input type="text" class="form-control" id="fullname" name="fullname" placeholder="Nhập họ và tên"
+                                                       required
+                                                       pattern=".*\S+.*" title="Tên không đúng định dạng" value="${param.fullname}">
                                             </div>
                                             <div class="form-group">
                                                 <label>Giới tính</label><br>
@@ -348,15 +358,23 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="phone">Số điện thoại</label>
-                                                <input type="text" class="form-control" id="phone" name="phone" required value="${param.phone}">
+                                                <input type="text" class="form-control" id="phone" name="phone" placeholder="Nhập số điện thoại của bạn"
+                                                       required 
+                                                       pattern="0\d{9,}"
+                                                       title="Vui lòng nhập số điện thoại có ít nhất 10 số và bắt đầu bằng số 0." value="${param.phone}">
                                             </div>
                                             <div class="form-group">
                                                 <label for="address">Địa chỉ</label>
-                                                <input type="text" class="form-control" id="address" name="address" required value="${param.address}">
+                                                <input type="text" class="form-control" id="address" name="address" required
+                                                       placeholder="Nhập địa chỉ của bạn"
+                                                       pattern=".*\S+.*" title="Địa chỉ không đúng định dạng" value="${param.address}">
                                             </div>
                                             <div class="form-group">
                                                 <label for="email">Email</label>
-                                                <input type="email" class="form-control" id="email" name="email" required value="${param.email}">
+                                                <input type="email" class="form-control" id="email" name="email" placeholder="Nhập email của bạn"
+                                                       required value="${email}"
+                                                       pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                                                       title="Vui lòng nhập địa chỉ email hợp lệ (ví dụ: example@example.com)">
                                             </div>                                        
                                             <div class="form-group">
                                                 <label for="roleId">Role:</label>
@@ -369,7 +387,7 @@
                                             <div class="form-group">
                                                 <label for="status">Trạng thái:</label>
                                                 <select class="form-control" id="status" name="status">
-                                                    <option value="Inactive">Inactive</option>
+                                                    <option value="Offline">Offline</option>
                                                 </select>
                                             </div>
                                             <div class="d-flex" style="justify-content: center; margin-top: 10px">
@@ -437,10 +455,10 @@
                                     </div>
                                     <ul class="dropdown-content">
                                         <li>
-                                            <input type="checkbox" name="status-filter" value="Active" /> Active
+                                            <input type="checkbox" name="status-filter" value="Online" /> Online
                                         </li>
                                         <li>
-                                            <input type="checkbox" name="status-filter" value="Inactive" /> In Active
+                                            <input type="checkbox" name="status-filter" value="Offline" /> Offline
                                         </li>
                                         <li>
                                             <input type="checkbox" name="status-filter" value="Block" /> Block

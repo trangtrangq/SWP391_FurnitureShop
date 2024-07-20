@@ -153,7 +153,9 @@ public class UserListServlet extends HttpServlet {
             }
 
             htmlResponse.append("</p></div></td>")
-                    .append("<td><div class=\"text-sm\"><p class=\"text-sm\">")
+                    .append("<td><div class=\"text-sm\"><p class=\"text-sm\" style=\"color: ")
+                    .append(user.getStatus().equals("Offline") ? "gray" : (user.getStatus().equals("Block") ? "red" : "green"))
+                    .append("\">")
                     .append(user.getStatus())
                     .append("</p></div></td>")
                     .append("<td class=\"actions\"><p>")
@@ -162,6 +164,7 @@ public class UserListServlet extends HttpServlet {
                     .append("\" title=\"View\"><i class=\"fas fa-eye\"></i></a>")
                     .append("</p></td>")
                     .append("</tr>");
+
         }
         return htmlResponse.toString();
     }

@@ -15,7 +15,7 @@ import java.util.List;
 
 public class ComparatorHelper {
 
-    private static final List<String> statusOrder = Arrays.asList("Order", "Confirmed", "Done", "Cancel");
+    private static final List<String> statusOrder = Arrays.asList("Order", "Confirmed", "Done", "Canceled");
 
     public static Comparator<Product> sortByPriceAsc() {
         return Comparator.comparingDouble(Product::getPrice);
