@@ -37,6 +37,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import com.google.gson.*;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 
 /**
  *
@@ -67,7 +70,7 @@ public class AssignToSale extends HttpServlet {
 
         // Thiết lập phân trang
         int page = 1; // Trang mặc định là 1
-        int recordsPerPage = 4; // Số bản ghi trên mỗi trang (có thể thay đổi tùy vào yêu cầu)
+        int recordsPerPage = 25; // Số bản ghi trên mỗi trang (có thể thay đổi tùy vào yêu cầu)
         if (pageStr != null && !pageStr.isEmpty()) {
             try {
                 page = Integer.parseInt(pageStr);
@@ -91,7 +94,7 @@ public class AssignToSale extends HttpServlet {
             JsonObject jsonOrder = new JsonObject();
             jsonOrder.addProperty("customer", order.getCustomer());
             jsonOrder.addProperty("id", order.getId());
-            jsonOrder.addProperty("totalcost", order.getTotalcost());
+            jsonOrder.addProperty("totalcost", formatCurrency(order.getTotalcost()));
             jsonOrder.addProperty("orderdate", order.getOrderDate().toString());
             jsonOrder.addProperty("status", order.getStatus());
             jsonOrder.addProperty("salename", order.getSalename());
@@ -110,8 +113,14 @@ public class AssignToSale extends HttpServlet {
         response.getWriter().write(jsonResult.toString());
 
     }
-
-    
+   
+    public String formatCurrency(double number) {
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.getDefault());
+        symbols.setGroupingSeparator(',');
+        symbols.setMonetaryDecimalSeparator('.');
+        DecimalFormat decimalFormat = new DecimalFormat("#,##0", symbols);
+        return decimalFormat.format(number) + "₫";
+    }
 
 
 }

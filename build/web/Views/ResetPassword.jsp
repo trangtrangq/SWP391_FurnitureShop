@@ -5,6 +5,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
+        <link rel="icon" href="image/logoshop.png" type="image/png">
         <link href="css/style.css" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -98,10 +99,10 @@
                     </div>
                     <%-- Form quên mật khẩu --%>
                     <div class="customerReset">
-                        <form action="${pageContext.request.contextPath}/ResetPasswordServlet" method="post" id="forgotPasswordForm" style="display:block;">
+                        <form action="${pageContext.request.contextPath}/VerifyEmail" method="post" id="forgotPasswordForm" style="display:block;">
                             <div class="form-group">
                                 <label for="email">Nhập địa chỉ email</label>
-                                <input type="text" id="email" name="email" required placeholder="Nhập địa chỉ email của bạn">
+                                <input type="email" id="email" name="email" required placeholder="Nhập địa chỉ email của bạn">
                             </div>
                             <input type="hidden" name="action" value="forgotPassword">
                             <button type="submit">Tiếp</button>

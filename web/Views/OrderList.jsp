@@ -6,6 +6,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Order Details</title>
+        <link rel="icon" href="image/logoshop.png" type="image/png">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <link rel="preload stylesheet" as="style" fetchpriority="low"
               href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
@@ -354,7 +355,7 @@
             <div class="main">
                 <%@include file="DashboardHeader.jsp" %>
                 <div class="container" style="margin-top: 20px">
-                    <h2>Danh sách đơn hàng</h2>
+                    <h2>OrderList</h2>
                     <div style="display: flex;
                          justify-content: space-between">
                         <div class="search-container">
@@ -438,24 +439,21 @@
                             <div class="dropdown" style="margin-left: 15px;
                                  width: 160px">
                                 <div class="dropbtn">
-                                    Trạng thái
+                                    Status
                                     <span><i class="fa fa-chevron-down"></i></span>
                                 </div>
                                 <ul class="dropdown-content">
                                     <li>
-                                        <input type="checkbox" name="status-filter" data-status="Order" value="Order" style="display: inline-block" /> Đơn hàng được đặt
+                                        <input type="checkbox" name="status-filter" data-status="Order" value="Order" style="display: inline-block" /> Order
                                     </li>
                                     <li>
-                                        <input type="checkbox" name="status-filter" data-status="Done" value="Done" style="display: inline-block" /> Đơn hàng hoàn thành
+                                        <input type="checkbox" name="status-filter" data-status="Done" value="Done" style="display: inline-block" /> Done
                                     </li>
                                     <li>
-                                        <input type="checkbox" name="status-filter" data-status="Confirmed" value="Confirmed" style="display: inline-block" /> Đơn hàng xác nhận
+                                        <input type="checkbox" name="status-filter" data-status="Confirmed" value="Confirmed" style="display: inline-block" /> Confirmed
                                     </li>
                                     <li>
-                                        <input type="checkbox" name="status-filter" data-status="Canceled" value="Canceled" style="display: inline-block" /> Đơn hàng bị hủy
-                                    </li>
-                                    <li>
-                                        <input type="checkbox" name="status-filter" data-status="Wait" value="Wait" style="display: inline-block" /> Đơn hàng chưa thanh toán
+                                        <input type="checkbox" name="status-filter" data-status="Canceled" value="Canceled" style="display: inline-block" /> Canceled
                                     </li>
                                 </ul>
                             </div>

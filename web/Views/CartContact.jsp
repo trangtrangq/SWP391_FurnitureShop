@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,6 +9,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Document</title>
+        <link rel="icon" href="image/logoshop.png" type="image/png">
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
         <style>
             .payment-details {
@@ -310,7 +313,7 @@
                         <c:otherwise>
                             <c:forEach items="${addresslist}" var="address">
                                 <input type="hidden" id="addressid" name="addressid" value="${address.id}">
-                                <strong>${address.id}</strong>
+                                
                                 <c:set var="status" value="default" ></c:set>
                                 <c:if test="${address.status eq status }">
                                     <p class="mb-1">
@@ -404,11 +407,11 @@
                                         <div>${cartdetail.color.colorname}</div>
                                     </td>
                                     <td class="align-middle">
-                                        ${cartdetail.cartItem.totalcost/cartdetail.cartItem.quantity}
+                                        <fmt:formatNumber value="${cartdetail.cartItem.totalcost/cartdetail.cartItem.quantity}" type="number" minFractionDigits="0" maxFractionDigits="0" groupingUsed="true" />₫
 
                                     </td>
                                     <td class="align-middle">${cartdetail.cartItem.quantity}</td>
-                                    <td class="align-middle">${cartdetail.cartItem.totalcost}</td>
+                                    <td class="align-middle"><fmt:formatNumber value="${cartdetail.cartItem.totalcost}" type="number" minFractionDigits="0" maxFractionDigits="0" groupingUsed="true" />₫</td>
                                     <td class="align-middle">
                                         <div class="form-group">
                                             <label for="message">Lời nhắn:</label>
@@ -417,7 +420,7 @@
                                         </div>
                                         <div >
                                             <h3 class="h6">Tổng số tiền (1 sản phẩm):</h3>
-                                            <div>${cartdetail.cartItem.totalcost}</div>
+                                            <div> <fmt:formatNumber value="${cartdetail.cartItem.totalcost}" type="number" minFractionDigits="0" maxFractionDigits="0" groupingUsed="true" />₫</div>
                                         </div>
                                     </td>
                                 </tr>
@@ -473,9 +476,9 @@
                             <p class="mb-1">Tổng thanh toán</p>
                         </div>
                         <div>
-                            <p class="mb-1">₫${sumtotalprice}</p>
+                            <p class="mb-1"><fmt:formatNumber value="${sumtotalprice}" type="number" minFractionDigits="0" maxFractionDigits="0" groupingUsed="true" />₫</p>
 
-                            <p class="font-weight-bold">₫${sumtotalprice}</p>
+                            <p class="font-weight-bold"><fmt:formatNumber value="${sumtotalprice}" type="number" minFractionDigits="0" maxFractionDigits="0" groupingUsed="true" />₫</p>
                         </div>
                     </div>
                     <div class="alert alert-info" role="alert">
@@ -582,6 +585,7 @@
             <input type="hidden" id="paymentIdInput" name="paymentId" value="">
             <input type="hidden" id="totalcost" name="totalcost" value="${sumtotalprice}">
             <input type="hidden" id="bankCodeserver" name="bankCode" value="">
+            
             <!-- Add hidden inputs for each cart detail -->
             <c:forEach items="${listcartdetail}" var="cartdetail" varStatus="status">
                 <input type="hidden" name="cartIds" value="${cartdetail.cartItem.id}">

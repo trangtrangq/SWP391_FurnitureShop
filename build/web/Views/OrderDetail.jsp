@@ -1,11 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html >
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MyOrderInformation</title>
+    <link rel="icon" href="image/logoshop.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
     <style>
         body {
@@ -247,13 +249,13 @@
                 <div class="container">
                     <c:choose>
                         <c:when test="${customer.role_id==3}">
-                            <a href="AssignToSale" class="btn btn-primary" style="margin-bottom: 15px"> < Quay lại</a>
+                            <a href="AssignToSale" class="btn btn-primary" style="margin-bottom: 15px"> < Back to list</a>
                         </c:when>
                         <c:otherwise>
-                            <a href="OrderListServlet" class="btn btn-primary" style="margin-bottom: 15px"> < Quay lại</a>
+                            <a href="OrderListServlet" class="btn btn-primary" style="margin-bottom: 15px"> < Back to list</a>
                         </c:otherwise>
                     </c:choose>
-
+                    
                     <div class="row">
                         <div class="col-md-8">
                             <!-- Details -->
@@ -263,10 +265,10 @@
                                         <c:set var="order" value="${requestScope.order}"/>
                                         <input type="hidden" name="order_id" value="${order.id}">
                                         <div class="me-auto">
-                                            <span><h3>Mã đơn hàng: #${order.id}</h3></span>
+                                            <span><h3>OrderID: #${order.id}</h3></span>
                                         </div>
                                         <div class="ms-auto">
-                                            <span>Thời gian đặt hàng: ${order.orderDate}</span>
+                                            <span>OrderTime: ${order.orderDate}</span>
                                         </div>
                                     </div>
                                     <table class="table table-borderless">
@@ -302,8 +304,12 @@
                                                                             </div>
                                                                         </td>
                                                                         <td>${orderDetail.quantity}</td>
-                                                                        <td class="text-end" style="text-decoration: line-through;">${product.price} </td>
-                                                                        <td class="text-end">${orderDetail.price}</td>
+                                                                        <td class="text-end text-danger" style="text-decoration: line-through;">
+                                                                            <fmt:formatNumber value="${product.price}" type="number" minFractionDigits="0" maxFractionDigits="0" groupingUsed="true" />₫
+                                                                        </td>
+                                                                        <td class="text-end">
+                                                                            <fmt:formatNumber value="${orderDetail.price}" type="number" minFractionDigits="0" maxFractionDigits="0" groupingUsed="true" />₫
+                                                                        </td>
                                                                     </tr>
                                                                 </c:if>
                                                             </c:forEach>
@@ -314,7 +320,9 @@
                                         </tbody>
                                         <tfoot>
                                             <tr class="fw-bold">
-                                                <td colspan="4" style="text-align: right; padding-right: 50px">TỔNG TIỀN: ${order.totalcost}</td>
+                                                <td colspan="4" style="text-align: right; padding-right: 50px">TOTAL: 
+                                                    <fmt:formatNumber value="${order.totalcost}" type="number" minFractionDigits="0" maxFractionDigits="0" groupingUsed="true" />₫
+                                                </td>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -334,34 +342,22 @@
 
                                                         <h3 class="h6">Thông tin người nhận</h3>
                                                         <address>
-                                                            <strong>Họ và tên: ${user.fullname}</strong><br>
-                                                            Giới tính: <c:choose>
-                                                                <c:when test="${user.gender == 'Male'}">
-                                                                    Nam
-                                                                </c:when>
-                                                                <c:when test="${user.gender == 'Female'}">
-                                                                    Nữ
-                                                                </c:when>
-                                                                <c:otherwise>
-                                                                    Không xác định
-                                                                </c:otherwise>
-                                                            </c:choose> <br>
+                                                            <strong>Full name: ${user.fullname}</strong><br>
+                                                            Gender: ${user.gender}<br>
                                                             Email: ${user.email}<br>
-                                                            Số điện thoại: ${address.phonenumber}<br>
-                                                            Địa chỉ: ${address.address}<br>
+                                                            Phone: ${address.phonenumber}<br>
+                                                            Address: ${address.address}<br>
                                                             <!--                                                        <abbr title="Phone">P:</abbr> (123) 456-7890-->
                                                         </address>
                                                         <div style="display: flex; justify-content: center">
                                                             <c:choose>
                                                                 <c:when test="${order.status == 'Order'}">
-                                                                    <button class="btn btn-secondary">Đã đặt hàng</button>                                                                   
-                                                                    <button class="btn btn-danger" onclick="confirmCancelOrder(${order.id})" style="height: 30px; margin-left: 20px">Hủy đơn hàng</button>
+                                                                    <button class="btn btn-secondary">Đã đặt hàng</button>
+                                                                    <button class="btn btn-info" style="margin-left: 10px" onclick="confirmConfirmedOrder(${order.id})">Xác nhận đơn hàng</button>
+                                                                    <button class="btn btn-danger" style="margin-left: 10px" onclick="confirmCancelOrder(${order.id})">Hủy đơn hàng</button>
                                                                 </c:when>
                                                                 <c:when test="${order.status == 'Canceled'}">
                                                                     <button class="btn btn-danger">Đã hủy</button>
-                                                                </c:when>
-                                                                <c:when test="${order.status == 'Wait'}">
-                                                                    <button class="btn btn-light" style="background-color: pink">Chưa thanh toán</button>
                                                                 </c:when>
                                                                 <c:when test="${order.status == 'Done'}">
                                                                     <c:set var="hasFeedback" value="false" />
@@ -407,28 +403,43 @@
     <%@include file="DashboardFooter.jsp" %>
 
     <script>
-        function confirmCancelOrder(order_id) {
-            var confirmCancel = confirm("Bạn có muốn hủy đơn hàng của mình không?");
-            if (confirmCancel) {
+        function confirmConfirmedOrder(orderId) {
+            var confirmUpdate = confirm("Bạn có muốn xác nhận đơn hàng của mình?");
+            if (confirmUpdate) {
                 var xhr = new XMLHttpRequest();
-                xhr.open("POST", "MyOrderInformationServlet", true);
+                xhr.open("POST", "OrderDetailServlet", true);
                 xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState === XMLHttpRequest.DONE) {
                         if (xhr.status === 200) {
-                            // Xử lý phản hồi thành công (nếu cần)
-                            alert("Đã hủy đơn hàng thành công!");
-                            // Reload trang sau khi xác nhận hủy đơn hàng thành công
-                            window.location.reload();
+                            alert("Đã xác nhận đơn hàng thành công!");
+                            location.reload(); // Load lại trang sau khi xác nhận thành công
                         } else {
-                            // Xử lý lỗi nếu cần
+                            alert("Có lỗi xảy ra khi xác nhận đơn hàng.");
+                        }
+                    }
+                };
+                xhr.send("order_id=" + orderId + "&action=confirm");
+            }
+        }
+
+        function confirmCancelOrder(orderId) {
+            var confirmCancel = confirm("Bạn có muốn hủy đơn hàng của mình không?");
+            if (confirmCancel) {
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "OrderDetailServlet", true);
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
+                            alert("Đã hủy đơn hàng thành công!");
+                            location.reload(); // Load lại trang sau khi hủy thành công
+                        } else {
                             alert("Có lỗi xảy ra khi hủy đơn hàng.");
                         }
                     }
                 };
-                xhr.send("order_id=" + order_id);
-            } else {
-                // Người dùng chọn No, không làm gì cả
+                xhr.send("order_id=" + orderId + "&action=cancel");
             }
         }
     </script>

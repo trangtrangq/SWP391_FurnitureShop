@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.mail.Flags;
 
 /**
  *
@@ -66,6 +65,7 @@ public class UserDAO extends DBContext {
     }
 
     public boolean changePass(String uid, String pass) {
+//        pass = hashPassword(pass);
         try {
             String sql = "UPDATE `furniture`.`User` SET `password` = ? WHERE `id` = ?";
             try (PreparedStatement stm = connect.prepareStatement(sql)) {
@@ -170,11 +170,10 @@ public class UserDAO extends DBContext {
     }
 
     public User login(String email, String password) {
-        String hassPassword = hashPassword(password);
         String query = "SELECT * FROM User WHERE email = ? AND password = ?";
         try (PreparedStatement ps = connect.prepareStatement(query)) {
             ps.setString(1, email);
-            ps.setString(2, hassPassword);
+            ps.setString(2, password);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     User user = new User();
@@ -198,10 +197,9 @@ public class UserDAO extends DBContext {
     }
 
     public void resetPassword(String email, String password) {
-        String hassPassword = hashPassword(password);
         String mysql = "UPDATE `furniture`.`user` SET `password` = ? WHERE `email` = ?";
         try (PreparedStatement statement = connect.prepareStatement(mysql)) {
-            statement.setString(1, hassPassword);
+            statement.setString(1, password);
             statement.setString(2, email);
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -1008,8 +1006,8 @@ public class UserDAO extends DBContext {
         }
         return list;
     }
-    
-    public String hashPassword(String password) {
+
+     public String hashPassword(String password) {
         try {
             // Tạo đối tượng MessageDigest với thuật toán SHA-256
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -1035,15 +1033,9 @@ public class UserDAO extends DBContext {
             throw new RuntimeException("Error hashing password", e);
         }
     }
-
     
     public static void main(String[] args) {
         UserDAO u = new UserDAO();
-        
-        
-        String pass = "trangtrang12102003@gmail.com";
-        String hasspass = u.hashPassword(pass);
-        System.out.println(hasspass);
-        
+        System.out.println(u.hashPassword("123456"));
     }
 }

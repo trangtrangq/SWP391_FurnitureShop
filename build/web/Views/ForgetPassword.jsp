@@ -11,6 +11,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
+        <link rel="icon" href="image/logoshop.png" type="image/png">
         <link href="css/style.css" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -98,14 +99,12 @@
                         <div class="form-group">
                             <label for="email">Nhập mật khẩu mới</label>
                             <input type="password" id="pass" name="pass" required 
-                                   placeholder="Nhập mật khẩu mới của bạn"
-                                   pattern="(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}"
+                                   placeholder="Nhập mật khẩu mới của bạn" pattern="(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}"
                                    title="Mật khẩu phải có ít nhất 8 ký tự, bao gồm ít nhất một chữ hoa, một số và một ký tự đặc biệt.">
                         </div>
                         <div class="form-group">
                             <label for="email">Nhập lại mật khẩu</label>
-                            <input type="password" id="rePass" name="rePass" required 
-                                   placeholder="Nhập lại mật khẩu mới của bạn"
+                            <input type="password" id="rePass" name="rePass" required placeholder="Nhập mật khẩu mới của bạn"
                                    pattern="(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}"
                                    title="Mật khẩu phải có ít nhất 8 ký tự, bao gồm ít nhất một chữ hoa, một số và một ký tự đặc biệt.">
                         </div>

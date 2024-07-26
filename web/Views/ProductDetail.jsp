@@ -1,14 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="shortcut icon" href="//theme.hstatic.net/200000065946/1001187274/14/favicon.png?v=582"
-              type="image/png" />
-        <title>Tất Cả Sản Phẩm Đồ Gỗ Nội Thất Của MOHO</title>
+        <title>Chi tiết sản phẩm</title>
+        <link rel="icon" href="image/logoshop.png" type="image/png">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
         <style>
             img {
                 max-width: 100%;
@@ -258,12 +258,12 @@
                                 <ol class="breadcrumb breadcrumb-arrows" itemscope
                                     itemtype="http://schema.org/BreadcrumbList">
                                     <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                                        <a href="/" target="_self" itemprop="item" content="https://moho.com.vn"><span
+                                        <a href="HomePage" target="_self" itemprop="item" content="https://moho.com.vn"><span
                                                 itemprop="name">Trang chủ</span></a>
                                         <meta itemprop="position" content="1" />
                                     </li>
                                     <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                                        <a href="https://moho.com.vn/collections/all" target="_self">
+                                        <a href="ProductServlet" target="_self">
                                             <span itemprop="item" content="https://moho.com.vn/collections/all"><span
                                                     itemprop="name">Danh mục</span></span>
                                         </a>
@@ -273,7 +273,7 @@
                                         itemtype="http://schema.org/ListItem">
                                         <span itemprop="item"
                                               content="https://moho.com.vn/collections/tat-ca-san-pham-moho"><span
-                                                itemprop="name">Tất cả sản phẩm Furniture</span></span>
+                                                itemprop="name">Chi tiết sản phẩm</span></span>
                                         <meta itemprop="position" content="3" />
                                     </li>
                                 </ol>
@@ -365,11 +365,17 @@
                                         <c:set var="hasSale" value="true" />
                                         <c:choose>
                                             <c:when test="${saleoff.getSaleoffvalue() == 0}">
-                                                <span style="color: black">${product.price}₫</span>
+                                                <span style="color: black">
+                                                    <fmt:formatNumber value="${product.price}" type="number" minFractionDigits="0" maxFractionDigits="0" groupingUsed="true" />₫
+                                                </span>
                                             </c:when>
                                             <c:otherwise>
-                                                <span class="pro-price">${product.price - product.price * saleoff.getSaleoffvalue() / 100}₫</span>
-                                                <del>${product.price}₫</del>
+                                                <span class="pro-price">
+                                                    <fmt:formatNumber value="${product.price - product.price * saleoff.getSaleoffvalue() / 100}" type="number" minFractionDigits="0" maxFractionDigits="0" groupingUsed="true" />₫
+                                                </span>
+                                                <del>
+                                                    <fmt:formatNumber value="${product.price}" type="number" minFractionDigits="0" maxFractionDigits="0" groupingUsed="true" />₫
+                                                </del>
                                                 <div style="display: none">
                                                     <input type="hidden" id="priceunit" name="priceunit" value="${product.price - product.price * saleoff.getSaleoffvalue() / 100}">
                                                 </div>
@@ -379,7 +385,12 @@
                                     </c:if>
                                 </c:forEach>
                                 <c:if test="${!hasSale}">
-                                    <span style="color: black">${product.price}₫</span>
+                                    <span style="color: black">
+                                          <div style="display: none">
+                                                    <input type="hidden" id="priceunit" name="priceunit" value="${product.price}">
+                                                </div>
+                                        <fmt:formatNumber value="${product.price}" type="number" minFractionDigits="0" maxFractionDigits="0" groupingUsed="true" />₫
+                                    </span>
                                 </c:if>
                             </div>
                             <div style="border-bottom: 1px dotted #dfe0e1; margin-top: 10px">
@@ -537,25 +548,53 @@
                 var selectedRadio = document.querySelector('input[name="color"]:checked');
                 var productDetailId = selectedRadio.getAttribute('data-product-detail-id');
                 var quantity = document.getElementById('quantity').value;
-                var price =  document.getElementById('priceunit').value;
+                var price = document.getElementById('priceunit').value;
+
 
                 document.getElementById('productDetailId').value = productDetailId;
                 document.getElementById('quantityproduct').value = quantity;
+
                 document.getElementById('price').value = price;
 
-                document.getElementById('hiddenForm').submit();
+
+                $.ajax({
+                    type: 'GET',
+                    url: $('#hiddenForm').attr('action'), // Replace with your server endpoint URL
+                    data: $('#hiddenForm').serialize(),
+                    success: function (response) {
+                        // Handle the response from the server
+                        $('#countcart').text(response.countcartitem);
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: 'Order Complete',
+                            showConfirmButton: false,
+                            timer: 1000
+                        });
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 1000);
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle any errors
+                        console.error(error);
+                    }
+                });
             });
 
             document.getElementById('buy_now').addEventListener('click', function () {
                 var selectedRadio = document.querySelector('input[name="color"]:checked');
                 var productDetailId = selectedRadio.getAttribute('data-product-detail-id');
                 var quantity = document.getElementById('quantity').value;
-                var price =  document.getElementById('priceunit').value;
+                var price = document.getElementById('priceunit').value;
+
 
                 document.getElementById('productDetailId').value = productDetailId;
                 document.getElementById('quantityproduct').value = quantity;
+
                 document.getElementById('price').value = price;
-                 document.getElementById('action').value ="buynow";
+
+                document.getElementById('action').value = "buynow";
 
                 document.getElementById('hiddenForm').submit();
             });
@@ -577,6 +616,7 @@
         </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>               
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>   
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </body>
 </html>

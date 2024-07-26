@@ -74,16 +74,14 @@ public class VerifyAccountDAO extends DBContext {
             statement.setString(3, user.getPhonenumber());
             statement.setString(4, user.getAddress());
             statement.setString(5, user.getEmail());
-            statement.setString(6, hassPassword);
+              statement.setString(6, hassPassword);
             statement.setInt(7, user.getRole_id());
             statement.setString(8, user.getStatus());
             statement.executeUpdate();
         }catch(SQLException e){
             LOGGER.log(Level.SEVERE, "Error inserting verified customer", e);
         }
-    } 
-   UserDAO userDAO = new UserDAO();
-   
-   
+    }     
+    UserDAO userDAO = new UserDAO();
 
 }

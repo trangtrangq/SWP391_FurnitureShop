@@ -6,6 +6,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Register</title>
+        <link rel="icon" href="image/logoshop.png" type="image/png">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
@@ -29,19 +30,18 @@
                         <div class="form-group">
                             <label for="fullname">Họ và tên</label>
                             <input type="text" class="form-control" id="fullname" name="fullname" placeholder="Nhập họ và tên của bạn"
-                                   required
-                                   pattern=".*\S+.*" title="Tên không đúng định dạng"
+                                   required pattern=".*\S+.*" title="Tên không đúng định dạng"
                                    value="${param.fullname}">
                         </div>
                         <div class="form-group">
                             <label for="gender">Giới tính</label>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="gender" value="Male" id="genderMale" ${param.gender == 'Male' ? 'checked' : ''} required value="${param.gender}">
-                                <label class="form-check-label" for="genderMale">Nam</label>
+                                <label class="form-check-label" for="genderMale">Male</label>
                             </div>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="gender" value="Female" id="genderFemale" ${param.gender == 'Female' ? 'checked' : ''} required value="${param.gender}">
-                                <label class="form-check-label" for="genderFemale">Nữ</label>
+                                <label class="form-check-label" for="genderFemale">Female</label>
                             </div>
                         </div>
                         <div class="form-group">
@@ -54,29 +54,26 @@
                         </div>
                         <div class="form-group">
                             <label for="address">Địa chỉ</label>
-                            <input type="text" class="form-control" id="address" name="address" placeholder="Nhập địa chỉ của bạn"
-                                   pattern=".*\S+.*" title="Địa chỉ không đúng định dạng"
+                            <input type="text" class="form-control" id="address" name="address" placeholder="Nhập địa chỉ của bạn" pattern=".*\S+.*" title="Địa chỉ không đúng định dạng"
                                    required value="${address}">
                         </div>
                         <div class="form-group">
                             <label for="email">Email <span class="text-danger">*</span></label>
                             <input type="email" class="form-control" id="email" name="email" placeholder="Nhập email của bạn"
-                                   required value="${email}"
-                                   pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                                   required value="${email}" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
                                    title="Vui lòng nhập địa chỉ email hợp lệ (ví dụ: example@example.com)">
                         </div>
                         <div>           
                             <label for="password">Mật khẩu</label>
                             <input id="password" type="password" class="form-control password2" name="password" placeholder="Nhập mật khẩu của bạn" 
-                                   required
-                                   pattern="(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}"
+                                   required  pattern="(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}"
                                    title="Mật khẩu phải có ít nhất 8 ký tự, bao gồm ít nhất một chữ hoa, một số và một ký tự đặc biệt."
                                    value="${password}">
                         </div>
                         <div class="form-group">
                             <label for="pass">Nhập lại mật khẩu</label>
                             <input id="rePassword" type="password" class="form-control password2" name="pass" placeholder="Nhập lại mật khẩu của bạn"
-                                   pattern="(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}"
+                                   accept="" pattern="(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}"
                                    title="Mật khẩu phải có ít nhất 8 ký tự, bao gồm ít nhất một chữ hoa, một số và một ký tự đặc biệt."
                                    required value="${pass}">
                         </div>

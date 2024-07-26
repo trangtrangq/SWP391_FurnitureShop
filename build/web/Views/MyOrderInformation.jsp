@@ -1,11 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html >
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MyOrderInformation</title>
+    <link rel="icon" href="image/logoshop.png" type="image/png">
     <link rel="preload stylesheet" as="style" fetchpriority="low"
           href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -103,10 +105,10 @@
                                 <c:set var="order" value="${requestScope.order}"/>
                                 <input type="hidden" name="order_id" value="${order.id}">
                                 <div class="me-auto">
-                                    <span><h3>Mã đơn hàng: #${order.id}</h3></span>
+                                    <span><h3>OrderID: #${order.id}</h3></span>
                                 </div>
                                 <div class="ms-auto">
-                                    <span>Thời gian đặt hàng: ${order.orderDate}</span>
+                                    <span>OrderTime: ${order.orderDate}</span>
                                 </div>
                             </div>
                             <table class="table table-borderless">
@@ -143,8 +145,12 @@
                                                                 </div>
                                                             </td>
                                                             <td>${orderDetail.quantity}</td>
-                                                            <td class="text-end" style="text-decoration: line-through;">${product.price} </td>
-                                                            <td class="text-end">${orderDetail.price}</td>
+                                                            <td class="text-end text-danger" style="text-decoration: line-through;">
+                                                                <fmt:formatNumber value="${product.price}" type="number" minFractionDigits="0" maxFractionDigits="0" groupingUsed="true" />₫
+                                                            </td>
+                                                            <td class="text-end">
+                                                                <fmt:formatNumber value="${orderDetail.price}" type="number" minFractionDigits="0" maxFractionDigits="0" groupingUsed="true" />₫
+                                                            </td>
                                                         <div style="display: none">
                                                             <input type="hidden" id="priceunit" name="priceunit" value="${orderDetail.price}">
                                                         </div>
@@ -158,7 +164,9 @@
                                 </tbody>
                                 <tfoot>
                                     <tr class="fw-bold">
-                                        <td colspan="4" style="text-align: right; padding-right: 50px">TỔNG TIỀN: ${order.totalcost}</td>
+                                        <td colspan="4" style="text-align: right; padding-right: 50px">TOTAL: 
+                                            <fmt:formatNumber value="${order.totalcost}" type="number" minFractionDigits="0" maxFractionDigits="0" groupingUsed="true" />₫
+                                        </td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -176,23 +184,13 @@
                                         <c:forEach items="${userList}" var="user">
                                             <c:if test="${user.id == address.customer_id}">
 
-                                                <h1 class="h6">Thông tin người nhận</h1>
+                                                <h3 class="h6">Thông tin người nhận</h3>
                                                 <address>
-                                                    <strong>Họ và tên: ${address.fullname}</strong><br>
-                                                    Giới tính: <c:choose>
-                                                        <c:when test="${user.gender == 'Male'}">
-                                                            Nam
-                                                        </c:when>
-                                                        <c:when test="${user.gender == 'Female'}">
-                                                            Nữ
-                                                        </c:when>
-                                                        <c:otherwise>
-                                                            Không xác định
-                                                        </c:otherwise>
-                                                    </c:choose> <br>
+                                                    <strong>Full name: ${address.fullname}</strong><br>
+                                                    Gender: ${user.gender}<br>
                                                     Email: ${user.email}<br>
-                                                    Số điện thoại: ${address.phonenumber}<br>
-                                                    Địa chỉ: ${address.addressdetail}<br>
+                                                    Phone: ${address.phonenumber}<br>
+                                                    Address: ${address.address}<br>
                                                     <!--                                                        <abbr title="Phone">P:</abbr> (123) 456-7890-->
                                                 </address>
                                                 <div style="display: flex; justify-content: center">
@@ -208,13 +206,6 @@
                                                         <c:when test="${order.status == 'Confirmed'}">
                                                             <button style=" height: 30px" class="btn btn-info">Đang xử lí</button>
                                                         </c:when> 
-                                                        <c:when test="${order.status == 'Wait'}">
-                                                            <button class ="btn btn-light" style=" height: 30px; margin-left: 10px; background-color: pink">
-                                                                <a href="#" style="text-decoration: none">Thanh toán ngay</a>
-                                                            </button>
-                                                            <button class="btn btn-danger" onclick="confirmCancelOrder(${order.id})" style="width: 80px; height: 30px; margin-left: 20px">Hủy đơn hàng</button>
-                                                        </c:when>    
-
                                                         <c:when test="${order.status == 'Done'}">
                                                             <c:set var="hasFeedback" value="false" />
                                                             <c:forEach items="${requestScope.historyFeedbackOrder}" var="history">

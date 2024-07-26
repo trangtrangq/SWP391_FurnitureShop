@@ -135,8 +135,7 @@ public class UserListServlet extends HttpServlet {
                     .append(user.getFullname())
                     .append("</p></div></td>")
                     .append("<td><div class=\"text-sm\"><p class=\"text-sm\">")
-                    .append(user.getGender().equals("Male") ? "Nam" : 
-            user.getGender().equals("Female") ? "Nữ" : "Không xác định")
+                    .append(user.getGender())
                     .append("</p></div></td>")
                     .append("<td><div class=\"text-sm\"><p class=\"text-sm\">")
                     .append(user.getEmail())
@@ -156,7 +155,6 @@ public class UserListServlet extends HttpServlet {
             htmlResponse.append("</p></div></td>")
                     .append("<td><div class=\"text-sm\"><p class=\"text-sm\" style=\"color: ")
                     .append(user.getStatus().equals("Offline") ? "gray" : (user.getStatus().equals("Block") ? "red" : "green"))
-                    
                     .append("\">")
                     .append(user.getStatus())
                     .append("</p></div></td>")

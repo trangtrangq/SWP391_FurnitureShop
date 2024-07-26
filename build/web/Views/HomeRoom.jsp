@@ -8,6 +8,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
+        <link rel="icon" href="image/logoshop.png" type="image/png">
         <link rel="preload stylesheet" as="style" fetchpriority="low"
               href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
         <link rel="preload stylesheet" as="style" fetchpriority="low"
@@ -43,7 +44,7 @@
                         <div class="row">
                             <div class="col-md-12 col-xs-6 col-sm-12 no_pdr fade-box">
                                 <div class="fade-out">
-                                    <a href="${pageContext.request.contextPath}/ProductListServlet" class="fadeoutcenter">
+                                    <a href="${pageContext.request.contextPath}/ProductServlet?action=showRoom&id=1" class="fadeoutcenter">
                                         <img width="403" height="390" loading="lazy" decoding="async"
                                              srcset="//theme.hstatic.net/200000065946/1001187274/14/imgaView1_large.jpg?v=582 412w, //theme.hstatic.net/200000065946/1001187274/14/imgaView1.jpg?v=582"
                                              alt="nội thất phòng khách">
@@ -52,7 +53,7 @@
                             </div>
                             <div class="col-md-12 col-xs-6 col-sm-12 no_pdr padding-img fade-box">
                                 <div class="fade-out">
-                                    <a href="${pageContext.request.contextPath}/ProductListServlet" class="fadeoutcenter">
+                                    <a href="${pageContext.request.contextPath}/ProductServlet?action=showRoom&id=2" class="fadeoutcenter">
                                         <img width="403" height="390" loading="lazy" decoding="async"
                                              srcset="//theme.hstatic.net/200000065946/1001187274/14/imgaView2_large.jpg?v=582 412w, //theme.hstatic.net/200000065946/1001187274/14/imgaView2.jpg?v=582"
                                              alt="nội thất phòng ngủ">
@@ -63,7 +64,7 @@
                     </div>
                     <div class="col-md-8 col-xs-12 col-sm-8 padding-img fade-box">
                         <div class="fade-out">
-                            <a href="${pageContext.request.contextPath}/ProductListServlet" class="fadeoutcenter">
+                            <a href="${pageContext.request.contextPath}/ProductServlet" class="fadeoutcenter">
                                 <img width="840" height="430" loading="lazy" decoding="async"
                                      srcset="//theme.hstatic.net/200000065946/1001187274/14/imgaView3_large.jpg?v=582 412w, //theme.hstatic.net/200000065946/1001187274/14/imgaView3.jpg?v=582"
                                      alt="Trọn bộ nội thất">
@@ -72,7 +73,7 @@
                         <div class="row">
                             <div class="col-md-6 col-xs-6 col-sm-6 padding-img pd_lr fade-box">
                                 <div class="fade-out">
-                                    <a href="${pageContext.request.contextPath}/ProductListServlet" class="fadeoutcenter">
+                                    <a href="${pageContext.request.contextPath}/ProductServlet?action=showRoom&id=3" class="fadeoutcenter">
                                         <img width="400" height="314" loading="lazy" decoding="async"
                                              srcset="//theme.hstatic.net/200000065946/1001187274/14/imgaView4_large.jpg?v=582 412w, //theme.hstatic.net/200000065946/1001187274/14/imgaView4.jpg?v=582"
                                              alt="nội thất phòng ăn">
@@ -81,7 +82,7 @@
                             </div>
                             <div class="col-md-6 col-xs-6 col-sm-6 padding-img pd_lr fade-box">
                                 <div class="fade-out">
-                                    <a href="${pageContext.request.contextPath}/ProductListServlet" class="fadeoutcenter">
+                                    <a href="${pageContext.request.contextPath}/ProductServlet?action=showRoom&id=3" class="fadeoutcenter">
                                         <img width="400" height="314" loading="lazy" decoding="async"
                                              srcset="//theme.hstatic.net/200000065946/1001187274/14/imgaView5_large.jpg?v=582 412w, //theme.hstatic.net/200000065946/1001187274/14/imgaView5.jpg?v=582"
                                              alt="tủ bếp moho">

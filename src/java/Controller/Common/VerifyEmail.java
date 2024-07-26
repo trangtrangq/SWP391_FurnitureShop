@@ -169,9 +169,23 @@ public class VerifyEmail extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+        String email = request.getParameter("email");
+        UserDAO userDAO = new UserDAO();
+        if (userDAO.checkAccount(email) == false) {
+            request.setAttribute("erroremail", "tai khoan email khong dung");
+            processRequest(request, response);
+            request.setAttribute("showemail", "block");
+            request.getRequestDispatcher("Views/HomePage.jsp").forward(request, response);
 
-        
+        } else {
+            Email sendEmail = new Email();
+            sendEmail.sendResetEmail(email);
+            request.setAttribute("sucessemail", "Email chính xác !Vui lòng check mail xác nhận");
+            processRequest(request, response);
+            request.setAttribute("showemail", "block");
+            request.getRequestDispatcher("Views/HomePage.jsp").forward(request, response);
+
+        }
     }
 
 }

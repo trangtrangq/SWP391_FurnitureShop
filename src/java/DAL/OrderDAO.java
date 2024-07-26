@@ -204,11 +204,8 @@ public class OrderDAO extends DBContext {
                 case "Confirmed":
                     conditions.add("status = 'Confirmed'");
                     break;
-                case "Canceled":
-                    conditions.add("status = 'Canceled'");
-                    break;
-                case "Wait":
-                    conditions.add("status = 'Wait'");
+                case "Cancled":
+                    conditions.add("status = 'Cancled'");
                     break;
             }
         }
@@ -433,7 +430,7 @@ public class OrderDAO extends DBContext {
                 + "    d.Date,\n"
                 + "    IFNULL(\n"
                 + "        (COUNT(CASE WHEN o.status = ? THEN 1 END) / NULLIF(COUNT(o.id), 0)) * 100,0)\n"
-                + "  AS rate \n"
+                +  "  AS rate \n"
                 + "FROM\n"
                 + "	DateRange d\n"
                 + "left join\n"
@@ -649,7 +646,7 @@ public class OrderDAO extends DBContext {
 
         return orderStats;
     }
-
+    
     public List<OrderSaleManager> getFilteredOrders(String saleId, String searchValue, String sortBy, String fromDate, String toDate, String[] statusFilters) {
         List<OrderSaleManager> orderList = new ArrayList<>();
 
@@ -732,6 +729,7 @@ public class OrderDAO extends DBContext {
         try {
             PreparedStatement ps = connect.prepareStatement(sql);
             int paramIndex = 1;
+            
 
             if (searchValue != null && searchValue.matches("\\d+")) { // Kiểm tra nếu searchValue là số
                 ps.setString(paramIndex++, searchValue);
@@ -782,7 +780,7 @@ public class OrderDAO extends DBContext {
 
         return orderList;
     }
-
+    
     public int createOrder(Order order) throws SQLException {
         String sql = "INSERT INTO `order` (customer_id , address_id,paymentmethod_id,orderdate, totalcost,status) VALUES (?,?,? , NOW(), ?,?)";
         try (PreparedStatement stmt = connect.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -791,7 +789,7 @@ public class OrderDAO extends DBContext {
             stmt.setInt(3, order.getPaymentMethod_id());
             stmt.setDouble(4, order.getTotalcost());
             stmt.setString(5, order.getStatus());
-
+            
             stmt.executeUpdate();
 
             try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
@@ -803,8 +801,7 @@ public class OrderDAO extends DBContext {
             }
         }
     }
-
-    public void updateOrderSale(int orderId, int sale_id) {
+      public void updateOrderSale(int orderId, int sale_id) {
         String sql = "UPDATE `furniture`.`order`\n"
                 + "SET\n"
                 + "`sale_id` = ?\n"

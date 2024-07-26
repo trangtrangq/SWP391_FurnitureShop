@@ -86,7 +86,6 @@ public class ManageUserServlet extends HttpServlet {
         int roleID = tryParseInt(request.getParameter("roleID"), 0);
         String status = request.getParameter("status");
         UserDAO userDAO = new UserDAO();
-        
         response.setContentType("text/plain");
         response.setCharacterEncoding("UTF-8");
 

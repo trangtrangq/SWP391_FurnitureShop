@@ -30,9 +30,12 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 /**
  *
@@ -100,7 +103,7 @@ public class OrderListServlet extends HttpServlet {
         String fromDate = request.getParameter("fromDate");
         String toDate = request.getParameter("toDate");
         OrderDAO orderDAO = new OrderDAO();
-        ArrayList<Order> orderList = orderDAO.filterOrderList(fromDate, toDate, statusIDStr, customer.getId());
+        ArrayList<Order> orderList = orderDAO.filterOrderList(fromDate, toDate, statusIDStr, 2);
         return orderList;
     }
 
@@ -145,20 +148,20 @@ public class OrderListServlet extends HttpServlet {
         } else {
             for (Order order : orderList) {
                 htmlResponse.append("<div class=\"order-card\" style=\"margin-bottom: 15px\">\n")
-                        .append("    <h3>Mã đơn hàng: #").append(order.getId()).append("</h3>\n")
+                        .append("    <h3>OrderID: #").append(order.getId()).append("</h3>\n")
                         .append("    <div style=\"display: flex; justify-content: flex-end\">\n")
-                        .append("        <h6>Thời gian đặt hàng: ").append(order.getOrderDate()).append("</h6>\n")
+                        .append("        <h6>Order Time: ").append(order.getOrderDate()).append("</h6>\n")
                         .append("    </div>\n")
                         .append("    <div class=\"table-responsive\">\n")
                         .append("        <table class=\"table\">\n")
                         .append("            <thead>\n")
                         .append("                <tr>\n")
-                        .append("                    <th style=\"background-color: white; text-align: center\">Tên khách hàng</th>\n")
-                        .append("                    <th style=\"background-color: white; text-align: center\">Sản phẩm</th>\n")
-                        .append("                    <th style=\"background-color: white; text-align: center\">Tên sản phẩm</th>\n")
-                        .append("                    <th style=\"background-color: white; text-align: center\">Giá sản phẩm</th>\n")
-                        .append("                    <th style=\"background-color: white; text-align: center\">Số lương</th>\n")
-                        .append("                    <th style=\"background-color: white; text-align: center\">Tổng giá</th>\n")
+                        .append("                    <th style=\"background-color: white; text-align: center\">CustomerName</th>\n")
+                        .append("                    <th style=\"background-color: white; text-align: center\">Product</th>\n")
+                        .append("                    <th style=\"background-color: white; text-align: center\">ProductName</th>\n")
+                        .append("                    <th style=\"background-color: white; text-align: center\">Price</th>\n")
+                        .append("                    <th style=\"background-color: white; text-align: center\">Quantity</th>\n")
+                        .append("                    <th style=\"background-color: white; text-align: center\">Total</th>\n")
                         .append("                </tr>\n")
                         .append("            </thead>\n")
                         .append("            <tbody>\n");
@@ -200,11 +203,11 @@ public class OrderListServlet extends HttpServlet {
 
                                                     htmlResponse.append("                    </td>\n")
                                                             .append("                    <td style=\"text-align: center; background-color: white;\">")
-                                                            .append(orderDetail.getPrice()).append("</td>\n")
+                                                            .append(formatCurrency(orderDetail.getPrice())).append("</td>\n")
                                                             .append("                    <td style=\"text-align: center; background-color: white;\">")
                                                             .append(orderDetail.getQuantity()).append("</td>\n")
                                                             .append("                    <td style=\"text-align: center; background-color: white;\">")
-                                                            .append(order.getTotalcost()).append("</td>\n");
+                                                            .append(formatCurrency(order.getTotalcost())).append("</td>\n");
 
                                                     firstProduct = false;
                                                 } else {
@@ -240,7 +243,7 @@ public class OrderListServlet extends HttpServlet {
                         .append("        </table>\n")
                         .append("        <div style=\"display: flex;justify-content: flex-end;\">\n")
                         .append("            <div></div>\n")
-                        .append("            <div><b>TỔNG TIỀN: </b>").append(order.getTotalcost()).append("</div>\n")
+                        .append("            <div><b>Total: </b>").append(formatCurrency(order.getTotalcost())).append("</div>\n")
                         .append("        </div>\n")
                         .append("        <div class=\"button-order\" style=\"display: flex; justify-content: flex-end; margin-top: 10px\">\n");
 
@@ -270,8 +273,9 @@ public class OrderListServlet extends HttpServlet {
                         }
                         break;
                     case "Wait":
-                        htmlResponse.append("                <a href=\"#\" class=\"btn btn-light\" style=\"height: 30px; background-color: pink\">Chưa thanh toán</a>\n");
+                        htmlResponse.append(" <a href=\"#\" class=\"btn btn-light\" style=\"height: 30px; background-color: pink\">Chưa thanh toán</a>\n");
                         break;
+
                     default:
                         statusButton = "<button style=\"width: 80px; height: 30px\" class=\"btn btn-warning\">" + order.getStatus() + "</button>";
                         break;
@@ -384,6 +388,13 @@ public class OrderListServlet extends HttpServlet {
             response.getWriter().print(htmlResponse + "|" + pagePagination);
         }
 
+    }
+    public String formatCurrency(double number) {
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.getDefault());
+        symbols.setGroupingSeparator(',');
+        symbols.setMonetaryDecimalSeparator('.');
+        DecimalFormat decimalFormat = new DecimalFormat("#,##0", symbols);
+        return decimalFormat.format(number) + "₫";
     }
 
 }

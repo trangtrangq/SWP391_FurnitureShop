@@ -4,6 +4,7 @@
  */
 package Controller.Customer;
 
+import Controller.WebSocket.OrderUpdateEndpoint;
 import DAL.ColorDAO;
 import DAL.FeedbackDAO;
 import DAL.OrderDAO;
@@ -25,7 +26,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  *
@@ -85,20 +89,20 @@ public class MyOrderServlet extends HttpServlet {
         } else {
             for (Order order : orderList) {
                 htmlResponse.append("<div class=\"order-card\" style=\"margin-bottom: 30px\">\n")
-                        .append("    <h3>Mã đơn hàng: #").append(order.getId()).append("</h3>\n")
+                        .append("    <h3>OrderID: #").append(order.getId()).append("</h3>\n")
                         .append("    <div style=\"display: flex; justify-content: flex-end\">\n")
-                        .append("        <h6><b>Thời gian đặt hàng: <u>").append(order.getOrderDate()).append("</u></b></h6>\n")
+                        .append("        <h6><b>Order Time: <u>").append(order.getOrderDate()).append("</u></b></h6>\n")
                         .append("    </div>\n")
                         .append("    <div class=\"table-responsive\">\n")
                         .append("        <table class=\"table\">\n")
                         .append("            <thead>\n")
                         .append("                <tr>\n")
-                        .append("                    <th style=\"background-color: white; text-align: center\">Sản phẩm</th>\n")
-                        .append("                    <th style=\"background-color: white; text-align: center\">Tên sản phẩm</th>\n")
-                        .append("                    <th style=\"background-color: white; text-align: center\">Màu sắc</th>\n")
-                        .append("                    <th style=\"background-color: white; text-align: center\">Gía sản phẩm</th>\n")
-                        .append("                    <th style=\"background-color: white; text-align: center\">Số lượng </th>\n")
-                        .append("                    <th style=\"background-color: white; text-align: center\">Tổng giá</th>\n")
+                        .append("                    <th style=\"background-color: white; text-align: center\">Product</th>\n")
+                        .append("                    <th style=\"background-color: white; text-align: center\">ProductName</th>\n")
+                        .append("                    <th style=\"background-color: white; text-align: center\">Color</th>\n")
+                        .append("                    <th style=\"background-color: white; text-align: center\">Price</th>\n")
+                        .append("                    <th style=\"background-color: white; text-align: center\">Quantity</th>\n")
+                        .append("                    <th style=\"background-color: white; text-align: center\">Total</th>\n")
                         .append("                </tr>\n")
                         .append("            </thead>\n")
                         .append("            <tbody>\n");
@@ -128,11 +132,11 @@ public class MyOrderServlet extends HttpServlet {
                                             }
 
                                             htmlResponse.append("                    <td style=\"text-align: center; background-color: white;\">")
-                                                    .append(orderDetail.getPrice()).append("</td>\n")
+                                                    .append(formatCurrency(orderDetail.getPrice())).append("</td>\n")
                                                     .append("                    <td style=\"text-align: center; background-color: white;\">")
                                                     .append(orderDetail.getQuantity()).append("</td>\n")
                                                     .append("                    <td style=\"text-align: center; background-color: white;\">")
-                                                    .append(order.getTotalcost()).append("</td>\n");
+                                                    .append(formatCurrency(order.getTotalcost())).append("</td>\n");
 
                                             firstProduct = false;
                                         } else {
@@ -167,7 +171,7 @@ public class MyOrderServlet extends HttpServlet {
                         .append("        </table>\n")
                         .append("        <div style=\"display: flex;justify-content: flex-end;\">\n")
                         .append("            <div></div>\n")
-                        .append("            <div><b>Tổng tiền: </b>").append(order.getTotalcost()).append("</div>\n")
+                        .append("            <div><b>Total: </b>").append(formatCurrency(order.getTotalcost())).append("</div>\n")
                         .append("        </div>\n")
                         .append("        <div class=\"button-order\" style=\"display: flex; justify-content: flex-end; margin-top: 10px\">\n")
                         .append("            <c:choose>\n");
@@ -257,7 +261,7 @@ public class MyOrderServlet extends HttpServlet {
         } else if ("ConfirmOrder".equals(action)) {
             String id = request.getParameter("order_id");
             // Xử lý hủy đơn hàng
-//            if (id != null) {
+            if (id != null) {
                 int order_id;
                 try {
                     order_id = Integer.parseInt(id);
@@ -268,17 +272,25 @@ public class MyOrderServlet extends HttpServlet {
                 // Ví dụ: cập nhật trạng thái đơn hàng trong cơ sở dữ liệu thành "Cancelled"
                 OrderDAO orderDAO = new OrderDAO();
                 orderDAO.updateOrderStatus(order_id, "Done");
-
+                OrderUpdateEndpoint.sendUpdate("update");
                 // Phản hồi về cho client rằng đã hủy đơn hàng thành công
-//                response.setStatus(HttpServletResponse.SC_OK);
-//                response.getWriter().write("Đã nhận đơn hàng thành công!");
-//            } else {
-//                // Xử lý khi không có order_id được gửi đến
-//                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-//                response.getWriter().write("Lỗi: Không có order_id được gửi đến.");
-//            }
-       }
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.getWriter().write("Đã nhận đơn hàng thành công!");
+            } else {
+                // Xử lý khi không có order_id được gửi đến
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write("Lỗi: Không có order_id được gửi đến.");
+            }
+        }
 
+    }
+
+    public String formatCurrency(double number) {
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.getDefault());
+        symbols.setGroupingSeparator(',');
+        symbols.setMonetaryDecimalSeparator('.');
+        DecimalFormat decimalFormat = new DecimalFormat("#,##0", symbols);
+        return decimalFormat.format(number) + "₫";
     }
 
     /**
