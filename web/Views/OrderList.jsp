@@ -354,7 +354,7 @@
             <div class="main">
                 <%@include file="DashboardHeader.jsp" %>
                 <div class="container" style="margin-top: 20px">
-                    <h2>OrderList</h2>
+                    <h2>Danh sách đơn hàng</h2>
                     <div style="display: flex;
                          justify-content: space-between">
                         <div class="search-container">
@@ -438,7 +438,7 @@
                             <div class="dropdown" style="margin-left: 15px;
                                  width: 160px">
                                 <div class="dropbtn">
-                                    Status
+                                    Trạng thái
                                     <span><i class="fa fa-chevron-down"></i></span>
                                 </div>
                                 <ul class="dropdown-content">

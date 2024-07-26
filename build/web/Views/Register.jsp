@@ -37,11 +37,11 @@
                             <label for="gender">Giới tính</label>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="gender" value="Male" id="genderMale" ${param.gender == 'Male' ? 'checked' : ''} required value="${param.gender}">
-                                <label class="form-check-label" for="genderMale">Male</label>
+                                <label class="form-check-label" for="genderMale">Nam</label>
                             </div>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="gender" value="Female" id="genderFemale" ${param.gender == 'Female' ? 'checked' : ''} required value="${param.gender}">
-                                <label class="form-check-label" for="genderFemale">Female</label>
+                                <label class="form-check-label" for="genderFemale">Nữ</label>
                             </div>
                         </div>
                         <div class="form-group">

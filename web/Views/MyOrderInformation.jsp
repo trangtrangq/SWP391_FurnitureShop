@@ -103,10 +103,10 @@
                                 <c:set var="order" value="${requestScope.order}"/>
                                 <input type="hidden" name="order_id" value="${order.id}">
                                 <div class="me-auto">
-                                    <span><h3>OrderID: #${order.id}</h3></span>
+                                    <span><h3>Mã đơn hàng: #${order.id}</h3></span>
                                 </div>
                                 <div class="ms-auto">
-                                    <span>OrderTime: ${order.orderDate}</span>
+                                    <span>Thời gian đặt hàng: ${order.orderDate}</span>
                                 </div>
                             </div>
                             <table class="table table-borderless">
@@ -158,7 +158,7 @@
                                 </tbody>
                                 <tfoot>
                                     <tr class="fw-bold">
-                                        <td colspan="4" style="text-align: right; padding-right: 50px">TOTAL: ${order.totalcost}</td>
+                                        <td colspan="4" style="text-align: right; padding-right: 50px">TỔNG TIỀN: ${order.totalcost}</td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -176,13 +176,23 @@
                                         <c:forEach items="${userList}" var="user">
                                             <c:if test="${user.id == address.customer_id}">
 
-                                                <h3 class="h6">Thông tin người nhận</h3>
+                                                <h1 class="h6">Thông tin người nhận</h1>
                                                 <address>
-                                                    <strong>Full name: ${address.fullname}</strong><br>
-                                                    Gender: ${user.gender}<br>
+                                                    <strong>Họ và tên: ${address.fullname}</strong><br>
+                                                    Giới tính: <c:choose>
+                                                        <c:when test="${user.gender == 'Male'}">
+                                                            Nam
+                                                        </c:when>
+                                                        <c:when test="${user.gender == 'Female'}">
+                                                            Nữ
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            Không xác định
+                                                        </c:otherwise>
+                                                    </c:choose> <br>
                                                     Email: ${user.email}<br>
-                                                    Phone: ${address.phonenumber}<br>
-                                                    Address: ${address.address}<br>
+                                                    Số điện thoại: ${address.phonenumber}<br>
+                                                    Địa chỉ: ${address.addressdetail}<br>
                                                     <!--                                                        <abbr title="Phone">P:</abbr> (123) 456-7890-->
                                                 </address>
                                                 <div style="display: flex; justify-content: center">

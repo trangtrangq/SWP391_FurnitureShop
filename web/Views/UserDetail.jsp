@@ -40,13 +40,13 @@
                 <%@include file="DashboardHeader.jsp" %>
                 <div class="container" style="margin-top: 20px; margin-bottom: 20px">
                     <section class="section">
-                        <a href="UserListServlet" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Back to list</a>
+                        <a href="UserListServlet" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Quay lại</a>
                         <div class="container-fluid" >
                             <div class="title-wrapper pt-30">
                                 <div class="row align-items-center">
                                     <div class="col-md-10">
                                         <div class="title">
-                                            <h2>User Detail</h2>
+                                            <h2>Thông tin chi tiết người dùng</h2>
                                         </div>
                                     </div>
                                     <div class="col-md-2">
@@ -78,14 +78,24 @@
                                         <hr/>
                                         <div class="col-md-5 row mb-25">
                                             <div class="col-md-4 profile">
-                                                <div><b>User ID:</b></div>
-                                                <div><b>Gender:</b></div>
-                                                <div><b>Role:</b></div>
-                                                <div><b>Status:</b></div>
+                                                <div><b> ID:</b></div>
+                                                <div><b>Giới tính</b></div>
+                                                <div><b>Vai trò:</b></div>
+                                                <div><b>Trạng thái:</b></div>
                                             </div>
                                             <div class="col-md-8 infor profile">
                                                 <div><span>#${user.id}</span></div>
-                                                <div><span>${user.gender}</span></div>
+                                                <div><span><c:choose>
+                                                            <c:when test="${user.gender == 'Male'}">
+                                                                Nam
+                                                            </c:when>
+                                                            <c:when test="${user.gender == 'Female'}">
+                                                                Nữ
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                Không xác định
+                                                            </c:otherwise>
+                                                        </c:choose></span></div>
                                                 <div>
                                                     <span>
                                                         <c:forEach items="${requestScope.userRole}" var="userRole">
@@ -98,10 +108,10 @@
                                         </div>
                                         <div class="col-md-7 row">
                                             <div class="col-md-5 profile">
-                                                <div><b>Full Name:</b></div>
+                                                <div><b>Họ và tên:</b></div>
                                                 <div><b>Email:</b></div>
-                                                <div><b>Address:</b></div>
-                                                <div><b>Phone Number:</b></div>
+                                                <div><b>Địa chỉ</b></div>
+                                                <div><b>Số điện thoại:</b></div>
                                             </div>
                                             <div class="col-md-7 infor profile">
                                                 <div><span>${user.fullname}</span></div>
@@ -129,14 +139,24 @@
                                             <hr/>
                                             <div class="col-md-5 row mb-25">
                                                 <div class="col-md-4 profile">
-                                                    <div><b>User ID:</b></div>
-                                                    <div><b>Gender:</b></div>
-                                                    <div><b>Role:</b></div>
-                                                    <div><b>Status:</b></div>
+                                                    <div><b> ID:</b></div>
+                                                    <div><b>Giới tính</b></div>
+                                                    <div><b>Vai trò:</b></div>
+                                                    <div><b>Trạng thái:</b></div>
                                                 </div>
                                                 <div class="col-md-8 infor profile">
                                                     <div><span>#${user.id}</span></div>
-                                                    <div><span>${user.gender}</span></div>
+                                                    <div><span><c:choose>
+                                                                <c:when test="${user.gender == 'Male'}">
+                                                                    Nam
+                                                                </c:when>
+                                                                <c:when test="${user.gender == 'Female'}">
+                                                                    Nữ
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    Không xác định
+                                                                </c:otherwise>
+                                                            </c:choose></span></div>
                                                     <select name="roleID" style="height: 40px; width: 100%; margin-bottom: 10px; border: groove">
                                                         <c:forEach items="${requestScope.userRole}" var="userRole">
                                                             <option value="${userRole.id}" <c:if test="${user.role_id == userRole.id}">selected</c:if>>${userRole.rolename}</option>
@@ -165,10 +185,10 @@
                                             </div>
                                             <div class="col-md-7 row">
                                                 <div class="col-md-5 profile">
-                                                    <div><b>Full Name:</b></div>
+                                                    <div><b>Họ và tên:</b></div>
                                                     <div><b>Email:</b></div>
-                                                    <div><b>Address:</b></div>
-                                                    <div><b>Phone Number:</b></div>
+                                                    <div><b>Địa chỉ:</b></div>
+                                                    <div><b>Số điện thoại:</b></div>
                                                 </div>
                                                 <div class="col-md-7 infor profile">
                                                     <div><span>${user.fullname}</span></div>
