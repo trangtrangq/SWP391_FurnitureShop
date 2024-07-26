@@ -257,7 +257,7 @@ public class MyOrderServlet extends HttpServlet {
         } else if ("ConfirmOrder".equals(action)) {
             String id = request.getParameter("order_id");
             // Xử lý hủy đơn hàng
-            if (id != null) {
+//            if (id != null) {
                 int order_id;
                 try {
                     order_id = Integer.parseInt(id);
@@ -270,14 +270,14 @@ public class MyOrderServlet extends HttpServlet {
                 orderDAO.updateOrderStatus(order_id, "Done");
 
                 // Phản hồi về cho client rằng đã hủy đơn hàng thành công
-                response.setStatus(HttpServletResponse.SC_OK);
-                response.getWriter().write("Đã nhận đơn hàng thành công!");
-            } else {
-                // Xử lý khi không có order_id được gửi đến
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().write("Lỗi: Không có order_id được gửi đến.");
-            }
-        }
+//                response.setStatus(HttpServletResponse.SC_OK);
+//                response.getWriter().write("Đã nhận đơn hàng thành công!");
+//            } else {
+//                // Xử lý khi không có order_id được gửi đến
+//                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+//                response.getWriter().write("Lỗi: Không có order_id được gửi đến.");
+//            }
+       }
 
     }
 

@@ -4,12 +4,43 @@
  */
 package Controller.Common;
 
+import DAL.BrandDAO;
+import DAL.CategoryDAO;
+import DAL.CategoryOfPostDAO;
+import DAL.ColorDAO;
+import DAL.FeedbackDAO;
+import DAL.OrderDetailDAO;
+import DAL.PageDAO;
+import DAL.PostDAO;
+import DAL.ProductDAO;
+import DAL.ProductDetailDAO;
+import DAL.RoomDAO;
+import DAL.SaleOffDAO;
+import DAL.SliderDAO;
+import DAL.UserDAO;
+import Helper.PaginationHelper;
+import Models.Brand;
+import Models.Category;
+import Models.CategoryOfPost;
+import Models.Color;
+import Models.Feedback;
+import Models.OrderDetail;
+import Models.Page;
+import Models.Post;
+import Models.Product;
+import Models.ProductDetail;
+import Models.Room;
+import Models.SaleOff;
+import Models.Slider;
+import Util.Email;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -28,19 +59,75 @@ public class ResetPasswordServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ResetPasswordServlet</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet ResetPasswordServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+        SliderDAO sliderDAO = new SliderDAO();
+        List<Slider> sliders = sliderDAO.getAllSlidersWith("show");
+        request.setAttribute("listslider", sliders);
+
+        BrandDAO brandDao = new BrandDAO();
+        ArrayList<Brand> brandList = brandDao.getBrandList();
+        request.setAttribute("brandList", brandList);
+
+        RoomDAO roomDAO = new RoomDAO();
+        ArrayList<Room> roomList = roomDAO.getRoomList();
+        request.setAttribute("roomList", roomList);
+
+        PageDAO pageDAO = new PageDAO();
+        ArrayList<Page> pageList = pageDAO.getPageList();
+        request.setAttribute("pageList", pageList);
+
+        CategoryOfPostDAO categoryOfPostDAO = new CategoryOfPostDAO();
+        List<CategoryOfPost> categoryOfPost = categoryOfPostDAO.getCategoryOfPostList();
+        request.setAttribute("categoryOfPostList", categoryOfPost);
+
+        PostDAO postDAO = new PostDAO();
+        ArrayList<Post> postList = postDAO.getPostList();
+        request.setAttribute("postList", postList);
+
+        SaleOffDAO saleOffDAO = new SaleOffDAO();
+        ArrayList<SaleOff> saleOffList = saleOffDAO.getSaleOffList();
+        request.setAttribute("saleOffList", saleOffList);
+
+        FeedbackDAO feedbackDAO = new FeedbackDAO();
+        ArrayList<Feedback> feedbackList = feedbackDAO.getFeedbackList();
+        request.setAttribute("feedbackList", feedbackList);
+
+        OrderDetailDAO orderDetailDAO = new OrderDetailDAO();
+        ArrayList<OrderDetail> orderDetailList = orderDetailDAO.getOrderDetailsList();
+        request.setAttribute("orderDetailList", orderDetailList);
+
+        ProductDetailDAO pddao = new ProductDetailDAO();
+        ArrayList<ProductDetail> productDetailList= pddao.getAllProductDetails();
+        request.setAttribute("productDetailList", productDetailList);
+        
+        CategoryDAO categoryDAO = new CategoryDAO();
+        ArrayList<Category> categoryList = categoryDAO.getCategoryList();
+        request.setAttribute("categoryList", categoryList);
+
+        ColorDAO colorDAO = new ColorDAO();
+        ArrayList<Color> colorList = colorDAO.getColorList();
+        request.setAttribute("colorList", colorList);
+
+        ProductDAO productDAO = new ProductDAO();
+        ArrayList<Product> productList = productDAO.getProductList();
+
+        PaginationHelper<Product> paginationHelper = new PaginationHelper<>(productList, 12);
+
+        int[] pagenumber = paginationHelper.getPageNumbers();
+        request.setAttribute("pagenumber", pagenumber);
+
+        String pageStr = request.getParameter("page");
+        int page = 0;
+
+        if (pageStr != null && !pageStr.isEmpty()) {
+            try {
+                page = Integer.parseInt(pageStr) - 1;
+            } catch (NumberFormatException e) {
+                page = 0; // default to first page if there's an error in parsing
+            }
         }
+
+        ArrayList<Product> paginatedProductList = new ArrayList<>(paginationHelper.getPage(page));
+        request.setAttribute("productList", productList);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -69,19 +156,22 @@ public class ResetPasswordServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       
-        // Xác định hành động cần thực hiện dựa vào giá trị của trường ẩn "action"
-//        String email = request.getParameter("email");
-//        String pass = request.getParameter("pass");
-//        String rePass = request.getParameter("rePass");
-//        if(!pass.equals(rePass)){
-//            request.setAttribute("error", "Mật khẩu không trùng khớp.");
-//            request.getRequestDispatcher("Views/doimatkhau.jsp").forward(request, response);
-//        }else{
-//            CustomerDAO dao = new CustomerDAO();
-//            dao.resetPassword(email, pass);
-//            request.getRequestDispatcher("Views/login.jsp").forward(request, response);
-//        }
+    String email = request.getParameter("email");
+        UserDAO userDAO = new UserDAO();
+        if (userDAO.checkAccount(email) == false) {
+            request.setAttribute("erroremail", "tai khoan email khong dung");
+            processRequest(request, response);
+            request.setAttribute("showemail", "block");
+            request.getRequestDispatcher("Views/HomePage.jsp").forward(request, response);
+
+        } else {
+            Email sendEmail = new Email();
+            sendEmail.sendResetEmail(email);
+            request.setAttribute("sucessemail", "Email chính xác !Vui lòng check mail xác nhận");
+            processRequest(request, response);
+            request.setAttribute("showemail", "block");
+            request.getRequestDispatcher("Views/HomePage.jsp").forward(request, response);
+        }
     }
 
     /**

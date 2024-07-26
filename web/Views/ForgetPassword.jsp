@@ -105,7 +105,7 @@
                         <div class="form-group">
                             <label for="email">Nhập lại mật khẩu</label>
                             <input type="password" id="rePass" name="rePass" required 
-                                   placeholder="Nhập mật khẩu mới của bạn"
+                                   placeholder="Nhập lại mật khẩu mới của bạn"
                                    pattern="(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}"
                                    title="Mật khẩu phải có ít nhất 8 ký tự, bao gồm ít nhất một chữ hoa, một số và một ký tự đặc biệt.">
                         </div>

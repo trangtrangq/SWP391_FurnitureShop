@@ -138,7 +138,7 @@ public class MyOrderInformationServlet extends HttpServlet {
         String id = request.getParameter("order_id");
 
         // Xử lý hủy đơn hàng
-        if (id != null) {
+//        if (id != null) {
             int order_id;
             try {
                 order_id = Integer.parseInt(id);
@@ -154,11 +154,11 @@ public class MyOrderInformationServlet extends HttpServlet {
             // Phản hồi về cho client rằng đã hủy đơn hàng thành công
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write("Đã hủy đơn hàng thành công!");
-        } else {
-            // Xử lý khi không có order_id được gửi đến
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write("Lỗi: Không có order_id được gửi đến.");
-        }
+//        } else {
+//            // Xử lý khi không có order_id được gửi đến
+//            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+//            response.getWriter().write("Lỗi: Không có order_id được gửi đến.");
+//        }
     }
 
     // Giả sử bạn có phương thức để cập nhật trạng thái đơn hàng trong cơ sở dữ liệu

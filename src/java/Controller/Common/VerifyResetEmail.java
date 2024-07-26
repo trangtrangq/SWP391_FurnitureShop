@@ -156,7 +156,7 @@ public class VerifyResetEmail extends HttpServlet {
         String pass = request.getParameter("pass");
         String rePass = request.getParameter("rePass");
         UserDAO userDAO = new UserDAO();
-        String hassPass = userDAO.hashPassword(pass);
+        
         if (!pass.equals(rePass)) {
             request.setAttribute("errorpass", "Mật khẩu không trùng khớp.");
             processRequest(request, response);
@@ -164,7 +164,7 @@ public class VerifyResetEmail extends HttpServlet {
             request.getRequestDispatcher("Views/HomePage.jsp").forward(request, response);
         } else {
             
-            userDAO.resetPassword(email, hassPass);
+            userDAO.resetPassword(email, pass);
             request.setAttribute("sucesspass", "Mật khẩu đã đổi vui lòng nhập mật khẩu mới!");
              processRequest(request, response);
             request.setAttribute("showlogin", "block");

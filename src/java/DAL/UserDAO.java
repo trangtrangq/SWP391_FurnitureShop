@@ -170,10 +170,11 @@ public class UserDAO extends DBContext {
     }
 
     public User login(String email, String password) {
+        String hassPassword = hashPassword(password);
         String query = "SELECT * FROM User WHERE email = ? AND password = ?";
         try (PreparedStatement ps = connect.prepareStatement(query)) {
             ps.setString(1, email);
-            ps.setString(2, password);
+            ps.setString(2, hassPassword);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     User user = new User();
@@ -197,9 +198,10 @@ public class UserDAO extends DBContext {
     }
 
     public void resetPassword(String email, String password) {
+        String hassPassword = hashPassword(password);
         String mysql = "UPDATE `furniture`.`user` SET `password` = ? WHERE `email` = ?";
         try (PreparedStatement statement = connect.prepareStatement(mysql)) {
-            statement.setString(1, password);
+            statement.setString(1, hassPassword);
             statement.setString(2, email);
             statement.executeUpdate();
         } catch (SQLException e) {
