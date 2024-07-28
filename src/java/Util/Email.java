@@ -131,4 +131,76 @@ public class Email {
         } catch (Exception e) {
         }
     }
+    
+    public void sendFeedbackEmail(String receiver, String action) {
+        final String from = "minhtrang12102003@gmail.com";
+        final String password = "qcls znct qyla necu";
+
+        //Properties : khai báo các thuộc tính của email
+        Properties prop = new Properties();
+        prop.put("mail.smtp.host", "smtp.gmail.com");
+        prop.put("mail.smtp.port", "587"); //TLS 587 SSL 465
+        prop.put("mail.smtp.auth", "true");
+        prop.put("mail.smtp.starttls.enable", "true");
+
+        //create Authenticator
+        Authenticator auth = new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(from, password);
+            }
+        };
+        // tạo ra 1 phiên làm việc
+        Session session = Session.getInstance(prop, auth);
+        //Tạo 1 tin nhắn
+        MimeMessage msg = new MimeMessage(session);
+
+        try {
+            msg.setFrom(from);
+            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(receiver));
+
+            String subject = "";
+            String emailContent = "";
+
+            switch (action) {
+                
+                case "orderShipping":
+                    subject = "Your Order is on the Way - Furniture";
+                    emailContent = "<div style=\"text-align: center; padding: 20px;\">"
+                            + "  <h2>Your Order is on the Way!</h2>"
+                            + "  <p>Your order has been shipped and is on its way to you. You can expect delivery soon.</p>"
+                            + "  <p>Thank you for shopping with us!</p>"
+                            + "</div>";
+                    break;
+                case "orderCancellation":
+                    subject = "Order Cancellation - Furniture";
+                    emailContent = "<div style=\"text-align: center; padding: 20px;\">"
+                            + "  <h2>Order Cancellation Notice</h2>"
+                            + "  <p>We regret to inform you that your order has been canceled due to certain issues.</p>"
+                            + "  <p>We apologize for any inconvenience caused and hope to serve you in the future.</p>"
+                            + "</div>";
+                    break;
+                case "feedbackRequest":
+                default:
+                    subject = "Thank You for Your Purchase - Share Your Experience!";
+                    emailContent = "<div style=\"text-align: center; padding: 20px;\">"
+                            + "  <h2>Thank You for Your Purchase!</h2>"
+                            + "  <p>We hope you are enjoying your new product from Furniture.</p>"
+                            + "  <p>We would love to hear about your experience. Please take a moment to share your feedback:</p>"
+                            + "  <a href=\"http://localhost:8080/FurnitureHieu/FeedbackServlet?email=" + receiver + "\" style=\"display: inline-block; padding: 10px 20px; margin: 20px 0; background-color: #337ab7; color: white; text-decoration: none; border-radius: 5px;\">Give Feedback</a>"
+                            + "</div>";
+                    break;
+            }
+
+            msg.setSubject(subject);
+            msg.setContent(emailContent, "text/html");
+
+            Transport.send(msg);
+            System.out.println("Email sent successfully!");
+
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            System.out.println("An error occurred while sending the email.");
+        }
+    }
 }

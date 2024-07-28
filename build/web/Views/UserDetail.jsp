@@ -159,11 +159,9 @@
                                                                 <option value="Offline" selected>Offline</option>
                                                                 <option value="Block">Block</option>
                                                             </c:otherwise>
-                                                            <<<<<<< Upstream, based on origin/Main
+                                                            
                                                         </c:choose> 
-                                                        =======
-                                                    </c:choose>
-                                                    >>>>>>> 6d31c2b Chỉnh sửa trạng thái của User từ Active thành Online và InActive thành Offline ở các trang UserList.jsp, Login.jsp, Register.jsp, UserDetail.jsp, UserListServlet, LoginServlet, LogoutServlet Chỉnh sửa validate lại các trang Login.jsp, Register.jsp, ResetPassword.jsp, UserList.jsp  Chỉnh sửa hàm Update của UserList ở UserDAO, Chỉnh sửa lại trạng thái của order ở MyOrderServlet, thêm trạng thái Wait,  Chỉnh sửa lại trạng thái ở ComparatorHelper từ Cancel thành Canceled
+                                                        
                                                 </select>
                                             </div>
                                         </div>

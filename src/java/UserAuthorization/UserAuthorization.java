@@ -144,7 +144,8 @@ public class UserAuthorization implements Filter {
                     || uri1.equals("ProductSearchServlet") || uri1.equals("RegisterServlet")
                     || uri1.equals("ProductDetailServlet") || uri1.equals("LoginServlet")
                     || uri1.equals("PageServlet") || uri1.equals("AboutUsServlet")
-                    || uri1.equals("FurnitureHieu") || uri1.equals("ResetPasswordServlet")||uri1.equals("OrderStatus")) {
+                    || uri1.equals("FurnitureHieu") || uri1.equals("ResetPasswordServlet")
+                    ||uri1.equals("OrderStatus") || uri1.equals("VerifyResetEmail")) {
             } else {
                 httpServletResponse.sendRedirect("HomePage?action=showLoginForm");
             }

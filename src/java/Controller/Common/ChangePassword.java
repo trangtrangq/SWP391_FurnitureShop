@@ -19,7 +19,7 @@ public class ChangePassword extends HttpServlet {
 
         JsonObject jsonResponse = new JsonObject();
 
-        if (!oldpass.equals(u.getPassword())) {
+        if (!hassPass.equals(u.getPassword())) {
             jsonResponse.addProperty("status", "error");
             jsonResponse.addProperty("message", "Mật khẩu cũ không đúng");
         } else if (!newpass.equals(renewpass)) {
@@ -29,7 +29,11 @@ public class ChangePassword extends HttpServlet {
             jsonResponse.addProperty("status", "error");
             jsonResponse.addProperty("message", "Mật khẩu mới không được trùng với mật khẩu cũ");
         } else {
-            userDAO.changePass(String.valueOf(u.getId()), newpass);
+            userDAO = new UserDAO();
+            newpass = userDAO.hashPassword(newpass);
+            UserDAO dao = new UserDAO();
+            dao.changePass(String.valueOf(u.getId()), newpass);
+            
             session.removeAttribute("customer");
             jsonResponse.addProperty("status", "success");
             jsonResponse.addProperty("message", "Thay đổi mật khẩu thành công.Vui lòng đăng nhập lại!");

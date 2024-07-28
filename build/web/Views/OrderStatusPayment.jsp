@@ -9,7 +9,6 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="css/style.css">
         <title>Product List</title>
-        <link rel="icon" href="image/logoshop.png" type="image/png">
         <style>
             .product-image1 {
                 width: 80px;
@@ -57,7 +56,10 @@
             <div class="text-center">
                 <c:choose>
                     <c:when test="${vnp_TransactionStatus eq 'Thất Bại'}">
-                        <a href="${pageContext.request.contextPath}/CartContact" class="btn btn-danger">Trở Lại Thanh Toán</a>
+                        <a href="#" class="btn btn-danger" id="orderformButton">Trở Lại Thanh Toán</a>
+                        <form id="orderagain" action="${pageContext.request.contextPath}/AddToOrder" method="post" style="display: none;">
+                            <input type="hidden" name="orderid" value="${vnp_TxnRef}">
+                        </form>
                     </c:when>
                     <c:otherwise>
                         <a href="${pageContext.request.contextPath}/HomePage" class="btn btn-success">Trang Chủ</a>
@@ -66,8 +68,55 @@
                 <a href="${pageContext.request.contextPath}/MyOrderInformationServlet?id=${vnp_TxnRef}" class="btn btn-info">Chi Tiết Đơn Hàng</a>
             </div>
         </div>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <%@ include file="HomeFooter.jsp" %>
+        <script>
+            $(document).ready(function () {
+                $('#orderformButton').click(function (event) {
+                    event.preventDefault(); // Ngăn chặn hành động mặc định của nút nếu cần
+                    console.log('dmmmmmmm');
 
-                <%@ include file="HomeFooter.jsp" %>
+                    var form = $('#orderagain'); // Chọn form bằng jQuery và lấy DOM element
+                    var postData = form.serialize();
+                    var submitUrl = $(form).attr('action');
+
+                    $.ajax({
+                        type: 'POST',
+                        url: submitUrl,
+                        data: postData,
+                        // Ngăn jQuery xử lý dữ liệu FormData
+                        success: function (response) {
+                            try {
+                                // Nếu dữ liệu được gửi dưới dạng chuỗi JSON
+                                var parsedResponse = JSON.parse(response);
+                                console.log(parsedResponse.code); // Kiểm tra mã
+                                console.log(parsedResponse.data); // Kiểm tra dữ liệu
+
+                                if (parsedResponse.code === '00') {
+                                    if (window.vnpay) {
+                                        vnpay.open({width: 768, height: 600, url: parsedResponse.data});
+                                    } else {
+                                        location.href = parsedResponse.data;
+                                    }
+                                } else {
+                                    alert(parsedResponse.message); // Hiển thị thông báo
+                                }
+                            } catch (e) {
+                                console.error('Lỗi khi phân tích cú pháp phản hồi:', e);
+                            }
+                        },
+                        error: function () {
+                            // Xử lý lỗi ở đây
+                            alert('Có lỗi xảy ra khi gửi yêu cầu.');
+                        }
+                    });
+
+                });
+            });
+
+        </script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 
