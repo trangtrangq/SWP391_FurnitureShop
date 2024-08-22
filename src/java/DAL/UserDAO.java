@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +35,6 @@ public class UserDAO extends DBContext {
 //            System.out.println(user.getFullname());
 //        }
 //    }
-    
-    
     public ArrayList<User> getUserList() {
         ArrayList<User> userList = new ArrayList<>();
         String sql = "SELECT * FROM User";
@@ -261,7 +260,7 @@ public class UserDAO extends DBContext {
             LOGGER.log(Level.SEVERE, "Error inserting customer", e);
         }
     }
-    
+
     public User getUserByID(int id) {
         User user = new User();
         String query = "SELECT * FROM user WHERE id = ?";
@@ -288,7 +287,6 @@ public class UserDAO extends DBContext {
         return user;
     }
 
-   
     public String update(String fullname, String gender, String avatar, String phonenumber, String address, int uid) {
         String sql = "UPDATE User SET fullname = ?, gender = ?, avatar = ?, phonenumber = ?, address = ? WHERE id = ?";
         try (PreparedStatement stm = connect.prepareStatement(sql)) {
@@ -430,16 +428,15 @@ public class UserDAO extends DBContext {
                 + "?,\n"
                 + "?,\n"
                 + "1,\n"
-                + "'active')";
+                + "'Offline')";
         // Kiểm tra tên 0 ki tu
         if (name.isBlank()) {
             return false;
         }
         // Tên k chứa kt đặc biệt
-        if(!name.matches("^[\\p{L}\\s]+$")){
+        if (!name.matches("^[\\p{L}\\s]+$")) {
             return false;
         }
-                
 
         // Kiểm tra địa chỉ 0 kí tự
         if (name.isBlank()) {
@@ -477,7 +474,7 @@ public class UserDAO extends DBContext {
         if (!phone.matches(phoneRegex)) {
             return false;
         }
-        
+
         if (checkAccount(email)) {
             return false;
         }
@@ -498,17 +495,16 @@ public class UserDAO extends DBContext {
         return false;
     }
 
-     //update account cua khach hang(mkt)
+    //update account cua khach hang(mkt)
     public boolean updateCustomer(String id, String name, String gender, String phone, String add, String email) {
         // Kiểm tra tên 0 ki tu
         if (name.isBlank()) {
             return false;
         }
         // Tên k chứa kt đặc biệt
-        if(!name.matches("^[\\p{L}\\s]+$")){
+        if (!name.matches("^[\\p{L}\\s]+$")) {
             return false;
         }
-                
 
         // Kiểm tra địa chỉ 0 kí tự
         if (name.isBlank()) {
@@ -649,7 +645,7 @@ public class UserDAO extends DBContext {
             e.printStackTrace();
         }
     }
-    
+
     public String getUserNameByID(int id) {
         String query = "SELECT fullname FROM user WHERE id = ?";
         try (PreparedStatement ps = connect.prepareStatement(query)) {
@@ -664,7 +660,7 @@ public class UserDAO extends DBContext {
         }
         return null;
     }
-    
+
     public User getUserById1(int uid) {
         try (PreparedStatement stm = connect.prepareStatement("SELECT * FROM user WHERE id = ?")) {
             stm.setInt(1, uid);
@@ -677,19 +673,19 @@ public class UserDAO extends DBContext {
         }
         return null;
     }
-    
-    public boolean UpdateUser( int role_id, String status, int id) {
-        if (role_id == 5) {
-        System.out.println("Update not allowed for role_id 5");
-        return false;
-    }
+
+    public boolean UpdateUser(int role_id, String status, int id) {
+        if (role_id == 5 && status.equals("Block")) {
+            System.out.println("Update not allowed for role_id 5");
+            return false;
+        }
         String sql = "UPDATE `furniture`.`user`\n"
-                + "SET\n"                
+                + "SET\n"
                 + "`role_id` = ?, "
                 + "`status` = ? "
                 + "WHERE `id` = ? ";
         try (PreparedStatement preparedStatement = connect.prepareStatement(sql)) {
-            
+
             preparedStatement.setInt(1, role_id);
             preparedStatement.setString(2, status);
             preparedStatement.setInt(3, id);
@@ -700,7 +696,7 @@ public class UserDAO extends DBContext {
             return false;
         }
     }
-    
+
     public ArrayList<User> searchUserList(String search) {
         ArrayList<User> userList = new ArrayList<>();
         String mysql = "SELECT `user`.`id`,\n"
@@ -720,7 +716,7 @@ public class UserDAO extends DBContext {
             statement.setString(2, search);
             statement.setString(3, search);
             try (ResultSet rs = statement.executeQuery()) {
-                
+
                 while (rs.next()) {
                     User user = new User();
                     user.setId(rs.getInt("id"));
@@ -743,7 +739,7 @@ public class UserDAO extends DBContext {
         }
         return userList;
     }
-    
+
     private void appendPlaceholders(StringBuilder sql, int count) {
         for (int i = 0; i < count; i++) {
             sql.append("?");
@@ -823,7 +819,7 @@ public class UserDAO extends DBContext {
 
         return userList;
     }
-    
+
     //đếm số lượng khách hàng trong khoảng thời gian 
     public int getCustomerCounts(java.sql.Date startDate, java.sql.Date endDate) {
         String sql = "select count(*) from user where CreateDate \n"
@@ -953,8 +949,9 @@ public class UserDAO extends DBContext {
 
         return count;
     }
+
     public List<User> getListSale() {
-        String sql = "SELECT * from User where role_id= 2 AND status= 'Active'";
+        String sql = "SELECT * from User where role_id= 2 AND status= 'Online'";
         List<User> list = new ArrayList<>();
         try {
             PreparedStatement statement = connect.prepareStatement(sql);
@@ -981,7 +978,7 @@ public class UserDAO extends DBContext {
     }
 
     public List<User> getListSale(String apartofname) {
-        String sql = "SELECT * from User where role_id= 2 AND status= 'Active' AND fullname LIKE ?";
+        String sql = "SELECT * from User where role_id= 2 AND status= 'Online' AND fullname LIKE ?";
         List<User> list = new ArrayList<>();
         try {
             PreparedStatement statement = connect.prepareStatement(sql);
@@ -1007,14 +1004,14 @@ public class UserDAO extends DBContext {
         return list;
     }
 
-     public String hashPassword(String password) {
+    public String hashPassword(String password) {
         try {
             // Tạo đối tượng MessageDigest với thuật toán SHA-256
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            
+
             // Băm mật khẩu và chuyển đổi thành mảng byte
             byte[] hashBytes = digest.digest(password.getBytes());
-            
+
             // Chuyển đổi mảng byte thành chuỗi mã hóa Hex
             StringBuilder hexString = new StringBuilder();
             for (byte b : hashBytes) {
@@ -1025,7 +1022,7 @@ public class UserDAO extends DBContext {
                 }
                 hexString.append(hex);
             }
-            
+
             // Trả về chuỗi mã hóa Hex
             return hexString.toString();
         } catch (NoSuchAlgorithmException e) {
@@ -1033,9 +1030,134 @@ public class UserDAO extends DBContext {
             throw new RuntimeException("Error hashing password", e);
         }
     }
-    
+
+    public String generateToken(User user) {
+        String timestamp = Long.toString(new Date().getTime());
+        String data = "" + user.getEmail() + user.getPassword() + timestamp;
+        String token = hashPassword(data);
+        String sql = "UPDATE user SET token = ? WHERE id = ?";
+        try (PreparedStatement statement = connect.prepareStatement(sql)) {
+            statement.setString(1, token);
+            statement.setInt(2, user.getId());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error updating token in database", e);
+        }
+        return token;
+    }
+
+    public User checkToken(String token) {
+        User u = null; // Khởi tạo với null để kiểm tra nếu không có người dùng
+        String sql = "SELECT * FROM user WHERE token = ?";
+
+        try (PreparedStatement statement = connect.prepareStatement(sql)) {
+            // Thiết lập tham số cho câu lệnh SQL
+            statement.setString(1, token);
+
+            // Thực thi câu lệnh và lấy kết quả
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    // Nếu có kết quả, khởi tạo đối tượng User và thiết lập các thuộc tính
+                    u = new User();
+                    u.setId(rs.getInt("id"));
+                    u.setFullname(rs.getString("fullname"));
+                    u.setGender(rs.getString("gender"));
+                    u.setAvatar(rs.getString("avatar"));
+                    u.setPhonenumber(rs.getString("phonenumber"));
+                    u.setAddress(rs.getString("address"));
+                    u.setEmail(rs.getString("email"));
+                    u.setPassword(rs.getString("password"));
+                    u.setRole_id(rs.getInt("role_id"));
+                    u.setStatus(rs.getString("status"));
+                }
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error retrieving user by token", ex);
+        }
+        return u;
+    }
+
+    public void logOut(User user) {
+        String sql = "UPDATE user SET token = ? WHERE id = ?";
+        try (PreparedStatement statement = connect.prepareStatement(sql)) {
+            statement.setString(1, null);
+            statement.setInt(2, user.getId());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error updating token in database", e);
+        }
+    }
+
+    public ArrayList<User> getShipperList() {
+        String sql = "SELECT * FROM User WHERE role_id = 6";
+        ArrayList<User> list = new ArrayList<>();
+        try (
+                PreparedStatement statement = connect.prepareStatement(sql); ResultSet rs = statement.executeQuery()) {
+
+            while (rs.next()) {
+                User u = new User();
+                u.setId(rs.getInt("id"));
+                u.setFullname(rs.getString("fullname"));
+                u.setGender(rs.getString("gender"));
+                u.setAvatar(rs.getString("avatar"));
+                u.setPhonenumber(rs.getString("phonenumber"));
+                u.setAddress(rs.getString("address"));
+                u.setEmail(rs.getString("email"));
+                u.setPassword(rs.getString("password"));
+                u.setRole_id(rs.getInt("role_id"));
+                u.setStatus(rs.getString("status"));
+                list.add(u);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+
+    public int getidsale() {
+        String sql = "SELECT u.id, u.fullname, COUNT(o.id) AS order_count\n"
+                + "FROM user u\n"
+                + "LEFT JOIN `order` o ON u.id = o.sale_id\n"
+                + "WHERE u.role_id = (SELECT id FROM userrole WHERE rolename = 'Sale') AND u.status IN('Online','Offline') -- Assuming 'Sale' is the role for salespeople\n"
+                + "GROUP BY u.id, u.fullname\n"
+                + "ORDER BY order_count ASC, u.id ASC\n"
+                + "LIMIT 1;";
+        try {
+            PreparedStatement statement = connect.prepareStatement(sql);
+
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+
+                return rs.getInt("id");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
+    public User findSale(int order_id) {
+        String sql = "SELECT sale_id FROM `order` WHERE id = ?";
+        int sale_id = 0;
+        try (PreparedStatement pstmt = connect.prepareStatement(sql)) {
+            pstmt.setInt(1, order_id);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    sale_id = rs.getInt("sale_id");
+                }
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error retrieving sale_id from order.", ex);
+        }
+
+        UserDAO userDAO = new UserDAO();
+        return userDAO.getUserByID(sale_id);
+    }
+
     public static void main(String[] args) {
         UserDAO u = new UserDAO();
-        System.out.println(u.hashPassword("123456"));
+        int sale = u.getidsale();
+        System.out.println(sale);
+
     }
 }

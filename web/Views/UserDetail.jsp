@@ -159,92 +159,95 @@
                                                                 <option value="Offline" selected>Offline</option>
                                                                 <option value="Block">Block</option>
                                                             </c:otherwise>
-                                                            
+
                                                         </c:choose> 
-                                                        
-                                                </select>
+                                                        <c:if test="${user.role_id != 1}">
+                                                            <option value="On leave" <c:if test="${user.status == 'On leave'}">selected</c:if>>On leave</option>
+                                                        </c:if>
+
+                                                    </select>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-7 row">
-                                            <div class="col-md-5 profile">
-                                                <div><b>Full Name:</b></div>
-                                                <div><b>Email:</b></div>
-                                                <div><b>Address:</b></div>
-                                                <div><b>Phone Number:</b></div>
+                                            <div class="col-md-7 row">
+                                                <div class="col-md-5 profile">
+                                                    <div><b>Full Name:</b></div>
+                                                    <div><b>Email:</b></div>
+                                                    <div><b>Address:</b></div>
+                                                    <div><b>Phone Number:</b></div>
+                                                </div>
+                                                <div class="col-md-7 infor profile">
+                                                    <div><span>${user.fullname}</span></div>
+                                                    <div><span>${user.email}</span></div>
+                                                    <div><span>${user.address}</span></div>
+                                                    <div><span>${user.phonenumber}</span></div>
+                                                </div>
                                             </div>
-                                            <div class="col-md-7 infor profile">
-                                                <div><span>${user.fullname}</span></div>
-                                                <div><span>${user.email}</span></div>
-                                                <div><span>${user.address}</span></div>
-                                                <div><span>${user.phonenumber}</span></div>
+                                            <div style="display: flex; justify-content: center; margin-top: 5px; margin-bottom: 15px">
+                                                <div>
+                                                    <button id="cancel-button" type="button" class="btn btn-warning" style="margin-right: 50px">Cancel</button>
+                                                    <button type="submit" class="btn btn-primary">Update</button>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div style="display: flex; justify-content: center; margin-top: 5px; margin-bottom: 15px">
-                                            <div>
-                                                <button id="cancel-button" type="button" class="btn btn-warning" style="margin-right: 50px">Cancel</button>
-                                                <button type="submit" class="btn btn-primary">Update</button>
-                                            </div>
-                                        </div>
-                                    </div>  
-                                </div>                    
-                            </form>
+                                        </div>  
+                                    </div>                    
+                                </form>
+                            </div>
                         </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+
+        <!--Modal Delete--> 
+        <div class="modal fade" id="deleteProductModal" tabindex="-1" aria-labelledby="deleteProductModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteProductModalLabel">Confirm Delete</h5>
+                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                     </div>
-                </section>
-            </div>
-        </div>
-    </div>
-
-
-    <!--Modal Delete--> 
-    <div class="modal fade" id="deleteProductModal" tabindex="-1" aria-labelledby="deleteProductModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteProductModalLabel">Confirm Delete</h5>
-                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Are you sure you want to delete this product ?</p>
-                    <form id="deleteProductForm" action="ManageProductServlet" method="post">
-                        <input type="hidden" name="action" value="deleteProduct">
-                        <input type="hidden" name="deleteProductId" id="deleteProductId" value="${product.id}">
-                        <div class="d-flex justify-content-center">
-                            <button type="submit" class="btn btn-danger mx-2" style="width: 70px;">Yes</button>
-                            <button type="button" class="btn btn-secondary mx-2" data-bs-dismiss="modal" style="width: 70px;">No</button>
-                        </div>
-                    </form>
+                    <div class="modal-body">
+                        <p>Are you sure you want to delete this product ?</p>
+                        <form id="deleteProductForm" action="ManageProductServlet" method="post">
+                            <input type="hidden" name="action" value="deleteProduct">
+                            <input type="hidden" name="deleteProductId" id="deleteProductId" value="${product.id}">
+                            <div class="d-flex justify-content-center">
+                                <button type="submit" class="btn btn-danger mx-2" style="width: 70px;">Yes</button>
+                                <button type="button" class="btn btn-secondary mx-2" data-bs-dismiss="modal" style="width: 70px;">No</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <%@include file="DashboardFooter.jsp" %>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
-    <script>
-        function previewImage(event, imageId) {
-            var input = event.target;
-            var reader = new FileReader();
-            reader.onload = function () {
-                var dataURL = reader.result;
-                var image = document.getElementById(imageId);
-                image.src = dataURL;
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
-    </script>
-    <script>
+        <%@include file="DashboardFooter.jsp" %>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
+        <script>
+            function previewImage(event, imageId) {
+                var input = event.target;
+                var reader = new FileReader();
+                reader.onload = function () {
+                    var dataURL = reader.result;
+                    var image = document.getElementById(imageId);
+                    image.src = dataURL;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        </script>
+        <script>
 
-        $(document).ready(function () {
-            $('#cancel-button').click(function () {
-                $('#edit-container').hide();
-                $('#user-container').show();
+            $(document).ready(function () {
+                $('#cancel-button').click(function () {
+                    $('#edit-container').hide();
+                    $('#user-container').show();
+                });
+                $('#edit-button').click(function () {
+                    $('#user-container').hide();
+                    $('#edit-container').show();
+                });
             });
-            $('#edit-button').click(function () {
-                $('#user-container').hide();
-                $('#edit-container').show();
-            });
-        });
-    </script>
-</body>
+        </script>
+    </body>
 </html>

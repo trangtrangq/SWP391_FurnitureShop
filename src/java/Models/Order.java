@@ -20,6 +20,9 @@ public class Order {
     private double totalcost;
     private LocalDateTime orderDate;
     private String status;
+    
+    private int shipper_id;
+    private String note;
 
     public Order() {
     }
@@ -106,6 +109,22 @@ public class Order {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public int getShipper_id() {
+        return shipper_id;
+    }
+
+    public void setShipper_id(int shipper_id) {
+        this.shipper_id = shipper_id;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
     
     

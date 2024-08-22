@@ -6,6 +6,7 @@
 package Controller.Sale;
 
 import DAL.OrderDAO;
+import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -22,20 +23,19 @@ public class SaleAssignOrder extends HttpServlet {
    
     
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-       String orderID= request.getParameter("selectedOrderId");
-       String saleID= request.getParameter("selectedSaleId");
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String orderID = request.getParameter("selectedOrderId");
+        String saleID = request.getParameter("selectedSaleId");
         OrderDAO orderDAO = new OrderDAO();
         try {
-         orderDAO.updateOrderSale(Integer.parseInt(orderID), Integer.parseInt(saleID));   
+            orderDAO.updateOrderSale(Integer.parseInt(orderID), Integer.parseInt(saleID));
         } catch (NumberFormatException e) {
         }
-        
-        response.sendRedirect("AssignToSale");
-    } 
-
-    
-   
-
+        JsonObject jsonObject= new JsonObject();
+        jsonObject.addProperty("res", "true");
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(jsonObject.toString());
+    }
 }

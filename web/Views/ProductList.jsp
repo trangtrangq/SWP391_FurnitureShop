@@ -165,7 +165,6 @@
                                                 itemprop="name">Trang chủ</span></a>
                                         <meta itemprop="position" content="1" />
                                     </li>
-
                                     <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
                                         <a href="ProductServlet" target="_self">
                                             <span itemprop="item" content="https://moho.com.vn/collections/all"><span
@@ -173,8 +172,6 @@
                                         </a>
                                         <meta itemprop="position" content="2" />
                                     </li>
-
-
                                     <li class="active" itemprop="itemListElement" itemscope
                                         itemtype="http://schema.org/ListItem">
                                         <span itemprop="item"
@@ -182,9 +179,6 @@
                                                 itemprop="name">Tất cả sản phẩm Furniture</span></span>
                                         <meta itemprop="position" content="3" />
                                     </li>
-
-
-
                                 </ol>
                             </div>
                         </div>

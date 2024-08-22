@@ -33,11 +33,11 @@ import Models.Slider;
 import Models.User;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -123,8 +123,16 @@ public class LoginServlet extends HttpServlet {
             request.setAttribute("email", email);
             request.setAttribute("password", password);
             userDAO.UpdateUser(customer.getRole_id(), "Online", customer.getId());
+            String token = userDAO.generateToken(customer);
+            Cookie tokenCookie = new Cookie("authToken", token);
+            tokenCookie.setHttpOnly(true); // Ngăn JavaScript truy cập
+            tokenCookie.setSecure(true); // Chỉ gửi qua HTTPS
+            tokenCookie.setPath("/"); // Cookie có hiệu lực cho toàn bộ ứng dụng
+            tokenCookie.setMaxAge(60 * 60 * 24 * 10); // Cookie hết hạn sau 10 ngày
+            response.addCookie(tokenCookie);
+            
             response.sendRedirect("HomePage");
-            OrderUpdateEndpoint.sendUpdate("aaa");
+            OrderUpdateEndpoint.sendUpdate("login");
         }else if(customer != null && "Block".equals(customer.getStatus())){
             processRequest(request, response);
             request.setAttribute("showlogin", "block");

@@ -127,7 +127,7 @@
 
         <div class="container">
             <span><b style="font-size: 30px">Đánh giá: </b></span>
-            <div class="rating-menu">
+            <div class="rating-menu" style="margin-left: 5px">
                 <div class="rating-item">
                     <a href="javascript:void(0);" class="nav-link" onclick="showFeedbackSection('feedback-all')">
                         <span class="stars">Tất cả</span> ${numOfFive + numOfFour + numOfThree + numOfTwo + numOfOne} đánh giá
@@ -169,7 +169,7 @@
                             <c:forEach items="${requestScope.userList}" var="user">
                                 <c:if test="${feedbackProduct.customer_id == user.id}">
                                     <div>
-                                        <div style="margin: 10px; border: groove; border-radius: 10px;">
+                                        <div style="margin: 10px; border: groove;">
                                             <div style="margin: 10px">
                                                 <div class="d-flex" style="justify-content: space-between">
                                                     <b style="font-size: 15px">${user.fullname}</b>
@@ -219,7 +219,7 @@
                                 <c:forEach items="${requestScope.userList}" var="user">
                                     <c:if test="${feedbackProduct.customer_id == user.id}">
                                         <div>
-                                            <div style="margin: 10px; border: solid; border-radius: 10px;">
+                                            <div style="margin: 10px; border: solid;">
                                                 <div style="margin: 10px">
                                                     <div class="d-flex" style="justify-content: space-between">
                                                         <b style="font-size: 15px">${user.fullname}</b>
@@ -270,7 +270,7 @@
                                 <c:forEach items="${requestScope.userList}" var="user">
                                     <c:if test="${feedbackProduct.customer_id == user.id}">
                                         <div>
-                                            <div style="margin: 10px; border: solid; border-radius: 10px;">
+                                            <div style="margin: 10px; border: solid;">
                                                 <div style="margin: 10px">
                                                     <div class="d-flex" style="justify-content: space-between">
                                                         <b style="font-size: 15px">${user.fullname}</b>
@@ -321,7 +321,7 @@
                                 <c:forEach items="${requestScope.userList}" var="user">
                                     <c:if test="${feedbackProduct.customer_id == user.id}">
                                         <div>
-                                            <div style="margin: 10px; border: solid; border-radius: 10px;">
+                                            <div style="margin: 10px; border: solid;">
                                                 <div style="margin: 10px">
                                                     <div class="d-flex" style="justify-content: space-between">
                                                         <b style="font-size: 15px">${user.fullname}</b>
@@ -372,7 +372,7 @@
                                 <c:forEach items="${requestScope.userList}" var="user">
                                     <c:if test="${feedbackProduct.customer_id == user.id}">
                                         <div>
-                                            <div style="margin: 10px; border: solid; border-radius: 10px;">
+                                            <div style="margin: 10px; border: solid;">
                                                 <div style="margin: 10px">
                                                     <div class="d-flex" style="justify-content: space-between">
                                                         <b style="font-size: 15px">${user.fullname}</b>

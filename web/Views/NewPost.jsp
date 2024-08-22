@@ -39,8 +39,15 @@
             <%@include file="DashboardNavbar.jsp" %>
             <div class="main">
                <%@include file="DashboardHeader.jsp" %>
-                <div class="container" style="margin-top: 20px">
-                    <h1 class="mb-4 text-center">Tạo bài viết mới</h1>
+                <div class="container card" style="margin-top: 20px">
+                    <div>
+                        <a class="btn btn-secondary btn-sm edit-btn mt-3"
+                           style="width:auto" href="PostsList">
+                            Trở lại
+                        </a>
+                    </div>
+                    
+                    <h1 class="mb-4 text-center mt-3">Tạo bài viết mới</h1>
 
                     <form id="postForm" action="NewPost" method="post" enctype="multipart/form-data">
                         <div class="form-group row">

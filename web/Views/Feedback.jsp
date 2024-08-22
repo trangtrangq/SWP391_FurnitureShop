@@ -72,7 +72,7 @@
                                             <div class="form-group" style="display: flex">
                                                 <label><b>Chất lượng sản phẩm: </b></label>
                                                 <div class="feedback-rating" style="margin-left: 15px">
-                                                    <input type="radio" id="star5_${countProduct}" name="rating_${countProduct}" value="5"><label for="star5_${countProduct}">★</label>
+                                                    <input type="radio" id="star5_${countProduct}" name="rating_${countProduct}" value="5" checked><label for="star5_${countProduct}">★</label>
                                                     <input type="radio" id="star4_${countProduct}" name="rating_${countProduct}" value="4"><label for="star4_${countProduct}">★</label>
                                                     <input type="radio" id="star3_${countProduct}" name="rating_${countProduct}" value="3"><label for="star3_${countProduct}">★</label>
                                                     <input type="radio" id="star2_${countProduct}" name="rating_${countProduct}" value="2"><label for="star2_${countProduct}">★</label>
@@ -94,7 +94,10 @@
                         </c:if>
                     </c:forEach>
                 </c:forEach>
-                <div style="display: flex; justify-content: center"><button class="btn btn-warning" type="submit">Send Feedback</button></div>
+                <div style="display: flex; justify-content: center">
+                    <button class="btn btn-warning" type="submit">Gửi đánh giá</button>
+                    <button style="margin-left: 10px;" onclick="returns(${order.id})" class="btn btn-danger" type="button">Hủy</button>
+                </div>
             </form>
         </div>
         <script>
@@ -110,7 +113,13 @@
 
                     files.forEach(file => {
                         const reader = new FileReader();
-
+                        if (!file.type.startsWith('image/')) {
+                            alert('Chỉ được phép chọn tệp hình ảnh.');
+                            input.value = '';  // Xóa giá trị của input nếu không phải hình ảnh
+                            imageContainer.innerHTML = '';  // Xóa container ảnh
+                            fileCountInput.value = '0';  // Đặt lại giá trị của file count
+                            return;
+                        }
                         reader.onload = function (e) {
                             const colDiv = document.createElement('div');
                             colDiv.className = 'col-md-3';
@@ -126,6 +135,10 @@
                         reader.readAsDataURL(file);
                     });
                 }
+            }
+            function returns(id) {
+                window.location.href = "http://localhost:8080/FurnitureHieu/MyOrderInformationServlet?id=" + id;
+                console.log(id);
             }
         </script>
 

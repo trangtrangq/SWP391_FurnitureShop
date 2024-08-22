@@ -48,8 +48,8 @@
                                     <div class="post-image fade-box">
                                         <a href="${pageContext.request.contextPath}/blogdetail?id=${post.id}" title="${post.title}">
                                             <picture>
-                                                <source srcset="${post.thumbnail}" media="(max-width: 500px)" />
-                                                <source srcset="${post.thumbnail}" />
+                                                <source srcset="image/post/${post.thumbnail}" media="(max-width: 500px)" />
+                                                <source srcset="image/post/${post.thumbnail}" />
                                                 <img loading="lazy" decoding="async" src="image/post/${post.thumbnail}" alt="${post.title}" />
                                             </picture>
                                         </a>

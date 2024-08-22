@@ -236,6 +236,7 @@ public class ProductListMKTServlet extends HttpServlet {
             throws ServletException, IOException {
         ProductDAO productDAO = new ProductDAO();
         ArrayList<Product> productList = productDAO.getProductListByMarketing();
+        request.setAttribute("productListAdd", productList);
         
         HttpSession session = request.getSession();
         String action = request.getParameter("action");

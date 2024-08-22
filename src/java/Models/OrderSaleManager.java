@@ -17,26 +17,24 @@ public class OrderSaleManager {
     private double totalcost;
     private LocalDateTime orderDate;
     private String status;
+    private int saleid;
     private String salename;
+    private int shipid;
+    private String shipname;
 
-    public OrderSaleManager(int id, String customer, double totalcost, LocalDateTime orderDate, String status, String salename) {
+    public OrderSaleManager() {
+    }
+
+    public OrderSaleManager(int id, String customer, double totalcost, LocalDateTime orderDate, String status, int saleid, String salename, int shipid, String shipname) {
         this.id = id;
         this.customer = customer;
         this.totalcost = totalcost;
         this.orderDate = orderDate;
         this.status = status;
+        this.saleid = saleid;
         this.salename = salename;
-    }
-
-    public String getSalename() {
-        return salename;
-    }
-
-    public void setSalename(String salename) {
-        this.salename = salename;
-    }
-
-    public OrderSaleManager() {
+        this.shipid = shipid;
+        this.shipname = shipname;
     }
 
     public int getId() {
@@ -79,11 +77,38 @@ public class OrderSaleManager {
         this.status = status;
     }
 
-    public OrderSaleManager(int id, String customer, double totalcost, LocalDateTime orderDate, String status) {
-        this.id = id;
-        this.customer = customer;
-        this.totalcost = totalcost;
-        this.orderDate = orderDate;
-        this.status = status;
+    public int getSaleid() {
+        return saleid;
     }
+
+    public void setSaleid(int saleid) {
+        this.saleid = saleid;
+    }
+
+    public String getSalename() {
+        return salename;
+    }
+
+    public void setSalename(String salename) {
+        this.salename = salename;
+    }
+
+    public int getShipid() {
+        return shipid;
+    }
+
+    public void setShipid(int shipid) {
+        this.shipid = shipid;
+    }
+
+    public String getShipname() {
+        return shipname;
+    }
+
+    public void setShipname(String shipname) {
+        this.shipname = shipname;
+    }
+
+    
+    
 }

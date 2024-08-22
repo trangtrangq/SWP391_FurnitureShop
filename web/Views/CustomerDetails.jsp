@@ -38,7 +38,6 @@
             .changed {
                 color: red;
             }
-
         </style>
     </head>
     <body>
@@ -46,8 +45,14 @@
             <%@include file="DashboardNavbar.jsp" %>
             <div class="main">
                 <%@include file="DashboardHeader.jsp" %>
-                <div class="container">
-                    <h1 class="mb-4">Chi tiết tài khoản: #${cus.getId()}</h1>
+                <div class="container card mt-3">
+                    <div>
+                        <a class="btn btn-secondary btn-sm edit-btn mt-3"
+                           style="width:auto" href="CustomersList">
+                            Trở lại
+                        </a>
+                    </div>
+                    <h1 class="mb-4 mt-3">Chi tiết tài khoản: #${cus.getId()}</h1>
                     <div class="row justify-content-center mb-4">
 
                         <button type="button" class="btn btn-secondary btn-sm edit-btn" onclick="editField('.ip')"
@@ -92,7 +97,7 @@
                                                     <td>${change.getUpdateddate()}</td>
                                                     <td><c:forEach items="${listMkt}" var="mkt">
                                                             <c:if test="${mkt.getId() == change.getUpdatedby()}">
-                                                                <p>${mkt.getFullname()}</p>
+                                                                <p style="margin:0">${mkt.getFullname()}</p>
                                                             </c:if>
                                                         </c:forEach></td>
                                                 </tr>
@@ -122,15 +127,15 @@
                         <div class="form-group row">
                             <label for="subtitle" class="col-sm-2 col-form-label">Giới tính</label>
                             <div class="col-sm-10 d-flex align-items-center">
-                                <input  type="text" class="form-control" id="gd1" value="${cus.getGender()}" readonly>
+                                <input  type="text" class="form-control" id="gd1" value="${cus.getGender() eq 'Male' ? 'Nam' : (cus.getGender() eq 'Female' ? 'Nữ' : 'Khác')}" readonly>
                                 <select name="gender" style="display:none" id="gd2" class="form-control">
-                                    <option value="Nam">
+                                    <option value="Male">
                                         Nam
                                     </option>
-                                    <option value="Nữ">
+                                    <option value="Female">
                                         Nữ
                                     </option>
-                                    <option value="Khác">
+                                    <option value="Other">
                                         Khác
                                     </option>
                                 </select>
@@ -161,7 +166,8 @@
                         <div class="form-group row">
                             <label for="subtitle" class="col-sm-2 col-form-label">Trạng thái</label>
                             <div class="col-sm-10 d-flex align-items-center">
-                                <input type="text" class="form-control" name="status" value="${cus.getStatus()}" readonly>
+                                <input type="text" class="form-control" name="status" 
+                                       value="${cus.getStatus() eq 'Online' ? 'Trực tuyến' : (cus.getStatus() eq 'Offline' ? 'Ngoại tuyến' : 'Đã chặn')}" readonly>
                             </div>
                         </div>
 
@@ -173,7 +179,7 @@
                     </form>
 
 
-                    <div class="row justify-content-end pr-3">
+                    <div class="row justify-content-end pr-3 mb-3">
                         <button class="btn btn-secondary" data-toggle="modal" data-target="#customerChangesModal"
                                 style="width:auto">Lịch sử</button>
                     </div>
@@ -222,7 +228,7 @@
                     cells.forEach((cell, index) => {
                         // Only apply to columns 1 to 5 (0-based index 0 to 4)
                         if (index < 5) {
-                            if (cell.textContent.trim() !== 'unchanged') {
+                            if (cell.textContent.trim() !== 'Không đổi') {
                                 cell.classList.add('changed');
                             } else {
                                 cell.classList.add('unchanged');

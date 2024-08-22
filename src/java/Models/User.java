@@ -20,7 +20,8 @@ public class User {
     private String password;
     private int role_id;
     private String status;
-
+    private String token;
+    
     public User() {
     }
     
@@ -142,6 +143,14 @@ this.role_id = role_id;
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     @Override

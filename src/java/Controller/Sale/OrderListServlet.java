@@ -250,14 +250,25 @@ public class OrderListServlet extends HttpServlet {
                 String statusButton = "";
                 switch (order.getStatus()) {
                     case "Order":
-                        statusButton = "<button style=\"width: 80px; height: 30px\" class=\"btn btn-secondary\">Đã đặt hàng</button>";
+                        statusButton = "<button style=\" height: 30px\" class=\"btn btn-secondary\">Đã đặt hàng</button>";
                         break;
                     case "Canceled":
-                        statusButton = "<button style=\"width: 80px; height: 30px\" class=\"btn btn-danger\">Đã hủy</button>";
+                        statusButton = "<button style=\"height: 30px\" class=\"btn btn-danger\">Đã hủy</button>";
                         break;
                     case "Confirmed":
                         statusButton = "<button style=\" height: 30px\" class=\"btn btn-info\">Đã xác nhận đơn hàng</button>";
                         break;
+                        
+                    case "Delivering":
+                        htmlResponse.append("                <button class=\"btn btn-light\" style=\"height: 30px; background-color: aquamarine\" >Đang giao</button>\n");
+                        break;
+                    case "Delivered":
+                        htmlResponse.append("                <button class=\"btn btn-light\" style=\"height: 30px; background-color: cyan\" >Đơn hàng đã giao thành công</button>\n");
+                        
+                        break;
+                    case "Deliveryfailed":
+                        htmlResponse.append("                <button class=\"btn btn-light\" style=\"height: 30px; color: white; background-color: brown\" >Đơn hàng đã giao thất bại</button>\n");
+                        break;    
                     case "Done":
                         boolean hasFeedback = false;
                         for (int history : historyFeedbackOrder) {
@@ -277,7 +288,7 @@ public class OrderListServlet extends HttpServlet {
                         break;
 
                     default:
-                        statusButton = "<button style=\"width: 80px; height: 30px\" class=\"btn btn-warning\">" + order.getStatus() + "</button>";
+                        statusButton = "<button style=\" height: 30px\" class=\"btn btn-warning\">" + order.getStatus() + "</button>";
                         break;
                 }
 
@@ -326,9 +337,7 @@ public class OrderListServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-//        User customer = (User) session.getAttribute("customer");
-        User customer = new User();
-        customer.setId(2);
+        User customer = (User) session.getAttribute("customer");
 
         OrderDAO orderDAO = new OrderDAO();
         ArrayList<Order> orderList = orderDAO.OrderListOfSale(customer.getId());
@@ -354,10 +363,8 @@ public class OrderListServlet extends HttpServlet {
             throws ServletException, IOException {
         String action = request.getParameter("action");
         HttpSession session = request.getSession();
-//        User customer = (User) session.getAttribute("customer");
-        User customer = new User();
-        customer.setId(2);
-
+        User customer = (User) session.getAttribute("customer");
+        
         ArrayList<Order> orderList = new ArrayList<>();
         if ("pagination".equals(action)) {
             orderList = (ArrayList<Order>) session.getAttribute("orderList");

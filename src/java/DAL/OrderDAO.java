@@ -6,6 +6,7 @@ package DAL;
 
 import Models.Order;
 import Models.OrderSaleManager;
+import Models.User;
 import java.util.logging.Logger;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,11 +17,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -93,7 +96,7 @@ public class OrderDAO extends DBContext {
 
     public ArrayList<Order> myOrder(int customer_id) {
         ArrayList<Order> orderList = new ArrayList<>();
-        String sql = "SELECT * FROM furniture.order WHERE customer_id = ?";
+        String sql = "SELECT * FROM furniture.order WHERE customer_id = ? ORDER BY id DESC";
         try (PreparedStatement pstmt = connect.prepareStatement(sql)) {
             pstmt.setInt(1, customer_id);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -130,6 +133,7 @@ public class OrderDAO extends DBContext {
                     od.setCustomer_id(rs.getInt("customer_id"));
                     od.setSale_id(rs.getInt("sale_id"));
                     od.setAddress_id(rs.getInt("address_id"));
+                    od.setPaymentMethod_id(rs.getInt("paymentmethod_id"));
                     od.setTotalcost(rs.getDouble("totalcost"));
                     // Chuyển đổi từ Timestamp sang LocalDateTime
                     java.sql.Timestamp timestamp = rs.getTimestamp("orderdate");
@@ -162,9 +166,41 @@ public class OrderDAO extends DBContext {
 
     public ArrayList<Order> OrderListOfSale(int sale_id) {
         ArrayList<Order> orderList = new ArrayList<>();
-        String sql = "SELECT * FROM furniture.order WHERE sale_id = ?";
+        String sql = "SELECT * FROM furniture.order WHERE sale_id = ? ORDER BY id DESC";
         try (PreparedStatement pstmt = connect.prepareStatement(sql)) {
             pstmt.setInt(1, sale_id);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Order od = new Order();
+                    od.setId(rs.getInt("id"));
+                    od.setCustomer_id(rs.getInt("customer_id"));
+                    od.setSale_id(rs.getInt("sale_id"));
+                    od.setAddress_id(rs.getInt("address_id"));
+                    od.setTotalcost(rs.getDouble("totalcost"));
+                    // Chuyển đổi từ Timestamp sang LocalDateTime
+                    java.sql.Timestamp timestamp = rs.getTimestamp("orderdate");
+                    if (timestamp != null) {
+                        od.setOrderDate(timestamp.toLocalDateTime());
+                    }
+                    od.setStatus(rs.getString("status"));
+                    orderList.add(od);
+                }
+            }
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "Error retrieving order list", ex);
+        }
+        return orderList;
+    }
+
+    public ArrayList<Order> OrderListOfShipper(int id) {
+        ArrayList<Order> orderList = new ArrayList<>();
+        // Câu lệnh SQL đã sửa để bao gồm điều kiện cho trạng thái 'Deliveryfailed' và 'Delivered'
+        String sql = "SELECT * FROM `order` WHERE shipper_id = ? AND ("
+                + "status IN ('Confirmed', 'Delivering') OR "
+                + "(status = 'Deliveryfailed' AND orderdate >= NOW() - INTERVAL 7 DAY) OR "
+                + "(status = 'Delivered' AND orderdate >= NOW() - INTERVAL 7 DAY))";
+        try (PreparedStatement pstmt = connect.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     Order od = new Order();
@@ -204,8 +240,17 @@ public class OrderDAO extends DBContext {
                 case "Confirmed":
                     conditions.add("status = 'Confirmed'");
                     break;
-                case "Cancled":
-                    conditions.add("status = 'Cancled'");
+                case "Cancelled":
+                    conditions.add("status = 'Cancelled'"); // Sửa từ "Cancled" thành "Cancelled"
+                    break;
+                case "Delivering":
+                    conditions.add("status = 'Delivering'");
+                    break;
+                case "Delivered":
+                    conditions.add("status = 'Delivered'");
+                    break;
+                case "Deliveryfailed":
+                    conditions.add("status = 'Deliveryfailed'"); // Sửa từ "Deliveyfailed" thành "Deliveryfailed"
                     break;
             }
         }
@@ -352,6 +397,76 @@ public class OrderDAO extends DBContext {
         return orderList;
     }
 
+    public ArrayList<Order> filterShippingOrderList(String fromDateStr, String toDateStr, String[] status, int shipper_id) {
+        ArrayList<Order> orderList = new ArrayList<>();
+
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT ")
+                .append("id, customer_id, sale_id, address_id, totalcost, orderdate, status ")
+                .append("FROM `Order` ")
+                .append("WHERE shipper_id = ? AND status IN ('Confirmed', 'Delivering', 'Delivered', 'Deliveryfailed')");
+
+        List<Object> parameters = new ArrayList<>();
+        parameters.add(shipper_id);
+
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        if (fromDateStr != null && !fromDateStr.isEmpty()) {
+            try {
+                LocalDate fromDate = LocalDate.parse(fromDateStr, dateFormatter);
+                LocalDateTime fromDateTime = fromDate.atStartOfDay(); // Set to start of the day
+                sql.append(" AND orderdate >= ?");
+                parameters.add(Timestamp.valueOf(fromDateTime));
+                LOGGER.info("From date: " + fromDateTime);
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, "Invalid fromDate format.", e);
+            }
+        }
+
+        if (toDateStr != null && !toDateStr.isEmpty()) {
+            try {
+                LocalDate toDate = LocalDate.parse(toDateStr, dateFormatter);
+                LocalDateTime toDateTime = toDate.atTime(23, 59, 59); // Set to end of the day
+                sql.append(" AND orderdate <= ?");
+                parameters.add(Timestamp.valueOf(toDateTime));
+                LOGGER.info("To date: " + toDateTime);
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, "Invalid toDate format.", e);
+            }
+        }
+
+        String statusCondition = parseStatus(status);
+        if (!statusCondition.isEmpty()) {
+            sql.append(" AND (").append(statusCondition).append(")");
+        }
+
+        LOGGER.info("SQL Query: " + sql.toString());
+        LOGGER.info("Parameters: " + parameters);
+
+        try (PreparedStatement pstmt = connect.prepareStatement(sql.toString())) {
+            for (int i = 0; i < parameters.size(); i++) {
+                pstmt.setObject(i + 1, parameters.get(i));
+            }
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Order order = new Order();
+                    order.setId(rs.getInt("id"));
+                    order.setCustomer_id(rs.getInt("customer_id"));
+                    order.setSale_id(rs.getInt("sale_id"));
+                    order.setAddress_id(rs.getInt("address_id"));
+                    order.setTotalcost(rs.getDouble("totalcost"));
+                    order.setOrderDate(rs.getTimestamp("orderdate").toLocalDateTime());
+                    order.setStatus(rs.getString("status"));
+
+                    orderList.add(order);
+                }
+            }
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "Error retrieving order list.", ex);
+        }
+        return orderList;
+    }
+
     public ArrayList<Order> searchOrderByName(String name, int sale_id) {
         ArrayList<Order> orderList = new ArrayList<>();
         String sql = "SELECT `Order`.*, User.fullname \n"
@@ -361,6 +476,40 @@ public class OrderDAO extends DBContext {
         try (PreparedStatement pstmt = connect.prepareStatement(sql)) {
             pstmt.setString(1, "%" + name + "%");
             pstmt.setInt(2, sale_id);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Order od = new Order();
+                    od.setId(rs.getInt("id"));
+                    od.setCustomer_id(rs.getInt("customer_id"));
+                    od.setSale_id(rs.getInt("sale_id"));
+                    od.setAddress_id(rs.getInt("address_id"));
+                    od.setTotalcost(rs.getDouble("totalcost"));
+                    // Chuyển đổi từ Timestamp sang LocalDateTime
+                    java.sql.Timestamp timestamp = rs.getTimestamp("orderdate");
+                    if (timestamp != null) {
+                        od.setOrderDate(timestamp.toLocalDateTime());
+                    }
+                    od.setStatus(rs.getString("status"));
+                    orderList.add(od);
+                }
+            } catch (Exception e) {
+            }
+
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "Error retrieving order list", ex);
+        }
+        return orderList;
+    }
+
+    public ArrayList<Order> searchShippingOrderByName(String name, int shipper_id) {
+        ArrayList<Order> orderList = new ArrayList<>();
+        String sql = "SELECT `Order`.*, User.fullname \n"
+                + "                FROM `Order` \n"
+                + "                JOIN User ON `Order`.customer_id = User.id\n"
+                + "                WHERE User.fullname LIKE ? AND shipper_id = ?";
+        try (PreparedStatement pstmt = connect.prepareStatement(sql)) {
+            pstmt.setString(1, "%" + name + "%");
+            pstmt.setInt(2, shipper_id);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     Order od = new Order();
@@ -417,6 +566,37 @@ public class OrderDAO extends DBContext {
         return orderList;
     }
 
+    public ArrayList<Order> searchShippingOrderById(int search, int shipper_id) {
+        ArrayList<Order> orderList = new ArrayList<>();
+        String sql = "SELECT * FROM furniture.order "
+                + "WHERE id = ? AND shipper_id = ?";
+        try (PreparedStatement pstmt = connect.prepareStatement(sql)) {
+            pstmt.setInt(1, search);
+            pstmt.setInt(2, shipper_id);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Order order = new Order(); // Khởi tạo đối tượng Order mới trong vòng lặp
+                    order.setId(rs.getInt("id"));
+                    order.setCustomer_id(rs.getInt("customer_id"));
+                    order.setSale_id(rs.getInt("sale_id"));
+                    order.setAddress_id(rs.getInt("address_id"));
+                    order.setTotalcost(rs.getDouble("totalcost"));
+                    java.sql.Timestamp timestamp = rs.getTimestamp("orderdate");
+                    if (timestamp != null) {
+                        order.setOrderDate(timestamp.toLocalDateTime());
+                    }
+                    order.setStatus(rs.getString("status"));
+                    orderList.add(order);
+                }
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, "Error processing result set", e);
+            }
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "Error preparing statement", ex);
+        }
+        return orderList;
+    }
+
     //lấy danh sách các đơn hàng theo trạng thái, theo sale id trên tổng đơn trong khoảng thời gian
     public List<Map<String, Object>> getOrderStats(java.sql.Date startDate, java.sql.Date endDate, String saleid, String status) {
         StringBuilder sqlBuilder = new StringBuilder("WITH RECURSIVE DateRange AS (\n"
@@ -430,7 +610,7 @@ public class OrderDAO extends DBContext {
                 + "    d.Date,\n"
                 + "    IFNULL(\n"
                 + "        (COUNT(CASE WHEN o.status = ? THEN 1 END) / NULLIF(COUNT(o.id), 0)) * 100,0)\n"
-                +  "  AS rate \n"
+                + "  AS rate \n"
                 + "FROM\n"
                 + "	DateRange d\n"
                 + "left join\n"
@@ -542,6 +722,21 @@ public class OrderDAO extends DBContext {
                     case "Confirmed":
                         status = "Đã xác nhận";
                         break;
+                    case "Wait":
+                        status = "Chưa thanh toán";
+                        break;
+                    case "Delivering":
+                        status = "Đang vận chuyển";
+                        break;
+                    case "Delivered":
+                        status = "Đã vận chuyển";
+                        break;
+                    case "Deliveryfailed":
+                        status = "Vận chuyển thất bại";
+                        break;
+                    case "Order":
+                        status = "Đã đặt hàng";
+                        break;
                 }
                 int count = resultSet.getInt("order_count");
                 orderCountByStatus.put(status, count);
@@ -646,17 +841,17 @@ public class OrderDAO extends DBContext {
 
         return orderStats;
     }
-    
+
     public List<OrderSaleManager> getFilteredOrders(String saleId, String searchValue, String sortBy, String fromDate, String toDate, String[] statusFilters) {
         List<OrderSaleManager> orderList = new ArrayList<>();
 
-        String sql = "SELECT u.fullname, o.id, o.totalcost, o.orderdate, o.status ,s.fullname AS salename\n"
-                + "                 FROM user AS u \n"
-                + "                JOIN `order` AS o ON u.id = o.customer_id LEFT JOIN user AS s ON s.id=o.sale_id WHERE 1=1 ";
+        String sql = "SELECT u.fullname, o.id, o.totalcost, o.orderdate, o.status ,s.fullname AS salename,s.id AS saleid ,sh.fullname AS shipname,sh.id AS shipid\n"
+                + "   FROM user AS u  JOIN `order` AS o ON u.id = o.customer_id LEFT JOIN user AS s ON s.id=o.sale_id LEFT JOIN user AS sh ON sh.id=o.shipper_id\n"
+                + "WHERE 1=1 ";
         if (saleId != null && saleId.matches("\\d+")) {
-            sql += "AND o.sale_id IS NULL ";
+            sql += "AND o.sale_id = 3 ";
         } else if (saleId != null && !saleId.isEmpty()) { // Nếu searchValue không phải là số
-            sql += " AND o.sale_id > 0";
+            sql += " AND o.sale_id > 0 AND o.sale_id <> 3";
         }
         if (searchValue != null && searchValue.matches("\\d+")) { // Kiểm tra nếu searchValue là số
             sql += " AND o.id = ?";
@@ -729,7 +924,6 @@ public class OrderDAO extends DBContext {
         try {
             PreparedStatement ps = connect.prepareStatement(sql);
             int paramIndex = 1;
-            
 
             if (searchValue != null && searchValue.matches("\\d+")) { // Kiểm tra nếu searchValue là số
                 ps.setString(paramIndex++, searchValue);
@@ -768,8 +962,11 @@ public class OrderDAO extends DBContext {
                 if (timestamp != null) {
                     od.setOrderDate(timestamp.toLocalDateTime());
                 }
+                od.setSaleid(rs.getInt("saleid"));
                 od.setStatus(rs.getString("status"));
                 od.setSalename(rs.getString("salename"));
+                od.setShipid(rs.getInt("shipid"));
+                od.setShipname(rs.getString("shipname"));
                 orderList.add(od);
             }
             ps.close();
@@ -780,7 +977,7 @@ public class OrderDAO extends DBContext {
 
         return orderList;
     }
-    
+
     public int createOrder(Order order) throws SQLException {
         String sql = "INSERT INTO `order` (customer_id , address_id,paymentmethod_id,orderdate, totalcost,status) VALUES (?,?,? , NOW(), ?,?)";
         try (PreparedStatement stmt = connect.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -789,7 +986,7 @@ public class OrderDAO extends DBContext {
             stmt.setInt(3, order.getPaymentMethod_id());
             stmt.setDouble(4, order.getTotalcost());
             stmt.setString(5, order.getStatus());
-            
+
             stmt.executeUpdate();
 
             try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
@@ -801,10 +998,11 @@ public class OrderDAO extends DBContext {
             }
         }
     }
-      public void updateOrderSale(int orderId, int sale_id) {
-        String sql = "UPDATE `furniture`.`order`\n"
-                + "SET\n"
-                + "`sale_id` = ?\n"
+
+    public void updateOrderSale(int orderId, int sale_id) {
+        String sql = "UPDATE `furniture`.`order` \n"
+                + "SET `sale_id` = ?, \n"
+                + "    `orderassign` = NOW() \n"
                 + "WHERE `id` = ?;";
         try (PreparedStatement statement = connect.prepareStatement(sql)) {
             statement.setInt(1, sale_id);
@@ -815,4 +1013,201 @@ public class OrderDAO extends DBContext {
         }
     }//tạo order
 
+    public ArrayList<Order> getOrdersForToday() {
+        String sql = "SELECT * FROM `Order` WHERE DATE(orderdate) = CURDATE()";
+        ArrayList<Order> orderList = new ArrayList<>();
+        try (
+                PreparedStatement statement = connect.prepareStatement(sql); ResultSet rs = statement.executeQuery()) {
+
+            while (rs.next()) {
+                Order order = new Order();
+                order.setId(rs.getInt("id"));
+                order.setCustomer_id(rs.getInt("customer_id"));
+                order.setSale_id(rs.getInt("sale_id"));
+                order.setAddress_id(rs.getInt("address_id"));
+                order.setPaymentMethod_id(rs.getInt("paymentmethod_id"));
+                order.setTotalcost(rs.getDouble("totalcost"));
+                order.setOrderDate(rs.getTimestamp("orderdate").toLocalDateTime());
+                order.setStatus(rs.getString("status"));
+                order.setShipper_id(rs.getInt("shipper_id"));
+                order.setNote(rs.getString("note"));
+                orderList.add(order);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return orderList;
+    }
+
+    public int distributeOrder(int inputShipperId) {
+        // Lấy danh sách các shipper có role_id = 6 và không có status là "On leave"
+        List<User> shippers = new UserDAO().getShipperList().stream()
+                .filter(shipper -> !"On leave".equals(shipper.getStatus()))
+                .collect(Collectors.toList());
+
+        // Lấy danh sách các đơn hàng trong ngày hiện tại
+        List<Order> todayOrders = getOrdersForToday();
+
+        // Loại bỏ các shipper đang có đơn hàng với trạng thái "Delivering"
+        List<User> availableShippers = new ArrayList<>();
+        for (User shipper : shippers) {
+            if (shipper.getId() == inputShipperId) {
+                continue; // Bỏ qua shipper có id là inputShipperId
+            }
+            boolean hasDeliveringOrder = todayOrders.stream()
+                    .anyMatch(order -> order.getShipper_id() == shipper.getId() && "Delivering".equals(order.getStatus()));
+            if (!hasDeliveringOrder) {
+                availableShippers.add(shipper);
+            }
+        }
+
+        // Nếu không còn shipper nào không có đơn Delivering, chia đều đơn hàng cho tất cả shipper không có status "On leave"
+        if (availableShippers.isEmpty()) {
+            availableShippers = shippers.stream()
+                    .filter(shipper -> shipper.getId() != inputShipperId)
+                    .collect(Collectors.toList());
+        }
+
+        // Đếm số lượng đơn hàng hiện tại của mỗi shipper
+        Map<Integer, Long> shipperOrderCounts = todayOrders.stream()
+                .collect(Collectors.groupingBy(Order::getShipper_id, Collectors.counting()));
+
+        // Tìm shipper có số lượng đơn hàng ít nhất
+        User chosenShipper = availableShippers.stream()
+                .min(Comparator.comparing(shipper -> shipperOrderCounts.getOrDefault(shipper.getId(), 0L)))
+                .orElse(null);
+
+        return (chosenShipper != null) ? chosenShipper.getId() : 0;
+    }
+
+    public void updateShipper(int orderId, int shipper_id) {
+        String sql = "UPDATE `furniture`.`order`\n"
+                + "SET\n"
+                + "`shipper_id` = ?\n"
+                + "WHERE `id` = ?;";
+        try (PreparedStatement statement = connect.prepareStatement(sql)) {
+            statement.setInt(1, shipper_id);
+            statement.setInt(2, orderId);
+            statement.executeUpdate();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error retrieving order.", e);
+        }
+    }
+
+    public boolean updateOrder(Order order) {
+        String sql = "UPDATE order SET customer_id = ?, sale_id = ?, address_id = ?, paymentMethod_id = ?, totalcost = ?, orderDate = ?, status = ? WHERE id = ?";
+        try (
+                PreparedStatement stmt = connect.prepareStatement(sql)) {
+
+            stmt.setInt(1, order.getCustomer_id());
+            stmt.setInt(2, order.getSale_id());
+            stmt.setInt(3, order.getAddress_id());
+            stmt.setInt(4, order.getPaymentMethod_id());
+            stmt.setDouble(5, order.getTotalcost());
+
+            // Convert LocalDateTime to String for SQL
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String orderDateStr = order.getOrderDate().format(formatter);
+            stmt.setString(6, orderDateStr);
+
+            stmt.setString(7, order.getStatus());
+            stmt.setInt(8, order.getId());
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public List<Integer> cancelOverdueOrders() throws SQLException {
+        String selectSql = "SELECT id FROM `order` WHERE status = 'Wait' AND orderdate < NOW() - INTERVAL 2 MINUTE";
+        PreparedStatement selectStmt = connect.prepareStatement(selectSql);
+        ResultSet resultSet = selectStmt.executeQuery();
+
+        List<Integer> updatedIds = new ArrayList<>();
+        while (resultSet.next()) {
+            updatedIds.add(resultSet.getInt("id"));
+        }
+
+        // Step 2: Update status of orders with the retrieved IDs
+        if (!updatedIds.isEmpty()) {
+            String updateSql = "UPDATE `order` SET status = 'Canceled' WHERE id = ?";
+            PreparedStatement updateStmt = connect.prepareStatement(updateSql);
+
+            for (Integer id : updatedIds) {
+                updateStmt.setInt(1, id);
+                updateStmt.addBatch();
+            }
+
+            updateStmt.executeBatch();
+        }
+        return updatedIds;
+    }
+
+    public List<Integer> updateOrdersSale() throws SQLException {
+        String selectSql = "SELECT id FROM `order` WHERE status = 'Order' AND sale_id <> 3 AND orderassign < NOW() - INTERVAL 5 MINUTE;";
+        PreparedStatement selectStmt = connect.prepareStatement(selectSql);
+        ResultSet resultSet = selectStmt.executeQuery();
+
+        List<Integer> updatedIds = new ArrayList<>();
+        while (resultSet.next()) {
+            updatedIds.add(resultSet.getInt("id"));
+        }
+        if (!updatedIds.isEmpty()) {
+            String query = "UPDATE `order` SET sale_id=3 WHERE id=?";
+            PreparedStatement updateStmt = connect.prepareStatement(query);
+            for (Integer id : updatedIds) {
+                updateStmt.setInt(1, id);
+                updateStmt.addBatch();
+            }
+
+            updateStmt.executeBatch();
+        }
+        return updatedIds;
+    }
+
+    public List<Integer> update() throws SQLException {
+        String selectSql = "SELECT id FROM `order` WHERE status = 'Order' AND orderassign < NOW() - INTERVAL 1 MINUTE;";
+        PreparedStatement selectStmt = connect.prepareStatement(selectSql);
+        ResultSet resultSet = selectStmt.executeQuery();
+
+        List<Integer> updatedIds = new ArrayList<>();
+        while (resultSet.next()) {
+            updatedIds.add(resultSet.getInt("id"));
+        }
+        if (!updatedIds.isEmpty()) {
+            String query = "UPDATE `order` SET sale_id=3 WHERE id=?";
+            PreparedStatement updateStmt = connect.prepareStatement(query);
+            for (Integer id : updatedIds) {
+                updateStmt.setInt(1, id);
+                updateStmt.addBatch();
+            }
+
+            updateStmt.executeBatch();
+        }
+        return updatedIds;
+    }
+
+    public boolean updateOrderNote(int order_id, String note) {
+        String sql = "UPDATE `order` SET note = ? WHERE id = ?";
+        try (PreparedStatement stmt = connect.prepareStatement(sql)) {
+            stmt.setString(1, note);
+            stmt.setInt(2, order_id);
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error updating order note.", e);
+            return false;
+        }
+    }
+
+    public static void main(String[] args) {
+        OrderDAO orderDAO = new OrderDAO();
+        List<OrderSaleManager> orders = orderDAO.getFilteredOrders(null, null, null, null, null, null);
+        for (OrderSaleManager orderSaleManager : orders) {
+            System.out.println(orderSaleManager.getId());
+        }
+    }
 }

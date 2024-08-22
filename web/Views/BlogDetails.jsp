@@ -40,6 +40,12 @@
                 width: 100%;
                 height:auto;
             }
+            
+            input[type='text'] { font-size: 16px; }
+            
+            option{
+                font-size: 16px;
+            }
         </style>
     </head>
     <body>
@@ -66,7 +72,8 @@
                     <!-- Dropdown to filter category -->
                     <div class="mb-3">
                         <form action="BlogListServlet">
-                            <select class="form-control" name="category" onchange="this.form.submit()">
+                            <select class="form-control" name="category" onchange="this.form.submit()"
+                                    style="font-size:16px;">
                                 <option value="0">All</option>
                                 <c:forEach items="${listCategory}" var="c">
                                     <option value="${c.getId()}" <c:if test="${c.getId()==param.category}">selected</c:if>>${c.getCategory()}</option>

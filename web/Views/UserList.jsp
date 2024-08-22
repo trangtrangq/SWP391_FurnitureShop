@@ -248,10 +248,10 @@
                         <div class="ml-15 mr-15" style="display: flex; justify-content: space-between">
                             <div class="button-add">
                                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addUserModal">
-                                    Add New User
+                                    Thêm người dùng mới
                                 </button>
                                 <button type="button" class="btn btn-primary ml-15" onclick="reloadPage()">
-                                    Reload Page
+                                    Tải lại trang
                                 </button>
                             </div>
 
@@ -308,19 +308,19 @@
                                             </li>
                                             <li>
                                                 <input type="radio" name="sortby" value="roleAsc" id="roleAsc" style="display: none;">
-                                                <label for="roleAsc">Role từ A-Z</label>
+                                                <label for="roleAsc">Vai trò từ A-Z</label>
                                             </li>
                                             <li>
                                                 <input type="radio" name="sortby" value="roleDesc" id="roleDesc" style="display: none;">
-                                                <label for="roleDesc">Role từ Z-A</label>
+                                                <label for="roleDesc">Vai trò từ Z-A</label>
                                             </li>
                                             <li>
                                                 <input type="radio" name="sortby" value="statusUserAsc" id="statusUserAsc" style="display: none;">
-                                                <label for="statusUserAsc">Status từ A-Z</label>
+                                                <label for="statusUserAsc">Trạng thái từ A-Z</label>
                                             </li>
                                             <li>
                                                 <input type="radio" name="sortby" value="statusUserDesc" id="statusUserDesc" style="display: none;">
-                                                <label for="statusUserDesc">Status từ Z-A</label>
+                                                <label for="statusUserDesc">Trạng thái từ Z-A</label>
                                             </li>
                                         </ul>
                                     </form>
@@ -332,7 +332,7 @@
                             <div class="modal-dialog modal-lg" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="addProductModalLabel">Add New User</h5>
+                                        <h5 class="modal-title" id="addProductModalLabel">Thêm người dùng mới</h5>
                                         <button type="button" class="close btn btn-danger" data-dismiss="modal" aria-label="Close" style="margin-left: 532px;">
                                             <span aria-hidden="true" style="width: 40px; height: 20px">X</span>
                                         </button>
@@ -350,11 +350,11 @@
                                                 <label>Giới tính</label><br>
                                                 <div class="form-check form-check-inline">
                                                     <input class="form-check-input" type="radio" name="gender" value="Male" id="genderMale" ${param.gender == 'Male' ? 'checked' : ''} required value="${param.gender}">
-                                                    <label class="form-check-label" for="genderMale">Male</label>
+                                                    <label class="form-check-label" for="genderMale">Nam</label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
                                                     <input class="form-check-input" type="radio" name="gender" value="Female" id="genderFemale" ${param.gender == 'Female' ? 'checked' : ''} required value="${param.gender}">
-                                                    <label class="form-check-label" for="genderFemale">Female</label>
+                                                    <label class="form-check-label" for="genderFemale">Nữ</label>
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -378,7 +378,7 @@
                                                        title="Vui lòng nhập địa chỉ email hợp lệ (ví dụ: example@example.com)">
                                             </div>                                        
                                             <div class="form-group">
-                                                <label for="roleId">Role:</label>
+                                                <label for="roleId">Vai trò</label>
                                                 <select class="form-control" id="roleId" name="roleID">
                                                     <c:forEach items="${requestScope.userRole}" var="userRole">
                                                         <option value="${userRole.id}">${userRole.rolename}</option>
@@ -406,7 +406,7 @@
                                 <input type="hidden" name="action" value="search"/> 
                                 <div class="d-flex button-add ml-15">
                                     <input type="text" class="form-control" name="search" placeholder="Họ và tên, email, số điện thoại" style="width: 350px;" />
-                                    <button class="btn btn-primary ml-15" type="submit">Search</button>
+                                    <button class="btn btn-primary ml-15" type="submit">Tìm kiếm</button>
                                 </div>
                             </form>
                         </div>       
@@ -422,21 +422,21 @@
                                 </div>
                                 <div class="dropdown">
                                     <div class="dropbtn">
-                                        Gender
+                                        Giới tính
                                         <span><i class="fa fa-chevron-down"></i></span>
                                     </div>
                                     <ul class="dropdown-content">
                                         <li>
-                                            <input type="checkbox" name="gender-filter" value="Male" style="display: inline-block" /> Male
+                                            <input type="checkbox" name="gender-filter" value="Male" style="display: inline-block" /> Nam
                                         </li>
                                         <li>
-                                            <input type="checkbox" name="gender-filter" value="Female" style="display: inline-block" /> Female
+                                            <input type="checkbox" name="gender-filter" value="Female" style="display: inline-block" /> Nữ
                                         </li>
                                     </ul>
                                 </div>
                                 <div class="dropdown">
                                     <div class="dropbtn">
-                                        Role
+                                        Vai trò
                                         <span><i class="fa fa-chevron-down"></i></span>
                                     </div>
                                     <ul class="dropdown-content">
@@ -451,7 +451,7 @@
                                 </div>
                                 <div class="dropdown">
                                     <div class="dropbtn">
-                                        Status
+                                        Trạng thái
                                         <span><i class="fa fa-chevron-down"></i></span>
                                     </div>
                                     <ul class="dropdown-content">
@@ -463,6 +463,9 @@
                                         </li>
                                         <li>
                                             <input type="checkbox" name="status-filter" value="Block" /> Block
+                                        </li>
+                                        <li>
+                                            <input type="checkbox" name="status-filter" value="On leave" /> On leave
                                         </li>
 
                                     </ul>
@@ -483,27 +486,27 @@
                                             </th>
 
                                             <th>
-                                                <h6 class="text-sm text-medium" style="text-align: center;">Full name</h6>
+                                                <h6 class="text-sm text-medium" style="text-align: center;">Họ và tên</h6>
                                             </th>
                                             <th class="min-width">
-                                                <h6 class="text-sm text-medium" style="text-align: center;">Gender</h6>
+                                                <h6 class="text-sm text-medium" style="text-align: center;">Giới tính</h6>
                                             </th>
                                             <th class="min-width">
                                                 <h6 class="text-sm text-medium" style="text-align: center;">Email</h6>
                                             </th>
                                             <th class="min-width">
-                                                <h6 class="text-sm text-medium" style="text-align: center;">Phone Number</h6>
+                                                <h6 class="text-sm text-medium" style="text-align: center;">Số điện thoại</h6>
                                             </th>
 
                                             <th class="min-width">
-                                                <h6 class="text-sm text-medium" style="text-align: center;">Role</h6>
+                                                <h6 class="text-sm text-medium" style="text-align: center;">Vai trò</h6>
                                             </th>
                                             <th class="min-width">
-                                                <h6 class="text-sm text-medium" style="text-align: center;">Status</h6>
+                                                <h6 class="text-sm text-medium" style="text-align: center;">Trạng thái</h6>
                                             </th>
 
                                             <th class="min-width">
-                                                <h6 class="text-sm text-medium" style="text-align: center;">Action</h6>
+                                                <h6 class="text-sm text-medium" style="text-align: center;">Hành động</h6>
                                             </th>
                                         </tr>
                                     </thead>

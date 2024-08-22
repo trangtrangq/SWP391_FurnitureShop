@@ -255,7 +255,7 @@
                             <a href="OrderListServlet" class="btn btn-primary" style="margin-bottom: 15px"> < Back to list</a>
                         </c:otherwise>
                     </c:choose>
-                    
+
                     <div class="row">
                         <div class="col-md-8">
                             <!-- Details -->
@@ -264,6 +264,7 @@
                                     <div class="mb-3 d-flex justify-content-between">
                                         <c:set var="order" value="${requestScope.order}"/>
                                         <input type="hidden" name="order_id" value="${order.id}">
+
                                         <div class="me-auto">
                                             <span><h3>OrderID: #${order.id}</h3></span>
                                         </div>
@@ -334,7 +335,16 @@
                                 <div class="row">
                                     <div>
                                         <c:set var="order" value="${requestScope.order}"/>
-                                        <input type="hidden" name="order_id" value="${order.id}">
+                                        <c:set var="user" value="${requestScope.userList}"/>
+                                        <c:forEach items="${userList}" var="user">
+                                            <c:if test="${user.id == order.sale_id}">
+                                                <c:set value="${user.fullname}" var="saleName"/>
+                                                <c:set value="${user.email}" var="saleEmail"/>
+                                                <c:set value="${user.phonenumber}" var="salePhone"/>
+
+                                            </c:if>
+                                        </c:forEach>
+
                                         <c:forEach items="${address}" var="address">
                                             <c:if test="${address.id == order.address_id}">
                                                 <c:forEach items="${userList}" var="user">
@@ -345,6 +355,7 @@
                                                             <strong>Full name: ${user.fullname}</strong><br>
                                                             Gender: ${user.gender}<br>
                                                             Email: ${user.email}<br>
+
                                                             Phone: ${address.phonenumber}<br>
                                                             Address: ${address.address}<br>
                                                             <!--                                                        <abbr title="Phone">P:</abbr> (123) 456-7890-->
@@ -353,12 +364,43 @@
                                                             <c:choose>
                                                                 <c:when test="${order.status == 'Order'}">
                                                                     <button class="btn btn-secondary">Đã đặt hàng</button>
-                                                                    <button class="btn btn-info" style="margin-left: 10px" onclick="confirmConfirmedOrder(${order.id})">Xác nhận đơn hàng</button>
-                                                                    <button class="btn btn-danger" style="margin-left: 10px" onclick="confirmCancelOrder(${order.id})">Hủy đơn hàng</button>
+                                                                    <form action="OrderDetailServlet" method="post">
+                                                                        <input type="hidden" name="action" value="orderConfirmed"/>
+                                                                        <input type="hidden" name="email" value="${user.email}">
+                                                                        <input type="hidden" name="order_id" value="${order.id}">
+                                                                        <input type="hidden" name="saleName" value="${saleName}">
+                                                                        <input type="hidden" name="saleEmail" value="${saleEmail}">
+                                                                        <input type="hidden" name="salePhone" value="${salePhone}">
+                                                                        <button class="btn btn-info" style="margin-left: 10px" type="submit">Xác nhận đơn hàng</button>
+                                                                    </form>
+
+                                                                    <form action="OrderDetailServlet" method="post">
+                                                                        <input type="hidden" name="action" value="saleCanceledOrder"/>
+                                                                        <input type="hidden" name="email" value="${user.email}">
+                                                                        <input type="hidden" name="order_id" value="${order.id}">
+                                                                        <input type="hidden" name="saleName" value="${saleName}">
+                                                                        <input type="hidden" name="saleEmail" value="${saleEmail}">
+                                                                        <input type="hidden" name="salePhone" value="${salePhone}">
+                                                                        <button class="btn btn-danger" style="margin-left: 10px" type="submit">Hủy đơn hàng</button>
+                                                                    </form>
                                                                 </c:when>
                                                                 <c:when test="${order.status == 'Canceled'}">
                                                                     <button class="btn btn-danger">Đã hủy</button>
                                                                 </c:when>
+                                                                <c:when test="${order.status == 'Deliveryfailed'}">
+                                                                    <button class="btn btn-light" style="background-color: brown; color: white; height: 30px;">Đơn hàng đã giao thất bại</button>
+                                                                </c:when>   
+                                                                <c:when test="${order.status == 'Delivering'}">
+                                                                    <button class="btn btn-light" style="background-color: aquamarine; height: 30px;">Đang giao</button>
+                                                                </c:when> 
+                                                                <c:when test="${order.status == 'Delivered'}">
+                                                                    <button class="btn btn-light" style="background-color: purple; color: white; height: 30px;">Đã nhận được đơn hàng</button>
+                                                                </c:when> 
+                                                                <c:when test = "${order.status == 'Wait'}">
+                                                                    <a href="#" class="btn btn-light" style="height: 30px; background-color: pink; color: #000; text-align: center; line-height: 30px; padding: 0 10px; text-decoration: none;">
+                                                                        Thanh toán ngay
+                                                                    </a>
+                                                                </c:when> 
                                                                 <c:when test="${order.status == 'Done'}">
                                                                     <c:set var="hasFeedback" value="false" />
                                                                     <c:forEach items="${requestScope.historyFeedbackOrder}" var="history">
@@ -401,52 +443,6 @@
         </div>
     </div>
     <%@include file="DashboardFooter.jsp" %>
-
-    <script>
-        function confirmConfirmedOrder(orderId) {
-            var confirmUpdate = confirm("Bạn có muốn xác nhận đơn hàng của mình?");
-            if (confirmUpdate) {
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "OrderDetailServlet", true);
-                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === XMLHttpRequest.DONE) {
-                        if (xhr.status === 200) {
-                            alert("Đã xác nhận đơn hàng thành công!");
-                            location.reload(); // Load lại trang sau khi xác nhận thành công
-                        } else {
-                            alert("Có lỗi xảy ra khi xác nhận đơn hàng.");
-                        }
-                    }
-                };
-                xhr.send("order_id=" + orderId + "&action=confirm");
-            }
-        }
-
-        function confirmCancelOrder(orderId) {
-            var confirmCancel = confirm("Bạn có muốn hủy đơn hàng của mình không?");
-            if (confirmCancel) {
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "OrderDetailServlet", true);
-                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === XMLHttpRequest.DONE) {
-                        if (xhr.status === 200) {
-                            alert("Đã hủy đơn hàng thành công!");
-                            location.reload(); // Load lại trang sau khi hủy thành công
-                        } else {
-                            alert("Có lỗi xảy ra khi hủy đơn hàng.");
-                        }
-                    }
-                };
-                xhr.send("order_id=" + orderId + "&action=cancel");
-            }
-        }
-    </script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
-
-
-
-
 </html>

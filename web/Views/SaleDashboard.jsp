@@ -1,9 +1,3 @@
-<%-- 
-    Document   : SaleDashboard
-    Created on : Jul 13, 2024, 5:52:52 PM
-    Author     : DELL
---%>
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List, java.util.Map, java.util.HashMap, java.util.ArrayList" %>
@@ -117,7 +111,7 @@
                                 labels: [<%= dates.substring(0, dates.length() - 1) %>], // Loại bỏ dấu phẩy cuối cùng
                                 datasets: [{
 
-                                        label: 'Tỉ lệ đơn hàng ${statusLabel} ${saleLabel}',
+                                        label: 'Tỉ lệ đơn hàng ${statusLabel}',
                                         data: [<%= rates.substring(0, rates.length() - 1) %>], // Loại bỏ dấu phẩy cuối cùng
                                         backgroundColor: '${param.status eq 'Canceled' ?'rgba(255, 0, 0, 0.61)':'rgba(7, 255, 104, 0.61)'  }'
                                         
@@ -142,6 +136,11 @@
                                             }
                                         },
                                         onClick: (e) => e.stopPropagation() // Tắt chế độ click vào label để ẩn/hiện dữ liệu
+                                    },
+                                    title:{
+                                        display: true,
+                                        text: 'Biểu đồ tỉ lệ đơn hàng ${statusLabel} theo ngày ${saleLabel} ',
+                                        font:{size:20}
                                     }
                                 }
                             }
@@ -172,9 +171,7 @@
 
                                         label: 'Doanh thu',
                                         data: [<%= revenues.substring(0, revenues.length() - 1) %>], // Loại bỏ dấu phẩy cuối cùng
-                                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                                        borderColor: 'rgba(75, 192, 192, 1)',
-                                        borderWidth: 1
+                                        backgroundColor: 'rgba(245, 123, 39, 0.8)',
                                     }]
                             },
                             options: {
@@ -193,6 +190,11 @@
                                             }
                                         },
                                         onClick: (e) => e.stopPropagation() // Tắt chế độ click vào label để ẩn/hiện dữ liệu
+                                    },
+                                    title:{
+                                        display: true,
+                                        text: 'Biểu đồ doanh thu theo ngày',
+                                        font:{size:20}
                                     }
                                 }
                             }

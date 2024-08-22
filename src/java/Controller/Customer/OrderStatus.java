@@ -10,6 +10,7 @@ import DAL.OrderDAO;
 import DAL.UserDAO;
 import Models.Order;
 import Models.User;
+import Util.Email;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -49,6 +50,7 @@ public class OrderStatus extends HttpServlet {
         String vnp_PayDate = request.getParameter("vnp_PayDate");
         String vnp_TransactionStatus = request.getParameter("vnp_TransactionStatus");
         String[] cartIds = request.getParameterValues("cartId");
+        User customer = new UserDAO().getUserByID(Integer.parseInt(sessionid));
         if ("00".equals(vnp_TransactionStatus)) {
             request.setAttribute("vnp_TransactionStatus", "Thành Công");
             if (cartIds != null) {
@@ -61,10 +63,15 @@ public class OrderStatus extends HttpServlet {
                 }
             }
             new OrderDAO().updateOrderStatus(Integer.parseInt(vnp_TxnRef), "Order");
+            int saleid = new UserDAO().getidsale();
+            new OrderDAO().updateOrderSale(Integer.parseInt(vnp_TxnRef), saleid);
+            new Email().sendMessageEmail(customer.getEmail(), "orderPlaced", Integer.parseInt(vnp_TxnRef));
             OrderUpdateEndpoint.sendUpdate("order");
         } else {
             request.setAttribute("vnp_TransactionStatus", "Thất Bại");
             new OrderDAO().updateOrderStatus(Integer.parseInt(vnp_TxnRef), "Wait");
+
+            new Email().sendMessageEmail(customer.getEmail(), "payOrder", Integer.parseInt(vnp_TxnRef));
 
         }
         request.setAttribute("vnp_TxnRef", vnp_TxnRef);
@@ -72,11 +79,13 @@ public class OrderStatus extends HttpServlet {
         request.setAttribute("vnp_OrderInfo", vnp_OrderInfo);
         request.setAttribute("vnp_Amount", vnp_Amount);
 
-        UserDAO userDAO = new UserDAO();
-        User customer = userDAO.getUserByID(Integer.parseInt(sessionid));
         HttpSession session = request.getSession();
         session.setAttribute("customer", customer);
+        session.removeAttribute("order_" + sessionid);
         request.getRequestDispatcher("Views/OrderStatusPayment.jsp").forward(request, response);
     }
-
+    public static void main(String[] args) {
+        int saleid = new UserDAO().getidsale();
+        System.out.println(saleid);
+    }
 }

@@ -11,7 +11,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -107,6 +109,13 @@ public class ProductDAO extends DBContext {
         }
 
         return productList;
+    }
+    
+    public static void main(String[] args) {
+        ArrayList<Product> list = new ProductDAO().getProductList();
+        for (Product product : list) {
+            System.out.println(product.getName());
+        }
     }
 
     public ArrayList<Product> getProductListByCategoryID(int categoryId) {
@@ -281,7 +290,7 @@ public class ProductDAO extends DBContext {
         Product
     JOIN     
         ProductDetail ON Product.id = ProductDetail.product_id
-    WHERE 1=1
+    WHERE Product.status = 'Active'
     """);
 
         List<Object> parameters = new ArrayList<>();
@@ -592,41 +601,35 @@ public class ProductDAO extends DBContext {
 
         return count;
     }
-//    public Product getLastProduct() {
-//        Product product = new Product();
-//        String query = "SELECT * FROM product ORDER BY id DESC LIMIT 1";
-//
-//        try (PreparedStatement preparedStatement = connect.prepareStatement(query);
-//             ResultSet resultSet = preparedStatement.executeQuery()) {
-//            if (resultSet.next()) {
-//                product = new Product();
-//                product.setId(resultSet.getInt("id"));
-//                product.setCategory_id(resultSet.getInt("category_id"));
-//                product.setBrand_id(resultSet.getInt("brand_id"));
-//                product.setRoom_id(resultSet.getInt("room_id"));
-//                product.setName(resultSet.getString("name"));
-//                product.setDescription(resultSet.getString("description"));
-//                product.setStaravg(resultSet.getDouble("staravg"));
-//                product.setImage(resultSet.getString("image"));
-//                product.setPrice(resultSet.getDouble("price"));
-//                product.setQuantity(resultSet.getInt("quantity"));
-//                product.setStatus(resultSet.getString("status"));
-//                product.setCreateDate(resultSet.getDate("createdate"));
-//            }
-//        } catch (SQLException e) {
-//            LOGGER.log(Level.SEVERE, "Error retrieving product", e);
-//        }
-//        return product;
-//    }
-//
-//    public void deleteLastProduct(int productId) {
-//        String sql = "DELETE FROM product WHERE id = ?";
-//        try (PreparedStatement preparedStatement = connect.prepareStatement(sql)) {
-//            preparedStatement.setInt(1, productId);
-//            preparedStatement.executeUpdate();
-//        } catch (Exception e) {
-//            LOGGER.log(Level.SEVERE, "Error deleting product", e);
-//        }
-//    }
+
+    public Map<String,Integer> getTopSellingProducts(Date startDate, Date endDate) {
+        Map<String,Integer> topSellingProducts = new HashMap<>();
+        String query = "SELECT p.name AS product_name, SUM(od.quantity) AS total_quantity_sold "
+                + "FROM `order` o "
+                + "JOIN `orderdetail` od ON o.id = od.order_id "
+                + "JOIN `productdetail` pd ON od.productdetail_id = pd.id "
+                + "JOIN `product` p ON pd.product_id = p.id "
+                + "WHERE o.orderdate BETWEEN ? AND ? "
+                + "GROUP BY p.name "
+                + "ORDER BY total_quantity_sold DESC "
+                + "LIMIT 5";
+
+        try (PreparedStatement statement = connect.prepareStatement(query)) {
+            statement.setDate(1, startDate);
+            statement.setDate(2, endDate);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                String productName = resultSet.getString("product_name");
+                int totalQuantitySold = resultSet.getInt("total_quantity_sold");
+                topSellingProducts.put(productName, totalQuantitySold);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return topSellingProducts;
+    }
+
 
 }

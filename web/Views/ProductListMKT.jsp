@@ -404,7 +404,7 @@
                                                     <div class="form-group">
                                                         <label for="productDetailName"><b>Sản phẩm:</b></label>
                                                         <select class="form-control" id="productDetailName" name="productId">
-                                                            <c:forEach items="${requestScope.productList}" var="product">
+                                                            <c:forEach items="${requestScope.productListAdd}" var="product">
                                                                 <option value="${product.id}">${product.name}</option>
                                                             </c:forEach>
                                                         </select>

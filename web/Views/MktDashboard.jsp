@@ -1,9 +1,4 @@
-<%-- 
-    Document   : MktDashboard
-    Created on : Jul 9, 2024, 3:21:50 PM
-    Author     : DELL
---%>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List, java.util.Map, java.util.HashMap, java.util.ArrayList" %>
 <!DOCTYPE html>
@@ -52,7 +47,7 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col mt-0">
-                                            <h5 class="card-title">Bài viết mới</h5>
+                                            <h5 class="card-title">Bài viết</h5>
                                         </div>
 
                                         <div class="col-auto">
@@ -61,8 +56,10 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <h1 class="mt-1 mb-3">${post}</h1>       
+                                    <h1 class="mt-1 mb-3 ">${postall}</h1>  
+                                    <h4 class="mt-1 mb-3">+ ${post} bài viết mới</h4> 
                                 </div>
+
                             </div>
                         </div>
                         <div class="col-sm-6 col-xl-3">
@@ -70,7 +67,7 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col mt-0">
-                                            <h5 class="card-title">Sản phẩm mới</h5>
+                                            <h5 class="card-title">Sản phẩm</h5>
                                         </div>
 
                                         <div class="col-auto">
@@ -79,7 +76,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <h1 class="mt-1 mb-3">${product}</h1>
+                                    <h1 class="mt-1 mb-3">${productall}</h1>
+                                    <h4 class="mt-1 mb-3">+ ${product} sản phẩm mới</h4> 
                                 </div>
                             </div>
                         </div>
@@ -88,7 +86,7 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col mt-0">
-                                            <h5 class="card-title">Khách hàng mới</h5>
+                                            <h5 class="card-title">Khách hàng</h5>
                                         </div>
 
                                         <div class="col-auto">
@@ -97,7 +95,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <h1 class="mt-1 mb-3">${customer}</h1>
+                                    <h1 class="mt-1 mb-3">${customerall}</h1>
+                                    <h4 class="mt-1 mb-3">+ ${customer} khách hàng mới</h4> 
                                 </div>
                             </div>
                         </div>
@@ -106,7 +105,7 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col mt-0">
-                                            <h5 class="card-title">Phản hồi mới</h5>
+                                            <h5 class="card-title">Phản hồi</h5>
                                         </div>
 
                                         <div class="col-auto">
@@ -115,17 +114,41 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <h1 class="mt-1 mb-3">${feedback}</h1>
+                                    <h1 class="mt-1 mb-3">${feedbackall}</h1>
+                                    <h4 class="mt-1 mb-3">+ ${feedback} phản hồi mới</h4> 
                                 </div>
                             </div>
                         </div>
                     </div>   
 
-                    <div class="row justify-content-center d-flex mt-5">
-                        <div class="col-6 card">
+                    <div class="row justify-content-center d-flex mt-3">
+                        <div class="col-8 card">
                             <canvas id="myChart"></canvas>   
                         </div>
                     </div>
+
+                    <div class="row justify-content-center d-flex mt-3">
+                        <div class="col-8 card">
+                            <h3 class="text-center mt-2"><strong>Top sản phẩm bán chạy</strong></h3>
+                            <table>
+                                <tr class="border">
+                                    <th class="border">Top</th>
+                                    <th class="border">Tên sản phẩm</th>
+                                    <th class="border">Số lượng bán</th>
+                                </tr>
+                                <c:set var="rank" value="1" />
+                                <c:forEach var="entry" items="${topsell}">
+                                    <tr>
+                                        <td class="border">${rank}</td>
+                                        <td class="border">${entry.key}</td>
+                                        <td class="border">${entry.value}</td>
+                                    </tr>
+                                    <c:set var="rank" value="${rank + 1}" />
+                                </c:forEach>
+                            </table>   
+                        </div>
+                    </div>            
+
 
                     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -172,9 +195,14 @@
                                     legend: {
                                         labels: {
                                             font: {
-                                                size: 20 // Tăng kích thước chữ của legend
+                                                size: 16 // Tăng kích thước chữ của legend
                                             }
                                         }
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: 'Biểu đồ số lượng khách hàng mới đăng kí theo ngày',
+                                        font: {size: 20}
                                     }
                                 }
                             }

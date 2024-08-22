@@ -11,6 +11,7 @@ import DAL.OrderDAO;
 import DAL.OrderDetailDAO;
 import DAL.ProductDAO;
 import DAL.ProductDetailDAO;
+import DAL.UserDAO;
 import Helper.PaginationHelper;
 import Models.Color;
 import Models.Order;
@@ -18,6 +19,8 @@ import Models.OrderDetail;
 import Models.Product;
 import Models.ProductDetail;
 import Models.User;
+import Util.Email;
+import com.google.gson.JsonObject;
 import jakarta.servlet.ServletContext;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -71,6 +74,9 @@ public class MyOrderServlet extends HttpServlet {
         ProductDAO prDAO = new ProductDAO();
         ArrayList<Product> productList = prDAO.getProductList();
 
+        UserDAO userDAO = new UserDAO();
+        ArrayList<User> userList = userDAO.getUserList();
+
         ColorDAO colorDAO = new ColorDAO();
         ArrayList<Color> colorList = colorDAO.getColorList();
 
@@ -109,114 +115,131 @@ public class MyOrderServlet extends HttpServlet {
 
                 boolean firstProduct = true;
                 int productCount = 0;
+                for (User user : userList) {
+                    if (order.getCustomer_id() == user.getId()) {
+                        for (OrderDetail orderDetail : orderDetailList) {
+                            if (orderDetail.getOrder_id() == order.getId()) {
+                                for (ProductDetail productDetail : productDetailList) {
+                                    if (productDetail.getId() == orderDetail.getProductdetail_id()) {
+                                        for (Product product : productList) {
+                                            if (product.getId() == productDetail.getProduct_id()) {
+                                                htmlResponse.append("                <tr>\n");
 
-                for (OrderDetail orderDetail : orderDetailList) {
-                    if (orderDetail.getOrder_id() == order.getId()) {
-                        for (ProductDetail productDetail : productDetailList) {
-                            if (productDetail.getId() == orderDetail.getProductdetail_id()) {
-                                for (Product product : productList) {
-                                    if (product.getId() == productDetail.getProduct_id()) {
-                                        htmlResponse.append("                <tr>\n");
+                                                if (firstProduct) {
+                                                    htmlResponse.append("                    <td style=\"text-align: center; background-color: white;\"><img src=\"image/product/")
+                                                            .append(product.getImage()).append("\" alt=\"Product\" style=\"width:100px\"></td>\n")
+                                                            .append("                    <td style=\"text-align: center; background-color: white;\">")
+                                                            .append(product.getName()).append("</td>\n");
 
-                                        if (firstProduct) {
-                                            htmlResponse.append("                    <td style=\"text-align: center; background-color: white;\"><img src=\"image/product/")
-                                                    .append(product.getImage()).append("\" alt=\"Product\" style=\"width:100px\"></td>\n")
-                                                    .append("                    <td style=\"text-align: center; background-color: white;\">")
-                                                    .append(product.getName()).append("</td>\n");
+                                                    for (Color color : colorList) {
+                                                        if (productDetail.getColor_id() == color.getId()) {
+                                                            htmlResponse.append("                    <td style=\"text-align: center; background-color: white;\">")
+                                                                    .append(color.getColorname()).append("</td>\n");
+                                                        }
+                                                    }
 
-                                            for (Color color : colorList) {
-                                                if (productDetail.getColor_id() == color.getId()) {
                                                     htmlResponse.append("                    <td style=\"text-align: center; background-color: white;\">")
-                                                            .append(color.getColorname()).append("</td>\n");
+                                                            .append(formatCurrency(orderDetail.getPrice())).append("</td>\n")
+                                                            .append("                    <td style=\"text-align: center; background-color: white;\">")
+                                                            .append(orderDetail.getQuantity()).append("</td>\n")
+                                                            .append("                    <td style=\"text-align: center; background-color: white;\">")
+                                                            .append(formatCurrency(order.getTotalcost())).append("</td>\n");
+
+                                                    firstProduct = false;
+                                                } else {
+                                                    productCount++;
                                                 }
+
+                                                htmlResponse.append("                </tr>\n");
                                             }
-
-                                            htmlResponse.append("                    <td style=\"text-align: center; background-color: white;\">")
-                                                    .append(formatCurrency(orderDetail.getPrice())).append("</td>\n")
-                                                    .append("                    <td style=\"text-align: center; background-color: white;\">")
-                                                    .append(orderDetail.getQuantity()).append("</td>\n")
-                                                    .append("                    <td style=\"text-align: center; background-color: white;\">")
-                                                    .append(formatCurrency(order.getTotalcost())).append("</td>\n");
-
-                                            firstProduct = false;
-                                        } else {
-                                            productCount++;
                                         }
-
-                                        htmlResponse.append("                </tr>\n");
                                     }
                                 }
                             }
                         }
+
+                        if (productCount >= 1) {
+                            htmlResponse.append("                <tr>\n")
+                                    .append("                    <td colspan=\"6\" style=\"text-decoration: none; color: black;  background-color: white;\">\n")
+                                    .append("                        <a href=\"MyOrderInformationServlet?id=").append(order.getId())
+                                    .append("\" style=\"text-decoration: none; color: black;\">Số sản phẩm khác: ").append(productCount)
+                                    .append("</a>\n")
+                                    .append("                    </td>\n")
+                                    .append("                </tr>\n");
+                        }
+
+                        htmlResponse.append("                <tr>\n")
+                                .append("                    <td colspan=\"6\" style=\"text-align: center; background-color: white;\">\n")
+                                .append("                        <a href=\"MyOrderInformationServlet?id=").append(order.getId())
+                                .append("\" style=\"text-decoration: none; color: black;\">Xem chi tiết đơn hàng</a>\n")
+                                .append("                    </td>\n")
+                                .append("                </tr>\n")
+                                .append("            </tbody>\n")
+                                .append("        </table>\n")
+                                .append("        <div style=\"display: flex;justify-content: flex-end;\">\n")
+                                .append("            <div></div>\n")
+                                .append("            <div><b>Total: </b>").append(formatCurrency(order.getTotalcost())).append("</div>\n")
+                                .append("        </div>\n")
+                                .append("        <div class=\"button-order\" style=\"display: flex; justify-content: flex-end; margin-top: 10px\">\n")
+                                .append("            <c:choose>\n");
+
+                        String orderStatus = order.getStatus();
+                        switch (orderStatus) {
+                            case "Order":
+                                htmlResponse.append("                <button style=\"width: 80px; height: 30px\" class=\"btn btn-secondary\">Đang xử lí</button>\n");
+                                break;
+                            case "Canceled":
+                                htmlResponse.append("                <button style=\"width: 80px; height: 30px\" class=\"btn btn-danger\">Đã hủy</button>\n");
+                                break;
+                            case "Delivering":
+                                htmlResponse.append("                <button class=\"btn btn-light\" style=\"width: 80px; height: 30px; background-color: aquamarine\" >Đang giao</button>\n");
+                                break;
+                            case "Delivered":
+                                htmlResponse.append("<form action=\"MyOrderServlet\" method=\"post\">\n")
+                                        .append("    <input type=\"hidden\" name=\"order_id\" value=\"").append(order.getId()).append("\"/>\n")
+                                        .append("    <input type=\"hidden\" name=\"action\" value=\"feedbackRequest\"/>\n")
+                                        .append("    <input type=\"hidden\" name=\"email\" value=\"").append(user.getEmail()).append("\"/>\n")
+                                        .append("    <button type=\"submit\" class=\"btn btn-danger\" style=\"margin-left: 10px; background-color: purple; color: white;\">Đã nhận được đơn hàng</button>\n")
+                                        .append("</form>\n");
+                                break;
+
+                            case "Deliveryfailed":
+                                htmlResponse.append("                <button class=\"btn btn-light\" style=\"height: 30px; color: white; background-color: brown\" >Đơn hàng đã giao thất bại</button>\n");
+                                break;
+                            case "Confirmed":
+                                htmlResponse.append("                <button style=\"height: 30px\" class=\"btn btn-info\">Đơn hàng đã được xác nhận</button>\n");
+                                break;
+
+                            case "Done":
+                                boolean hasFeedback = false;
+                                for (int history : historyFeedbackOrder) {
+                                    if (order.getId() == history) {
+                                        hasFeedback = true;
+                                        break;
+                                    }
+                                }
+
+                                if (hasFeedback) {
+                                    htmlResponse.append("                <button class=\"btn btn-success\" style=\"height: 30px;\">Hoàn thành đơn hàng</button>\n");
+                                } else {
+                                    htmlResponse.append("                <button class=\"btn btn-warning\" style=\"height: 30px;\">Hoàn thành đơn hàng</button>\n");
+                                }
+                                break;
+                            case "Wait":
+                                htmlResponse.append("                <a href=\"#\" class=\"btn btn-light\" style=\"height: 30px; background-color: pink\">Thanh toán ngay</a>\n");
+                                break;
+                            default:
+                                htmlResponse.append("                <button style=\"width: 80px; height: 30px\" class=\"btn btn-warning\">")
+                                        .append(order.getStatus()).append("</button>\n");
+                                break;
+                        }
+
+                        htmlResponse.append("            </c:choose>\n")
+                                .append("        </div>\n")
+                                .append("    </div>\n")
+                                .append("</div>\n");
                     }
                 }
-
-                if (productCount >= 1) {
-                    htmlResponse.append("                <tr>\n")
-                            .append("                    <td colspan=\"6\" style=\"text-decoration: none; color: black;  background-color: white;\">\n")
-                            .append("                        <a href=\"MyOrderInformationServlet?id=").append(order.getId())
-                            .append("\" style=\"text-decoration: none; color: black;\">Số sản phẩm khác: ").append(productCount)
-                            .append("</a>\n")
-                            .append("                    </td>\n")
-                            .append("                </tr>\n");
-                }
-
-                htmlResponse.append("                <tr>\n")
-                        .append("                    <td colspan=\"6\" style=\"text-align: center; background-color: white;\">\n")
-                        .append("                        <a href=\"MyOrderInformationServlet?id=").append(order.getId())
-                        .append("\" style=\"text-decoration: none; color: black;\">Xem chi tiết đơn hàng</a>\n")
-                        .append("                    </td>\n")
-                        .append("                </tr>\n")
-                        .append("            </tbody>\n")
-                        .append("        </table>\n")
-                        .append("        <div style=\"display: flex;justify-content: flex-end;\">\n")
-                        .append("            <div></div>\n")
-                        .append("            <div><b>Total: </b>").append(formatCurrency(order.getTotalcost())).append("</div>\n")
-                        .append("        </div>\n")
-                        .append("        <div class=\"button-order\" style=\"display: flex; justify-content: flex-end; margin-top: 10px\">\n")
-                        .append("            <c:choose>\n");
-
-                String orderStatus = order.getStatus();
-                switch (orderStatus) {
-                    case "Order":
-                        htmlResponse.append("                <button style=\"width: 80px; height: 30px\" class=\"btn btn-secondary\">Đang xử lí</button>\n");
-                        break;
-                    case "Canceled":
-                        htmlResponse.append("                <button style=\"width: 80px; height: 30px\" class=\"btn btn-danger\">Đã hủy</button>\n");
-                        break;
-                    case "Confirmed":
-                        htmlResponse.append("                <button style=\"height: 30px\" class=\"btn btn-info\">Đang giao</button>\n")
-                                .append("                <button id=\"receivedButton\" class=\"btn btn-primary\" style=\"height: 30px; margin-left: 10px\" onclick=\"handleReceivedButtonClick(")
-                                .append(order.getId()).append(")\">Đã nhận được đơn hàng</button>\n");
-                        break;
-                    case "Done":
-                        boolean hasFeedback = false;
-                        for (int history : historyFeedbackOrder) {
-                            if (order.getId() == history) {
-                                hasFeedback = true;
-                                break;
-                            }
-                        }
-
-                        if (hasFeedback) {
-                            htmlResponse.append("                <button class=\"btn btn-success\" style=\"height: 30px; margin-right: 10px\">Hoàn thành đơn hàng</button>\n");
-                        } else {
-                            htmlResponse.append("                <button class=\"btn btn-warning\" style=\"height: 30px; margin-right: 10px\">Hoàn thành đơn hàng</button>\n");
-                        }
-                        break;
-                    case "Wait":
-                        htmlResponse.append("                <a href=\"#\" class=\"btn btn-light\" style=\"height: 30px; background-color: pink\">Thanh toán ngay</a>\n");
-                        break;
-                    default:
-                        htmlResponse.append("                <button style=\"width: 80px; height: 30px\" class=\"btn btn-warning\">")
-                                .append(order.getStatus()).append("</button>\n");
-                        break;
-                }
-
-                htmlResponse.append("            </c:choose>\n")
-                        .append("        </div>\n")
-                        .append("    </div>\n")
-                        .append("</div>\n");
             }
         }
 
@@ -250,6 +273,8 @@ public class MyOrderServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
+        String email = request.getParameter("email");
+        Email sendEmail = new Email();
         ArrayList<Order> orderList = new ArrayList<>();
         HttpSession session = request.getSession();
         if ("pagination".equals(action)) {
@@ -258,29 +283,27 @@ public class MyOrderServlet extends HttpServlet {
             String htmlResponse = listOrder(request, orderList);
             response.setContentType("text/html;charset=UTF-8");
             response.getWriter().print(htmlResponse);
-        } else if ("ConfirmOrder".equals(action)) {
+        } else if ("feedbackRequest".equals(action)) {
             String id = request.getParameter("order_id");
-            // Xử lý hủy đơn hàng
-            if (id != null) {
-                int order_id;
-                try {
-                    order_id = Integer.parseInt(id);
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                    return;
-                }
-                // Ví dụ: cập nhật trạng thái đơn hàng trong cơ sở dữ liệu thành "Cancelled"
-                OrderDAO orderDAO = new OrderDAO();
-                orderDAO.updateOrderStatus(order_id, "Done");
-                OrderUpdateEndpoint.sendUpdate("update");
-                // Phản hồi về cho client rằng đã hủy đơn hàng thành công
-                response.setStatus(HttpServletResponse.SC_OK);
-                response.getWriter().write("Đã nhận đơn hàng thành công!");
-            } else {
-                // Xử lý khi không có order_id được gửi đến
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().write("Lỗi: Không có order_id được gửi đến.");
+            int order_id;
+            try {
+                order_id = Integer.parseInt(id);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                return;
             }
+            OrderDAO orderDAO = new OrderDAO();
+            orderDAO.updateOrderStatus(order_id, "Done");
+            OrderUpdateEndpoint.sendUpdate("update");
+            sendEmail.sendMessageEmail(email, action, order_id);
+            User customer = (User) session.getAttribute("customer");
+
+            orderList = orderDAO.myOrder(customer.getId());
+            session.setAttribute("orderList", orderList);
+
+            String htmlResponse = listOrder(request, orderList);
+            request.setAttribute("htmlResponse", htmlResponse);
+            request.getRequestDispatcher("Views/MyOrder.jsp").forward(request, response);
         }
 
     }

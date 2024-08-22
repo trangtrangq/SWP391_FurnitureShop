@@ -22,6 +22,7 @@ import Models.OrderDetail;
 import Models.Product;
 import Models.ProductDetail;
 import Models.User;
+import Util.Email;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -37,60 +38,8 @@ import java.util.List;
  */
 public class OrderDetailServlet extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet OrderDetailServlet</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet OrderDetailServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    }
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String id = request.getParameter("id");
-        int order_id;
-        try {
-            order_id = Integer.parseInt(id);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        OrderDAO orderDAO = new OrderDAO();
-        Order order = orderDAO.getMyOrder(order_id);
-        int[] order_IDs = new int[1];
-        order_IDs[0] = order_id;
-
-        OrderDetailDAO orderDetailDAO = new OrderDetailDAO();
-        ArrayList<OrderDetail> orderDetailList = orderDetailDAO.MyOrderDetails(order_IDs);
 
         ProductDetailDAO prDetailDAO = new ProductDetailDAO();
         ArrayList<ProductDetail> productDetailList = prDetailDAO.getAllProductDetails();
@@ -118,27 +67,43 @@ public class OrderDetailServlet extends HttpServlet {
         request.setAttribute("colorList", colorList);
         request.setAttribute("productDetailList", productDetailList);
         request.setAttribute("productList", productList);
-        request.setAttribute("orderDetailList", orderDetailList);
-        request.setAttribute("order", order);
-        request.setAttribute("historyFeedbackOrder", historyFeedbackOrder);
 
+        request.setAttribute("historyFeedbackOrder", historyFeedbackOrder);
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String id = request.getParameter("id");
+        int order_id;
+        try {
+            order_id = Integer.parseInt(id);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return;
+        }
+        OrderDAO orderDAO = new OrderDAO();
+        Order order = orderDAO.getMyOrder(order_id);
+        int[] order_IDs = new int[1];
+        order_IDs[0] = order_id;
+        OrderDetailDAO orderDetailDAO = new OrderDetailDAO();
+        ArrayList<OrderDetail> orderDetailList = orderDetailDAO.MyOrderDetails(order_IDs);
+
+        processRequest(request, response);
+        request.setAttribute("order", order);
+        request.setAttribute("orderDetailList", orderDetailList);
         request.getRequestDispatcher("Views/OrderDetail.jsp").forward(request, response);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String id = request.getParameter("order_id");
         String action = request.getParameter("action");
-
+        String email = request.getParameter("email");
+        String saleName = request.getParameter("saleName");
+        String saleEmail = request.getParameter("saleEmail");
+        String salePhone = request.getParameter("salePhone");
         // Xử lý hành động dựa trên action
         if (id != null && action != null) {
             int order_id;
@@ -148,21 +113,53 @@ public class OrderDetailServlet extends HttpServlet {
                 e.printStackTrace();
                 return;
             }
-
-            if (action.equals("cancel")) {
+            Email sendEmail = new Email();
+            if (action.equals("saleCanceledOrder")) {
                 // Xử lý hủy đơn hàng
                 OrderDAO orderDAO = new OrderDAO();
                 orderDAO.updateOrderStatus(order_id, "Canceled");
+                List<OrderDetail> orderDetails = new OrderDetailDAO().getOrderDetailsByOrderId(order_id);
+                for (OrderDetail orderDetail : orderDetails) {
+                    ProductDetail productDetail = new ProductDetailDAO().getProductDetail(orderDetail.getProductdetail_id());
+                    productDetail.setQuantity(productDetail.getQuantity() + orderDetail.getQuantity());
+                    new ProductDetailDAO().updateProductDetail(productDetail);
+                    Product product = new ProductDAO().getProductByID(productDetail.getProduct_id());
+                    product.setQuantity(product.getQuantity() + orderDetail.getQuantity());
+                    new ProductDAO().updateProduct(product);
+                }
                 OrderUpdateEndpoint.sendUpdate("update");
-                // Chuyển hướng người dùng đến trang thông tin đơn hàng sau khi hủy
-                response.sendRedirect("Views/MyOrderInformation.jsp");
-            } else if (action.equals("confirm")) {
+                sendEmail.sendSaleEmail(email, action, order_id, saleName, saleEmail, salePhone);
+
+                Order order = orderDAO.getMyOrder(order_id);
+                int[] order_IDs = new int[1];
+                order_IDs[0] = order_id;
+
+                OrderDetailDAO orderDetailDAO = new OrderDetailDAO();
+                ArrayList<OrderDetail> orderDetailList = orderDetailDAO.MyOrderDetails(order_IDs);
+
+                processRequest(request, response);
+                request.setAttribute("order", order);
+                request.setAttribute("orderDetailList", orderDetailList);
+                request.getRequestDispatcher("Views/OrderDetail.jsp").forward(request, response);
+            } else if (action.equals("orderConfirmed")) {
                 // Xử lý xác nhận đơn hàng
                 OrderDAO orderDAO = new OrderDAO();
                 orderDAO.updateOrderStatus(order_id, "Confirmed");
                 OrderUpdateEndpoint.sendUpdate("update");
                 // Chuyển hướng người dùng đến trang xác nhận
                 //response.sendRedirect("orderConfirmation.jsp");
+                sendEmail.sendMessageEmail(email, action, order_id);
+                Order order = orderDAO.getMyOrder(order_id);
+                int[] order_IDs = new int[1];
+                order_IDs[0] = order_id;
+                orderDAO.updateShipper(order_id, orderDAO.distributeOrder(0));
+                OrderDetailDAO orderDetailDAO = new OrderDetailDAO();
+                ArrayList<OrderDetail> orderDetailList = orderDetailDAO.MyOrderDetails(order_IDs);
+
+                processRequest(request, response);
+                request.setAttribute("order", order);
+                request.setAttribute("orderDetailList", orderDetailList);
+                request.getRequestDispatcher("Views/OrderDetail.jsp").forward(request, response);
             } else {
                 // Xử lý trường hợp action không hợp lệ
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid action");
@@ -172,15 +169,5 @@ public class OrderDetailServlet extends HttpServlet {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameters");
         }
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
 
 }

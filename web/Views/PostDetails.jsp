@@ -39,7 +39,13 @@
             <div class="main">
                 <%@include file="DashboardHeader.jsp" %>
                 <div class="container card mt-3">
-
+                    <div>
+                        <a class="btn btn-secondary btn-sm edit-btn mt-3"
+                           style="width:auto" href="PostsList">
+                            Trở lại
+                        </a>
+                    </div>
+                    
                     <h1 class="mb-4 p-3">Chi tiết bài viết: #${post.getId()}</h1>
                     <div class="row justify-content-between">
                         <div class="d-flex col-4 justify-content-between">
@@ -89,7 +95,7 @@
                             <label for="status" class="col-sm-2 col-form-label">Trạng thái</label>
                             <div class="col-sm-10 d-flex align-items-center">
                                 <input id="stt" type="text" class="form-control" value="${post.getStatus()}" readonly>
-                                <select id="status" name="status" class="form-control ip" style="display: none;">
+                                <select id="status" name="status" class="form-select ip" style="display: none;">
                                     <option value="show" <c:if test="${'show' eq post.getStatus()}">selected</c:if>>show</option>
                                     <option value="hide" <c:if test="${'hide' eq post.getStatus()}">selected</c:if>>hide</option>
                                     <option value="featured" <c:if test="${'featured' eq post.getStatus()}">selected</c:if>>featured</option>
@@ -105,7 +111,7 @@
                         <script>
                             CKEDITOR.replace('content');
                         </script> 
-                        <div class="row">
+                        <div class="row mb-3">
                             <div class="col-sm-10 offset-sm-2">
                                 <button id="saveBtn" type="submit" class="btn btn-primary" style="display:none;">Lưu</button>
                             </div>

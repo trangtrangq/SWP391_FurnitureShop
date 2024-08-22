@@ -97,8 +97,10 @@ public class AssignToSale extends HttpServlet {
             jsonOrder.addProperty("totalcost", formatCurrency(order.getTotalcost()));
             jsonOrder.addProperty("orderdate", order.getOrderDate().toString());
             jsonOrder.addProperty("status", order.getStatus());
+            jsonOrder.addProperty("saleid", order.getSaleid());
             jsonOrder.addProperty("salename", order.getSalename());
-
+            jsonOrder.addProperty("shipid", order.getShipid());
+            jsonOrder.addProperty("shipname", order.getShipname());
             jsonArray.add(jsonOrder);
         }
 
@@ -122,5 +124,7 @@ public class AssignToSale extends HttpServlet {
         return decimalFormat.format(number) + "₫";
     }
 
-
+    public static void main(String[] args) {
+       List<OrderSaleManager> orderSaleManagers =  new OrderDAO().getFilteredOrders(null, null, null, null, null, null);
+    }
 }

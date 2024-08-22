@@ -100,9 +100,9 @@
 
     <body>
         <header id="site-header" class="main-header mainHeader_temp03 ">
-
-
-
+            <div style="text-align: center; background-color:#27678F">
+                <h5 style="color: white">Furniture bán và giao hàng ở Thủ đô Hà Nội và Thành phố Hồ Chí Minh</h5>
+            </div>
             <div class="header-middle">
                 <div class="container">
                     <div class="flexContainer-header row-flex flexAlignCenter">
@@ -317,6 +317,9 @@
                                                             </c:if>
                                                             <c:if test="${customer.role_id == 5}">
                                                             <li><a class="dropdown-item" href="${pageContext.request.contextPath}/AdminDashboard">Admin Dashboard</a></li>
+                                                            </c:if>
+                                                            <c:if test="${customer.role_id == 6}">
+                                                            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/ShippingOrderServlet">Shipping Orders</a></li>
                                                             </c:if>
                                                         <li><a class="dropdown-item" href="${pageContext.request.contextPath}/LogoutServlet">Đăng xuất</a></li>
                                                     </ul>
